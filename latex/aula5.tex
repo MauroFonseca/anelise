@@ -1,0 +1,378 @@
+% !TEX program = tectonic
+% =============================================================================
+%  AULA 5 — Redes sem Fio Emerxentes  (actualizada a 2026)
+%  Curso: Redes sem Fio  |  Profa. Anelise Munaretto
+%  Wi-Fi 6/6E/7, LoRa/Sigfox, 5G NR, satélite LEO (Starlink), DTN, FANET, VANET.
+%  Compilar: tectonic aula5.tex
+% =============================================================================
+\documentclass[aspectratio=169,11pt]{beamer}
+\input{preamble.tex}
+
+\title[Redes sem Fio]{Redes sem Fio Emerxentes}
+\subtitle{Aula 5}
+\author[Anelise Munaretto]{Profa. Anelise Munaretto}
+\institute[Curso]{Redes sem Fio --- Ciência da Computación}
+\date{2026}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \titlepage
+  \begin{center}
+    \scriptsize Contenido actualizado 2026: 802.11ax/be, LPWAN (LoRa/Sigfox), 5G, NTN.
+  \end{center}
+\end{frame}
+
+\section{IEEE 802.11 (Wi-Fi)}
+
+\begin{frame}{LAN sen fío IEEE 802.11: evolución}
+  \begin{center}
+    \scriptsize
+    \begin{tabular}{@{}llll@{}}
+      \toprule
+      \textbf{Padrón} & \textbf{Banda} & \textbf{Tasa} & \textbf{Notas}\\
+      \midrule
+      802.11b & 2,4~GHz & 11~Mbps & DSSS, chip de 11\\
+      802.11a & 5--6~GHz & 54~Mbps & OFDM (52 subport.)\\
+      802.11g & 2,4--5~GHz & 54~Mbps & OFDM\\
+      802.11n (Wi-Fi 4) & 2,4/5~GHz & 600~Mbps & MIMO 4$\times$4, OFDM 108\\
+      802.11ac (Wi-Fi 5) & 5~GHz & 6,9~Gbps & MIMO 8$\times$8, QAM-256\\
+      802.11ax (Wi-Fi 6) & 2,4/5/6~GHz & 9,6~Gbps & OFDMA, QAM-1024, MU-MIMO\\
+      802.11be (Wi-Fi 7) & 2,4/5/6~GHz & $\sim$46~Gbps & 320~MHz, QAM-4096, mMLS\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  \begin{itemize}
+    \item todos usan \textbf{CSMA/CA} para acceso múltiple
+    \item todos teñen versión de estación base e ad hoc
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{802.11: canais e asociación}
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \textbf{802.11b}: espectro 2,4--2,485~GHz dividido en 11 canais
+      \begin{itemize}
+        \item o admin do AP escolle a frecuencia do AP
+        \item interferencia posible: o canal pode ser o mesmo que o do AP veciño!
+      \end{itemize}
+      \textbf{Asociación do hospedador}
+      \begin{enumerate}
+        \item varre os canais, escoitando \textbf{beacons} (SSID e MAC)
+        \item selecciona un AP para asociarse
+        \item pode facer autenticación (WPA3)
+        \item normalmente executa DHCP para obter IP na subrede do AP
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize,
+            ap/.style={draw,circle,minimum size=7mm,fill=aneliseLaranja!30,inner sep=0.5mm},
+            n/.style={draw,circle,minimum size=6mm,fill=aneliseAzul!15,inner sep=0.4mm},
+          ]
+          \node[ap](ap1){AP1};\node[ap,right=2.2cm of ap1](ap2){AP2};
+          \node[n,below=1.2cm of ap1](a1){a};\node[n,below=1.2cm of ap2](a2){b};
+          \node[n,below=2.2cm of ap1](a3){c};\node[n,below=2.2cm of ap2](a4){d};
+          \draw[thick,aneliseLaranja] (ap1) -- (a1);
+          \draw[thick,aneliseLaranja] (ap2) -- (a2);
+          \draw[dashed,thick,aneliseGris] (ap1) -- (a3);
+          \draw[dashed,thick,aneliseGris] (ap2) -- (a4);
+          \draw[dashed,thick,aneliseLaranja!60] (ap1) to[bend left=20] node[midway,above=2mm,font=\tiny]{canle 6} (ap2);
+        \end{tikzpicture}
+      \end{center}
+      {\scriptsize Obxectivo: canles 1, 6 e 11 non solapados (2,4~GHz).}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Wi-Fi 6 (802.11ax) e Wi-Fi 6E}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Wi-Fi 6 (802.11ax, 2019)}
+      \begin{itemize}
+        \item \textbf{OFDMA}: subportadoras asignadas a múltiples usuarios no mesmo slot
+        \item \textbf{MU-MIMO} uplink/downlink
+        \item QAM-1024
+        \item obxectivo: eficiencia en ambientes densos (estadios, aeroportos)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Wi-Fi 6E (2021)}
+      \begin{itemize}
+        \item engade a \textbf{banda de 6~GHz} (5925--7125~MHz)
+        \item máis ancho de banda dispoñible, menos interferencia
+        \item require \textbf{WPA3} obrigatorio
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \vspace{0.2cm}
+  \begin{block}{Wi-Fi 7 (802.11be, 2024)}
+    \begin{itemize}
+      \item canles de \textbf{320~MHz}, QAM-4096, \emph{multi-link operation} (MLO)
+      \item throughput teórico ata \textbf{46~Gbps} (en ambientes ideais)
+      \item dirixido a 8K streaming, AR/VR, TSN/industria
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\section{WPAN: Bluetooth e outras}
+
+\begin{frame}{802.15.1: rede de área persoal (Bluetooth)}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+        \item menos de 10~m de diámetro
+        \item substituta de cables (mouse, teclado, fones)
+        \item ad hoc: sen infraestrutura
+        \item mestre/escravos:
+          \begin{itemize}
+            \item escravos piden permiso para enviar (ao mestre)
+            \item o mestre concede as solicitudes
+          \end{itemize}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize,
+            m/.style={draw,circle,minimum size=7mm,fill=aneliseLaranja!35,inner sep=0.5mm},
+            s/.style={draw,circle,minimum size=6mm,fill=aneliseAzul!15,inner sep=0.4mm},
+            p/.style={draw,circle,minimum size=6mm,fill=aneliseGris!20,inner sep=0.4mm},
+          ]
+          \node[m](M){M};
+          \node[s,above=1.2cm of M](s1){S};
+          \node[s,left=1.2cm of M](s2){S};
+          \node[s,right=1.2cm of M](s3){S};
+          \node[p,below=1.2cm of M](p1){P};
+          \draw[thick,aneliseLaranja] (M) -- (s1);
+          \draw[thick,aneliseLaranja] (M) -- (s2);
+          \draw[thick,aneliseLaranja] (M) -- (s3);
+          \draw[dashed,thick,aneliseGris] (M) -- (p1);
+          \node[draw,fill=aneliseGris!12,rounded corners=2mm,below=5mm of p1,text width=3.4cm,align=center](leg){M mestre, S escravo,\\P estacionado (inactivo)};
+        \end{tikzpicture}
+      \end{center}
+      {\scriptsize Banda 2,4--2,5~GHz; ata 721~kbps (BT 1.x); a evolución 802.15.1 ata 3~Mbps.}
+    \end{column}
+  \end{columns}
+  \begin{exampleblock}{Evolución (2026)}
+    Bluetooth 5.4 (LE Audio, Mesh), UWB (802.15.4z, precisión cm), Zigbee 3.0, Thread/Matter.
+  \end{exampleblock}
+\end{frame}
+
+\section{LPWAN: LoRa e Sigfox}
+
+\begin{frame}{LPWAN para IoT: LoRa vs.\ Sigfox}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{LoRa / LoRaWAN}
+      \begin{itemize}
+        \item modulación \textbf{Chirp Spread Spectrum (CSS)}
+        \item banda ISM sub-GHz (868~MHz EU, 915~MHz US/BR)
+        \item tasas 0,3--50~kbps; alcance 2--15~km
+        \item topoloxía \emph{star-of-stars}: sensores $\rightarrow$ gateways $\rightarrow$ servidor
+        \item ALOHA puro + canles con \emph{duty cycle}
+        \item autenticación AES-128 (join E2E)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Sigfox}
+      \begin{itemize}
+        \item banda ultra-estreita (UNB, 100~Hz)
+        \item uplink 100 bps; 140 mensaxes/día
+        \item alcance ata 50~km (rural)
+        \item rede propietaria (operador rexional)
+      \end{itemize}
+      \begin{block}{Comparación práctica}
+        LoRaWAN: máis flexible, redes privadas, bidireccional.
+        Sigfox: ultra-sinxe-lo, moi baixo consumo, unidireccional.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{NB-IoT e eMTC (celular LPWA)}
+  \begin{itemize}
+    \item estándares 3GPP para IoT masivo dentro de LTE/5G:
+      \begin{itemize}
+        \item \textbf{NB-IoT} (Narrowband IoT): 200~kHz, ata 250~kbps, moi boa penetración indoor
+        \item \textbf{LTE-M / eMTC}: 1~MHz, ata 1~Mbps, soporta voice e mobility
+      \end{itemize}
+    \item comparados con LoRa: maior fiabilidade, QoS garantida, pero maior consumo e custo de módulo
+  \end{itemize}
+  \begin{center}
+    \begin{tikzpicture}[font=\scriptsize,
+        c/.style={draw,rounded corners=2mm,fill=aneliseAzul!13,inner sep=1mm,text width=3.2cm,align=center},
+      ]
+      \node[c](a){LoRaWAN\\(css sub-GHz, sín licencia)};
+      \node[c,right=2.8cm of a](b){NB-IoT\\(LTE, licencia)};
+      \node[c,right=2.8cm of b](c1){5G mMTC\\(NR, licencia)};
+      \draw[<->,thick,aneliseGris] (a.east) -- (b.west);
+      \draw[<->,thick,aneliseGris] (b.east) -- (c1.west);
+      \node[below=2mm of b,font=\tiny]{alcance, consumo, custo};
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\section{5G e redes móviles}
+
+\begin{frame}{5G New Radio (NR)}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Tres casos de uso}
+      \begin{itemize}
+        \item \textbf{eMBB} (Enhanced Mobile Broadband): $>$ 1~Gbps, 8K/VR
+        \item \textbf{uRLLC} (Ultra-Reliable Low Latency): 1~ms, industria, condución autónoma
+        \item \textbf{mMTC} (Massive Machine-Type): 1M dispositivos/km², IoT masivo
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Tecnoloxías clave}
+      \begin{itemize}
+        \item \emph{beamforming} masivo (Massive MIMO)
+        \item \emph{network slicing} (redes virtuais por servizo)
+        \item \emph{edge computing} (MEC)
+        \item ondas milimétricas (mmWave 26--28~GHz, 60~GHz)
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \begin{exampleblock}{Evolución}
+    5G-Advanced (3GPP Rel.\ 18, 2024): IA/ML na rede, RedCap. O 6G xa está en investigación (3GPP Rel.\ 21, cara 2030).
+  \end{exampleblock}
+\end{frame}
+
+\section{Redes ad hoc, DTN, drones e vehículos}
+
+\begin{frame}{Arquitecturas emerxentes}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Topoloxías}
+      \begin{itemize}
+        \item Ad hoc, infraestructura, Mesh
+        \item Sensores (WSN)
+        \item VANET (vehículos), FANET (drones)
+        \item DTN (Delay/Disruption Tolerant Networks)
+        \item Green Networking, SDR, SDN
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{DTN (Delay/Disruption Tolerant Networks)}
+      \begin{itemize}
+        \item tolerancia a atrasos e interrupcións (espazo, móbil rural)
+        \item \emph{store-and-forward} co protocolo \textbf{Bundle Protocol (RFC 5050)}
+      \end{itemize}
+      \textbf{Flying Networks (drones)}
+      \begin{itemize}
+        \item FANET: enjambres de UAV, roteamento 3D, mobilidade rápida
+      \end{itemize}
+      \textbf{Vehicular Networks}
+      \begin{itemize}
+        \item C-V2X (celular) vs.\ 802.11p/ITS-G5
+        \item comunicación V2V, V2I, V2P
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Satélite e NTN}
+
+\begin{frame}{Satélite: redes non terrestres (NTN)}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Satélite tradicional}
+      \begin{itemize}
+        \item GEO (35\,786~km): cobertura ampla, alta latencia (125~ms)
+        \item MEO/LEO: menor latencia
+      \end{itemize}
+      \textbf{LEO masivo (2026)}
+      \begin{itemize}
+        \item \textbf{Starlink} (SpaceX): $>$ 7000 satélites, constelación en LEO $\sim$550~km
+        \item \textbf{OneWeb, Kuiper, Telesat}
+        \item latencia 20--40~ms; throughput 100--300~Mbps por terminal
+        \item láser ISL (inter-satellite links); integración 5G NTN (3GPP Rel.\ 17+)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize]
+          \node[draw,fill=aneliseGris!20,rounded corners=2mm](t){terminal terreste};
+          \node[draw,circle,fill=aneliseLaranja!30,above=1.6cm of t](s1){sat LEO};
+          \node[draw,circle,fill=aneliseLaranja!30,above=1.3cm of s1](s2){sat LEO};
+          \node[draw,circle,fill=aneliseLaranja!30,above=1.3cm of s2](s3){sat LEO};
+          \node[draw,fill=aneliseGris!20,above=1.6cm of s3](g){gateway};
+          \draw[thick,aneliseVerde] (t) -- (s1);
+          \draw[thick,aneliseLaranja] (s1) -- (s2) -- (s3);
+          \draw[thick,aneliseVerde] (s3) -- (g);
+          \node[right=1mm of s2,font=\tiny]{enlaces láser ISL};
+        \end{tikzpicture}
+      \end{center}
+      {\scriptsize Constelación LEO: múltiples satélites con enlaces láser ISL.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{SDN, radio cognitivo e investigación}
+
+\begin{frame}{Radio cognitivo e SDN}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Radio cognitivo (IEEE 802.22 / TVWS)}
+      \begin{itemize}
+        \item acceso oportunista ao espectro (escanear, detectar, usar)
+        \item \emph{cognitive radio networks}: espectro dinámico
+      \end{itemize}
+      \textbf{SDR (Software Defined Radio)}
+      \begin{itemize}
+        \item procesado do sinal por software; axilidade espectral
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{SDN (Software Defined Networking)}
+      \begin{itemize}
+        \item plano de control centralizado
+        \item aplicado a WMN, VANET, IoT
+        \item vantaxe: programabilidade da rede
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Proxectos de investigación en redes sen fío}
+  \textbf{Áreas principais}: optimización de recursos e protocolos de roteamento.
+  \begin{enumerate}
+    \item Redes complexas $\times$ datos dinámicos $\times$ Big Data $\times$ IA
+    \item IoT e Smart Cities: LoRaONE con CSMA
+    \item Redes ad hoc de drones $\times$ xestión de mobilidade $\times$ optimización de recursos
+    \item Intelixencia colectiva $\times$ roteamento $\times$ redes sen fío oportunistas $\times$ escenarios urbanos
+    \item Redes veiculares $\times$ mobilidade urbana $\times$ roteamento
+    \item Optimización de recursos $\times$ radios cognitivos
+    \item Internet usando a rede de transporte público de Curitiba
+  \end{enumerate}
+  \begin{exampleblock}{Renovación}
+    Incorporar: \emph{mesh Wi-Fi 6/7 doméstico}, \emph{network slicing 5G}, \emph{TPU/GPU sensing}, \emph{dataset abertos de Curitiba} (UBRS).
+  \end{exampleblock}
+\end{frame}
+
+\section{Referencias}
+
+\begin{frame}{Referencias}
+  \begin{small}
+  \begin{itemize}
+    \item Green Networking: \url{http://dx.doi.org/10.1109/SURV.2011.113010.00106}
+    \item Radio Cognitive: \url{http://dx.doi.org/10.1109/98.788210}
+    \item SDN: \url{http://dx.doi.org/10.1109/MCOM.2013.6553676}
+    \item Flying Ad Hoc Network: \url{http://dx.doi.org/10.1109/TVT.2015.2414819}
+    \item Dados Abertos Curitiba: \url{http://www.curitiba.pr.gov.br/dadosabertos/}
+    \item URBS Itibus: \url{https://www.urbs.curitiba.pr.gov.br/mobile/itibus}
+    \item Complex networks: \url{https://arxiv.org/pdf/cond-mat/0303516.pdf}
+    \item IEEE 802.11be (Wi-Fi 7): \url{https://arxiv.org/pdf/2007.13401.pdf}
+  \end{itemize}
+  \end{small}
+  \begin{block}{Novas referencia (2026)}
+    \begin{itemize}
+      \item 3GPP Rel.\ 17/18 NTN e RedCap
+      \item IEEE 802.11ax/be (IEEE Std 802.11ax-2021, 802.11be-2024)
+      \item LoRaWAN 1.0.4 (LoRa Alliance, 2020)
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\end{document}

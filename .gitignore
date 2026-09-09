@@ -1,0 +1,22 @@
+# Ficheiros auxiliares de compilación LaTeX
+*.aux
+*.log
+*.nav
+*.toc
+*.out
+*.xdv
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+
+# PDFs xerados (mantense os orixinais aula1-6.pdf da raíz)
+latex/aula1.pdf
+latex/aula2.pdf
+latex/aula3.pdf
+latex/aula4.pdf
+latex/aula5.pdf
+latex/aula6.pdf
+docs/informe_melloras.pdf
+
+# Sistema
+.DS_Store

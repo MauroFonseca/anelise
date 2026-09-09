@@ -1,0 +1,181 @@
+% =============================================================================
+%  INFORME DE MELLORAS E PROPOSTA DE NOVAS AULAS
+%  Curso: Redes sem Fio (Profa. Anelise Munaretto)
+%  Documento acompañante da conversión PDF -> LaTeX/Beamer + TikZ
+% =============================================================================
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[galician]{babel}
+\usepackage{geometry}
+\geometry{margin=2.4cm}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{parskip}
+\usepackage[hidelinks]{hyperref}
+\definecolor{azul}{RGB}{20,60,110}
+\definecolor{verde}{RGB}{30,140,70}
+\definecolor{laranxa}{RGB}{215,120,20}
+
+\title{Redes sem Fio: informe de melloras e proposta de novas aulas\\
+\large Conversión  PDF $\rightarrow$ \LaTeX/Beamer\,$+$\,TikZ}
+\author{Profa. Anelise Munaretto \\ \small Documento de traballo}
+\date{2026}
+
+\begin{document}
+\maketitle
+
+\section{Resumo da conversión}
+
+Convertíronse as 6 presentacións orixinais en \texttt{.pdf} a ficheiros
+\LaTeX{} coa clase \texttt{beamer} (relación de aspecto 16:9), usando \texttt{tikz}
+para todos os diagramas. O resultado compila con \texttt{tectonic} (e \texttt{pdflatex}
+sen modificacións), xera o mesmo contido académico e engade material actualizado.
+
+\begin{center}
+\small
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Arquivo orixinal} & \textsc{Contido} & \textsc{Arquivo LaTeX} & \textsc{Páxinas}\\
+\midrule
+\texttt{aula1.pdf} & Internet: revisión & \texttt{latex/aula1.tex} & 24\\
+\texttt{aula2.pdf} & Introdución ás redes sen fío & \texttt{latex/aula2.tex} & 36\\
+\texttt{aula3.pdf} & Roteamento ad hoc (AODV, DSR, TBRPF, OLSR) & \texttt{latex/aula3.tex} & 25\\
+\texttt{aula4.pdf} & Protocolos MAC (ALOHA, CSMA, 802.11) & \texttt{latex/aula4.tex} & 26\\
+\texttt{aula5.pdf} & Redes emerxentes & \texttt{latex/aula5.tex} & 13\\
+\texttt{aula6.pdf} & Calidade de servizo (QoS) & \texttt{latex/aula6.tex} & 22\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Os ficheiros \texttt{preamble.tex} definen a paleta de cores propia, o tema
+\texttt{Madrid/whale} e estilos TikZ reutilizables (hosts, roteadores, nubes,
+enlaces), o que garante \textbf{coherencia visual} entre todas as aulas.
+
+\textbf{Compilación recomendada:}
+\begin{verbatim}
+  cd latex
+  tectonic aula1.tex   # e así sucesivamente ata aula6
+\end{verbatim}
+
+\section{Melloras aplicadas na conversión}
+
+\begin{enumerate}
+  \item \textbf{Diagramas TikZ redeseñados}: a pila de protocolos, encapsulación,
+        subredes CIDR, ARP, traceroute, SDN plano datos/control, terminal oculto,
+        CSMA/CA con RTS/CTS/NAV, token bucket $+$ WFQ, consternación 16-QAM, etc.
+  \item \textbf{Contido actualizado a 2026}:
+  \begin{itemize}
+    \item Aula 1: IPv6, SDN (OpenFlow), QUIC/HTTP3, exercicios Wireshark renovados.
+    \item Aula 2: Wi-Fi 6/6E/7 (802.11ax/be), 5G NR, nota sobre WPA3.
+    \item Aula 3: RFCs exactos de AODV, OLSR, TBRPF, DSR; comparativa proactivo/reativo.
+    \item Aula 4: CSMA/CD como material histórico; 802.11e/ax e OFDMA como evolución.
+    \item Aula 5: completa reescritura: Wi-Fi 6/6E/7, LoRa vs.\ Sigfox vs.\ NB-IoT,
+          5G eMBB/uRLLC/mMTC, satélite LEO (Starlink), DTN, FANET/VANET, NTN 3GPP.
+    \item Aula 6: RFCs de RSVP/Intserv; 802.11e EDCA; QOLSR e FTS (traballos da autora);
+          conexión co \emph{network slicing} 5G.
+  \end{itemize}
+  \item \textbf{Estrutura pedagóxica mellorada}: cada aula ten \texttt{section} con
+        TOC, bloques (\texttt{block/alertblock/exampleblock}) para destacar ideas
+        clave, e exercicios prácticos.
+  \item \textbf{Corrección de erros do orixinal}: encodificación corrupta en varias
+        diapositivas (Aula 3); figuras sen fonte; referencias RFC desactualizadas.
+  \item \textbf{Comentarios educativos engadidos}: preguntas retóricas
+        (``Por que non CSMA/CD en sen fío?'') e cadros ``Nota actualizada''.
+\end{enumerate}
+
+\section{Material novo incluído}
+
+Na Aula 5 engadiuse material completamente novo (non estaba no PDF orixinal):
+\begin{itemize}
+  \item \emph{LPWAN}: comparativa técnica LoRaWAN vs.\ Sigfox vs.\ NB-IoT/LTE-M.
+  \item \emph{5G New Radio}: eMBB/uRLLC/mMTC, network slicing, beamforming, MEC,
+        mmWave; mención a 5G-Advanced (Rel.\ 18) e 6G.
+  \item \emph{Satélite LEO}: Starlink, enlaces láser ISL, integración NTN (3GPP Rel.\ 17+).
+  \item \emph{Wi-Fi 6E/7}: banda de 6~GHz, MLO, QAM-4096.
+  \item \emph{Tecnoloxías actuais de IoT}: Matter/Thread/UWB/Zigbee 3.0 como
+        evolución de WPAN.
+\end{itemize}
+
+Tamén se engadiron nas Aulas 1--6 \textbf{naipes de actualización} que poñen o
+contido histórico en contexto (CSMA/CD legado, PCF non implementado, Intserv/Diffserv
+como antecedentes do slicing 5G).
+
+\section{Proposta de novas aulas (renovación do curso)}
+
+Recoméndase ampliar o curso coas seguintes \textbf{aulas novas}, que actualizan o
+temario ás tecnoloxías de 2024--2026:
+
+\begin{enumerate}
+  \item \textbf{Aula 7: 5G e redes móbiles de nova xeración}
+  \begin{itemize}
+    \item Arquitectura 5G (SA vs.\ NSA), network slicing, MEC, beamforming masivo,
+          mMIMO, mmWave, RedCap, NR-U.
+    \item Evolución 5G-Advanced (Rel.\ 18) e cara ao 6G.
+    \item Traballo: análise de cobertura/throughput con datos abertos da ANATEL.
+  \end{itemize}
+
+  \item \textbf{Aula 8: IoT sen fío e LPWAN}
+  \begin{itemize}
+    \item LoRaWAN (clases A/B/C, ADR), Sigfox, NB-IoT/LTE-M, Wi-SUN, mioty.
+    \item Protocolos de aplicación: MQTT/CoAP/LwM2M; integración con plataformas
+          (The Things Network, ChirpStack).
+    \item Traballo: montar unha rede LoRaWAN con \emph{dragino}+RPi e unha gateway
+          TTN.
+  \end{itemize}
+
+  \item \textbf{Aula 9: redes vehiculares e mobilidade intelixente}
+  \begin{itemize}
+    \item C-V2X vs.\ 802.11p/ITS-G5; platooning, segurança V2X (Day-1/2 use cases);
+          a evolución cara a 5G-V2X (NR-V2X).
+    \item Traballo: simulación SUMO/ns-3 dun escenario urbano.
+  \end{itemize}
+
+  \item \textbf{Aula 10: drones e redes non terrestres (NTN)}
+  \begin{itemize}
+    \item FANET, enjambres de UAV, roteamento 3D, handover entre satélites LEO.
+    \item Starlink/OneWeb/Kuiper; integración NTN no 3GPP (Rel.\ 17/18).
+  \end{itemize}
+
+  \item \textbf{Aula 11: IA e ML nas redes sen fío}
+  \begin{itemize}
+    \item Aplicacións: predición de mobilidade, \emph{resource allocation} con RL,
+          \emph{spectrum sensing} con ML, \emph{network automation} (genie/IA do 6G).
+    \item Traballo: modelo sinxelo de clasificación de CSI con Python/sklearn.
+  \end{itemize}
+
+  \item \textbf{Aula 12: seguridade en redes sen fío}
+  \begin{itemize}
+    \item WPA2/WPA3, WPA3-Enterprise, EAP-TLS; ataques (KRACK, evil twin, rogue AP);
+          seguridade IoT (LoRaWAN AES-128, certifcados); 5G AKA.
+  \end{itemize}
+\end{enumerate}
+
+\section{Suxestións de mellora a longo prazo}
+
+\begin{itemize}
+  \item \textbf{Reutilización total do preámbulo}: crear un \texttt{curso.tex} mestre
+        que inclúa as 6 (ou 12) aulas como \texttt{input}; así xerase un PDF único.
+  \item \textbf{Exercicios con Simuladores}: ns-3 (802.11ax), OMNeT++/INET,
+        SUMO (vehicular), MATLAB (mmWave). Engadir unha \emph{sesión de laboratorio}
+        ao final de cada bloque.
+  \item \textbf{Prácticas con Wireshark renovadas}: capturas de QUIC, TLS1.3,
+        RTP de WebRTC, MQTT sobre LoRaWAN.
+  \item \textbf{Notas de versión e control de cambios} en cada ficheiro \texttt{.tex}.
+  \item \textbf{Tradución coherente}: o material mixto galego/castelán dos PDF
+        orixinais unificouse ao galego; recomendase manter ese criterio.
+\end{itemize}
+
+\section{Referencias principais verificadas}
+
+\begin{itemize}
+  \item Kurose, Ross, \emph{Computer Networking: A Top-Down Approach}, 8.\textsuperscript{a} ed., 2021.
+  \item RFC 791 (IPv4), RFC 8200 (IPv6), RFC 792 (ICMP).
+  \item RFC 3561 (AODV), RFC 3626 (OLSR), RFC 3684 (TBRPF), RFC 4728 (DSR).
+  \item RFC 2205 (RSVP), RFC 2211 (Controlled-Load), RFC 2212 (Guaranteed QoS).
+  \item IEEE Std 802.11ax-2021; IEEE P802.11be/D4.0 (Wi-Fi 7, 2024).
+  \item LoRa Alliance, \emph{LoRaWAN 1.0.4 Specification}, 2020.
+  \item 3GPP TR 38.811/38.821 (NTN); Release 17/18 (RedCap, NR-V2X).
+\end{itemize}
+
+\end{document}

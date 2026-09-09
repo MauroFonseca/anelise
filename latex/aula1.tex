@@ -1,0 +1,752 @@
+% !TEX program = tectonic
+% =============================================================================
+%  AULA 1 — Redes de Computadores: Internet (revisión de conceptos)
+%  Curso: Redes sin cables  |  Profa. Anelise Munaretto
+%  Convertida de .pdf a Beamer + TikZ; contenido actualizado (IPv6, SDN, ICMP).
+%  Compilar: tectonic aula1.tex
+% =============================================================================
+\documentclass[aspectratio=169,11pt]{beamer}
+\input{preamble.tex}
+
+% ---------- Metadatos ----------
+\title[Redes: Internet]{Redes de Computadores:\\ Internet}
+\subtitle{Revisión de conceptos fundamentales}
+\author[Anelise Munaretto]{Profa. Anelise Munaretto}
+\institute[Curso]{Redes sin cables --- Ciencia de la Computación}
+\date{2026}
+
+\begin{document}
+
+% ---------------------------------------------------------------------------
+\begin{frame}[plain]
+  \titlepage
+  \begin{center}
+    \scriptsize Baseado em \kurose{} (caps.~1--6), atualizado a 2026.
+  \end{center}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{Agenda}
+  \tableofcontents
+\end{frame}
+
+\section{O que é a Internet?}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{O que é a Internet: vista \emph{nuts and bolts}}
+  \textbf{Billions} de dispositivos de computação conectados:
+  \begin{itemize}
+    \item \textbf{\emph{Hosts} = sistemas finais} (\emph{end systems}) que executam aplicações de rede
+    \item \textbf{Enlaces de comunicação}: fibra, cobre, rádio, satélite
+      \begin{itemize}
+        \item taxa de transmissão = \alert{largura de banda} (bps)
+      \end{itemize}
+    \item \textbf{Comutadores de pacotes}: \textbf{roteadores} e \textbf{switches} que reenviam \emph{chunks} de dados (pacotes)
+  \end{itemize}
+  \vspace{0.2cm}
+  \begin{center}
+    \begin{tikzpicture}[
+        font=\scriptsize,
+        host/.style={draw,rounded corners=2mm,fill=aneliseAzul!18,inner sep=1.2mm},
+        nube/.style={draw,cloud,aspect=2.2,fill=aneliseGris!15,inner sep=1mm},
+        link/.style={thick,->},
+      ]
+      \node[host](PC) {PC};
+      \node[host,left=12mm of PC](lap) {laptop};
+      \node[host,below=12mm of PC](cel) {smartphone};
+      \node[host,right=18mm of PC](srv) {servidor Web};
+      \node[nube,above=15mm of PC](wifi) {rede sem fio};
+      \node[nube,above=12mm of wifi](ispg) {ISP global};
+      \node[nube,right=16mm of ispg](ispr) {ISP regional};
+      \node[nube,right=16mm of ispr](ispI) {ISP institucional};
+      \node[nube,below=16mm of ispI](casa) {rede doméstica};
+      \node[host,below=12mm of srv](rt) {roteador};
+      \draw[link](PC) -- (wifi);
+      \draw[link](lap) -- (wifi);
+      \draw[link](cel) -- (wifi);
+      \draw[link](PC) -- (srv);
+      \draw[link](srv) -- (rt);
+      \draw[link](wifi) -- (ispg);
+      \draw[link](ispg) -- (ispr);
+      \draw[link](ispr) -- (ispI);
+      \draw[link](ispI) -- (casa);
+      \node[host,right=14mm of rt](rt2) {roteador};
+      \draw[link](rt) -- (rt2);
+      \draw[link](rt2) -- (casa);
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{O que é a Internet: vista de \emph{servício}}
+  \begin{block}{Infraestructura que fornece serviços às aplicações}
+    Web, VoIP, e-mail, jogos, comércio eletrónico, redes sociais, \emph{streaming}, \ldots
+  \end{block}
+  \begin{itemize}
+    \item Fornece \textbf{interface de programação} às aplicações
+      \begin{itemize}
+        \item \emph{hooks} que permitem que programas de aplicação ``se conectem'' à Internet
+        \item análogo ao \textbf{serviço postal}: oferece opções de serviço
+      \end{itemize}
+  \end{itemize}
+  \begin{exampleblock}{Vista atualizada (2026)}
+    A Internet também é uma \textbf{plataforma de computação}: \emph{computing in the network} (middleboxes, CDNs, \emph{edge computing}, segmentação de rede 5G).
+  \end{exampleblock}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{Protocolos e padrões}
+  \begin{itemize}
+    \item \textbf{Protocolos} controlam o envio e recepção de mensagens:
+      \begin{itemize}
+        \item e.g., TCP, UDP, IP, HTTP/3 (QUIC), TLS, 802.11 (Wi-Fi), 5G NR
+      \end{itemize}
+    \item \textbf{Padrões da Internet}:
+      \begin{itemize}
+        \item \textbf{RFC} --- \emph{Request for Comments} (documentos que definen os protocolos)
+        \item \textbf{IETF} --- \emph{Internet Engineering Task Force} (organização que publica RFCs)
+        \item \textbf{IANA} --- números de protocolo, portas, etc.
+      \end{itemize}
+  \end{itemize}
+  \begin{center}
+    \begin{tikzpicture}[font=\scriptsize,node/.style={draw,rounded corners=1.5mm,fill=aneliseAzul!15,inner sep=1.2mm}]
+      \node(A) {Aplicación};
+      \node[below=6mm of A](T) {Transporte TCP/UDP};
+      \node[below=6mm of T](R) {Roteador IP};
+      \node[below=6mm of R](L) {Enlace Ethernet/Wi-Fi};
+      \draw[thick,->,aneliseVerde] (A) -- (T);
+      \draw[thick,->,aneliseVerde] (T) -- (R);
+      \draw[thick,->,aneliseVerde] (R) -- (L);
+      \node[right=2.2cm of T,text width=3cm,align=left](nota) {análogo: una ``conversa'' entre dois processos remotos};
+      \draw[dashed,->] (nota) -- (T);
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\section{Capa de protocolos}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{Por que \emph{layering} (capas)?}
+  As redes são complexas e têm muitas ``peças'' (hosts, roteadores, enlaces, aplicações, protocolos\ldots).
+  \begin{block}{Vantagens}
+    \begin{itemize}
+      \item \textbf{Estrutura explícita} identifica e relaciona as partes de um sistema complexo
+      \item \textbf{Modularização} facilita manutenção e atualização
+        \begin{itemize}
+          \item mudar a implementação de uma capa é \emph{transparente} para o resto do sistema
+        \end{itemize}
+    \end{itemize}
+  \end{block}
+  \begin{alertblock}{Discussão}
+    \emph{``Layering considered harmful?''} A estratificação rígida pode limitar o desempeño (e.g., QUIC funde funções de transporte $+$ segurança); por isso a pesquisa moderna explora o \emph{cross-layer design}.
+  \end{alertblock}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{Estratificação: analogia da linha aérea}
+  \begin{center}
+    \begin{tikzpicture}[font=\scriptsize,
+        caja/.style={draw,minimum width=18mm,minimum height=8mm,fill=aneliseAzul!12,inner sep=1mm},
+        flecha/.style={->,thick,aneliseLaranja},
+      ]
+      \node[caja](t) {billete (compra)};
+      \node[caja,right=20mm of t] (t2) {billete (reclamo)};
+      \node[caja,above=9mm of t] (b) {bagagem (check-in)};
+      \node[caja,right=20mm of b] (b2) {bagagem (retiro)};
+      \node[caja,above=9mm of b] (g) {portões (embarque)};
+      \node[caja,above=9mm of g] (p) {pista (despegue/aterrizaje)};
+      \node[caja,above=9mm of p] (r) {roteo de aeronaves};
+      \draw[flecha] (t) -- (t2);
+      \draw[flecha] (b) -- (b2);
+      % etiquetas à direita
+      \node[right=2mm of t2,align=left](e1){capa ``billete''};
+      \node[right=2mm of b2,align=left](e2){capa ``bagagem''};
+      \node[right=2mm of g,align=left](e3){capa ``portões''};
+      \node[right=2mm of p,align=left](e4){capa ``pista''};
+      \node[right=2mm of r,align=left](e5){capa ``roteo''};
+      \draw[dashed] (t2.east) -- (e1.west);
+      \draw[dashed] (b2.east) -- (e2.west);
+      \draw[dashed] (g.east) -- (e3.west);
+      \draw[dashed] (p.east) -- (e4.west);
+      \draw[dashed] (r.east) -- (e5.west);
+    \end{tikzpicture}
+  \end{center}
+  Cada capa implementa um \textbf{servício} mediante suas próprias ações internas, apoiándose no serviço da capa imediatamente inferior.
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{Pila de protocolos da Internet}
+  \begin{center}
+    \begin{tikzpicture}[font=\scriptsize,
+        capa/.style={draw,rounded corners=2mm,fill=aneliseAzul!15,text width=4.2cm,align=center,inner sep=1mm},
+      ]
+      \node[capa](aplic) {Aplicação\\(FTP, SMTP, HTTP, DNS, QUIC)};
+      \node[capa,below=7mm of aplic] (transp) {Transporte\\transferência processo-a-processo\\(TCP, UDP)};
+      \node[capa,below=7mm of transp] (rede) {Rede\\roteo de datagramas origem$\rightarrow$destino\\(IP, protocolos de roteo)};
+      \node[capa,below=7mm of rede] (enl) {Enlace\\transferência entre elementos vizinhos\\(Ethernet, 802.11 (Wi-Fi), PPP)};
+      \node[capa,below=7mm of enl] (fis) {Física\\bits ``no fio''};
+      \draw[thick,dashed,aneliseGris] (aplic.south) -- (transp.north);
+      \draw[thick,dashed,aneliseGris] (transp.south) -- (rede.north);
+      \draw[thick,dashed,aneliseGris] (rede.south) -- (enl.north);
+      \draw[thick,dashed,aneliseGris] (enl.south) -- (fis.north);
+      \node[right=1.4cm of transp,text width=3cm,align=left,draw,rounded corners=1.5mm,fill=aneliseVerde](nota){Modelo de referência TCP/IP (5 capas)};
+      \draw[->,thick,aneliseVerde] (nota) -- (rede.east);
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{Modelo de referência ISO/OSI}
+  \begin{center}
+    \begin{tikzpicture}[font=\scriptsize,
+        capa/.style={draw,rounded corners=2mm,fill=aneliseAzul!15,text width=3.6cm,align=center,inner sep=1mm},
+      ]
+      \node[capa](ap){7. Aplicación};
+      \node[capa,below=5mm of ap](pr){6. Presentación\\(significado dos dados: cifrado, compresión, convenções)};
+      \node[capa,below=5mm of pr](se){5. Sesión\\(sincronização, \emph{checkpointing}, recuperação)};
+      \node[capa,below=5mm of se](tr){4. Transporte};
+      \node[capa,below=5mm of tr](re){3. Rede};
+      \node[capa,below=5mm of re](en){2. Enlace};
+      \node[capa,below=5mm of en](fi){1. Física};
+      \node[right=1.6cm of pr,text width=3.6cm,align=left,draw,rounded corners=1.5mm,fill=aneliseLaranja!14](obs){A pila da Internet ``perde'' estas capas!\\Servicios como cifrado/compresión são implementados na \textbf{aplicación}.};
+      \draw[->,thick,aneliseLaranja] (obs) -- (pr.east);
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{Encapsulación}
+  \begin{center}
+    \begin{tikzpicture}[font=\scriptsize,
+        m/.style={draw,minimum width=16mm,minimum height=5mm,fill=aneliseGris!24,inner sep=0.5mm},
+        h/.style={draw,minimum width=7mm,minimum height=5mm,fill=aneliseLaranja!35,inner sep=0.5mm},
+      ]
+      % linha 1: mensagem
+      \node[m](M){M};
+      % linha 2: segmento
+      \node[h,right=2mm of M](Ht){H$_t$};
+      \node[m,right=1mm of Ht](M2){M};
+      % linha 3: datagrama
+      \node[h,above=8mm of M](Hn){H$_n$};
+      \node[h,right=1mm of Hn](Ht2){H$_t$};
+      \node[m,right=1mm of Ht2](M3){M};
+      % linha 4: frame
+      \node[h,above=8mm of Hn](Hl){H$_l$};
+      \node[h,right=1mm of Hl](Hn2){H$_n$};
+      \node[h,right=1mm of Hn2](Ht3){H$_t$};
+      \node[m,right=1mm of Ht3](M4){M};
+      \node[h,right=1mm of M4](Tr){H$_l'$ (trailer)};
+      % etiquetas
+      \node[left=4mm of Hn,anchor=east](l3){datagrama};
+      \node[left=4mm of Ht,anchor=east](l2){segmento};
+      \node[left=4mm of M,anchor=east](l1){mensaje};
+      \node[left=4mm of Hl,anchor=east](l4){frame};
+      \draw[dashed,thick,aneliseGris] (l3.east) -- (Hn.west);
+      \draw[dashed,thick,aneliseGris] (l2.east) -- (Ht.west);
+      \draw[dashed,thick,aneliseGris] (l1.east) -- (M.west);
+      \draw[dashed,thick,aneliseGris] (l4.east) -- (Hl.west);
+      % setas verticais
+      \draw[->,thick,aneliseVerde] (M.north) -- (Hn.south|-Hn.west);
+      \draw[->,thick,aneliseVerde] (Ht.north) -- (Ht2.south);
+      \draw[->,thick,aneliseVerde] (Hn.north) -- (Hl.south|-Hl.west);
+    \end{tikzpicture}
+    \hspace{1.2cm}
+    \begin{tikzpicture}[font=\scriptsize]
+      \node[draw,rounded corners=2mm,fill=aneliseGris!15,text width=3.8cm,align=center](f1){frame:\\ \alert{H$_l$} H$_n$ H$_t$ M};
+      \node[draw,rounded corners=2mm,fill=aneliseGris!15,below=7mm of f1,text width=3.8cm,align=center](d1){datagrama:\\ \alert{H$_n$} H$_t$ M};
+      \node[draw,rounded corners=2mm,fill=aneliseGris!15,below=7mm of d1,text width=3.8cm,align=center](s1){segmento:\\ \alert{H$_t$} M};
+      \node[draw,rounded corners=2mm,fill=aneliseGris!15,below=7mm of s1,text width=3.8cm,align=center](m1){mensaje: M};
+      \draw[->,thick,aneliseVerde] (s1.east) to[bend left=15] (d1.east);
+      \draw[->,thick,aneliseVerde] (d1.east) to[bend left=15] (f1.east);
+    \end{tikzpicture}
+  \end{center}
+  \textbf{Encapsulación:} cada capa agrega o seu cabeçalho ($H$); o destinatário realiza a \textbf{desencapsulación} inversa.
+\end{frame}
+
+\section{Capa de rede}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{Capa de rede: funções}
+  \begin{columns}
+    \begin{column}{0.52\textwidth}
+      \textbf{Transporta segmentos da origem ao destino:}
+      \begin{itemize}
+        \item no envio, \textbf{encapsula} segmentos em datagramas
+        \item na recepción, entrega segmentos à capa de transporte
+        \item protocolos de capa de rede em \textbf{todo host e roteador}
+        \item o roteador examina campos do cabeçalho de cada datagrama IP
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[font=\scriptsize,
+        pila/.style={draw,rounded corners=1mm,fill=aneliseGris!12,inner sep=0.8mm,text width=10mm,align=center},
+      ]
+        \node[pila](sap){aplic.};
+        \node[pila,below=3.5mm of sap](str){transp.};
+        \node[pila,below=3.5mm of str](sre){rede};
+        \node[pila,below=3.5mm of sre](sen){enlace};
+        \node[pila,below=3.5mm of sen](sfi){física};
+        \node[pila,right=1.6cm of sre](re1){rede};
+        \node[pila,below=3.5mm of re1](en1){enlace};
+        \node[pila,below=3.5mm of en1](fi1){física};
+        \node[pila,right=1.6cm of re1](re2){rede};
+        \node[pila,below=3.5mm of re2](en2){enlace};
+        \node[pila,below=3.5mm of en2](fi2){física};
+        \node[pila,right=1.6cm of re2](dre){rede};
+        \node[pila,below=3.5mm of dre](den){enlace};
+        \node[pila,below=3.5mm of den](dfi){física};
+        \node[draw,rounded corners=1mm,fill=aneliseLaranja!22,inner sep=0.8mm,text width=10mm,align=center,above=3.5mm of dre](dtr){transp.};
+        \node[draw,rounded corners=1mm,fill=aneliseLaranja!22,inner sep=0.8mm,text width=10mm,align=center,above=3.5mm of dtr](dap){aplic.};
+        \draw[thick,aneliseGris] (sre.east) -- (re1.west);
+        \draw[thick,aneliseGris] (re1.east) -- (re2.west);
+        \draw[thick,aneliseGris] (re2.east) -- (dre.west);
+        \draw[thick,aneliseGris] (sen.east) -- (en1.west);
+        \draw[thick,aneliseGris] (en1.east) -- (en2.west);
+        \draw[thick,aneliseGris] (en2.east) -- (den.west);
+        \draw[thick,aneliseGris] (sfi.east) -- (fi1.west);
+        \draw[thick,aneliseGris] (fi1.east) -- (fi2.west);
+        \draw[thick,aneliseGris] (fi2.east) -- (dfi.west);
+      \end{tikzpicture}
+      \end{center}
+      \scriptsize O roteador examina cabeçalhos IP; não usa capas superiores.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{Plano de dados vs.\ plano de control (SDN)}
+  \begin{block}{Duas funções da capa de rede}
+    \begin{itemize}
+      \item \textbf{Encaminhamento (\emph{forwarding})}: mover pacotes da entrada à saída apropriada do roteador \quad (função local --- \alert{plano de dados})
+      \item \textbf{Roteo (\emph{routing})}: determinar a rota origem$\rightarrow$destino \quad (função global --- \alert{plano de control})
+    \end{itemize}
+  \end{block}
+  \begin{columns}
+    \begin{column}{0.44\textwidth}
+      \textbf{Abordagem tradicional:}
+      \begin{itemize}
+        \item plano de control implementado \emph{no próprio roteador} (protocolos distribuidos: RIP, OSPF, BGP)
+      \end{itemize}
+      \textbf{Abordagem SDN} (\emph{Software-Defined Networking}):
+      \begin{itemize}
+        \item plano de control \emph{centralizado logicamente} em servidores remotos (controlador SDN)
+        \item o roteador ``burro'' só encamina segundo a tabela de fluxos (OpenFlow)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[font=\scriptsize]
+        \node[draw,fill=aneliseAzul!15,rounded corners=2mm,text width=3cm,align=center](sw){Roteador\\(plano de dados)};
+        \node[draw,fill=aneliseLaranja!18,rounded corners=2mm,text width=3cm,align=center,above=1.6cm of sw](ctl){Controlador SDN\\(plano de control)};
+        \node[draw,fill=aneliseVerde!15,rounded corners=2mm,text width=3cm,align=center,right=2.4cm of ctl](app){Aplicação de rede\\(API northbound)};
+        \draw[<->,thick,aneliseLaranja] (sw.north) -- node[sloped,above,midway,font=\tiny]{southbound OpenFlow} (ctl.south);
+        \draw[<->,thick,aneliseVerde] (ctl.east) -- node[sloped,above,midway,font=\tiny]{northbound API} (app.west);
+        \node[below=2mm of sw,font=\scriptsize,text width=3cm,align=center](lbl){valores do cabeçalho do pacote $\rightarrow$ tabela de fluxos};
+      \end{tikzpicture}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Direccionamento IP}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{Direccionamiento IP: introducción}
+  \begin{itemize}
+    \item Dirección IP: \textbf{identificador de 32 bits} para a interface de host/roteador
+    \item \textbf{Interface}: conexión entre host/roteador e enlace físico
+      \begin{itemize}
+        \item roteadores normalmente têm \textbf{múltiplas interfaces}
+        \item hosts: uma ou duas (Ethernet, Wi-Fi 802.11)
+      \end{itemize}
+    \item \alert{IPv6:} endereços de \textbf{128 bits} (notação hexadecimal)
+  \end{itemize}
+  \begin{center}
+    \begin{tikzpicture}[font=\scriptsize,
+        host/.style={draw,rounded corners=1.5mm,fill=aneliseAzul!15,inner sep=1mm},
+        rt/.style={draw,rounded corners=1mm,fill=aneliseLaranja!25,inner sep=0.8mm},
+      ]
+      \node[host](a){223.1.1.1};
+      \node[host,below=6mm of a](b){223.1.1.2};
+      \node[host,below=6mm of b](c){223.1.1.3};
+      \node[host,below=6mm of c](d){223.1.1.4};
+      \node[rt,right=2.2cm of b](r1){R1};
+      \node[host,right=2.2cm of r1](e){223.1.2.1};
+      \node[host,below=6mm of e](f){223.1.2.2};
+      \node[rt,right=2.2cm of f](r2){R2};
+      \node[host,right=2.2cm of r2](g){223.1.3.1};
+      \node[host,below=6mm of g](h){223.1.3.2};
+      \node[host,below=12mm of h](i){223.1.3.27};
+      \draw[thick] (a) -- (b);
+      \draw[thick] (b) -- (c);
+      \draw[thick] (c) -- (d);
+      \draw[thick] (b) -- (r1);
+      \draw[thick] (r1) -- (e);
+      \draw[thick] (e) -- (f);
+      \draw[thick] (f) -- (r2);
+      \draw[thick] (r2) -- (g);
+      \draw[thick] (g) -- (h);
+      \draw[thick] (h) -- (i);
+      \node[draw,fill=aneliseVerde!14,rounded corners=2mm,below=8mm of c,text width=6cm,align=center](nota){223.1.1.1 $=$ 11011111 00000001 00000001 00000001};
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{Subredes (subnets)}
+  \begin{itemize}
+    \item Dirección IP $=$ \textbf{parte de subred} (bits altos) + \textbf{parte de host} (bits baixos)
+    \item \textbf{Subred}: interfaces de dispositivo com a mesma parte de subred
+      \begin{itemize}
+        \item podem alcançarse fisicamente \emph{sem roteador intermediario}
+      \end{itemize}
+    \item Notación CIDR: \texttt{223.1.1.0/24} --- a máscara indica quantos bits são de subred
+  \end{itemize}
+  \begin{center}
+    \begin{tikzpicture}[font=\scriptsize,
+        el/.style={draw,rounded corners=1.2mm,fill=aneliseGris!18,inner sep=0.8mm},
+      ]
+      \node[el](a){223.1.1.1};
+      \node[el,right=8mm of a](b){223.1.1.2};
+      \node[el,right=8mm of b](c){223.1.1.3};
+      \node[el,right=8mm of c](d){223.1.1.4};
+      \node[draw,rounded corners=2mm,fit={(a.west)(d.east)},above=6mm of a,fill=aneliseAzul!10,inner sep=2mm](s1){subred 223.1.1.0/24};
+      \draw[dashed] (a.north) -- (s1.south);
+      \draw[dashed] (d.north) -- (s1.south);
+      %
+      \node[el,below=13mm of a](e){223.1.2.1};
+      \node[el,right=8mm of e](f){223.1.2.2};
+      \node[draw,rounded corners=2mm,fit={(e.west)(f.east)},above=5mm of e,fill=aneliseAzul!10,inner sep=2mm](s2){subred 223.1.2.0/24};
+      \draw[dashed] (e.north) -- (s2.south);
+      \draw[dashed] (f.north) -- (s2.south);
+      %
+      \node[el,below=13mm of e](g){223.1.3.1};
+      \node[el,right=8mm of g](h){223.1.3.2};
+      \node[el,right=8mm of h](i){223.1.3.27};
+      \node[draw,rounded corners=2mm,fit={(g.west)(i.east)},above=5mm of g,fill=aneliseAzul!10,inner sep=2mm](s3){subred 223.1.3.0/24};
+      \draw[dashed] (g.north) -- (s3.south);
+      \draw[dashed] (i.north) -- (s3.south);
+      \node[draw,ellipse,fill=aneliseLaranja!22,right=2mm of f](rt){R};
+      \draw[thick] (d.east) -- (rt);
+      \draw[thick] (f.east) -- (rt);
+      \draw[thick] (h.east) -- (rt);
+    \end{tikzpicture}
+  \end{center}
+  \begin{center}
+    \scriptsize Rede formada por \textbf{3 subredes} conectadas por um roteador.
+  \end{center}
+\end{frame}
+
+\section{Roteo}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{Protocolos de roteo: objetivo}
+  \begin{block}{Objetivo}
+    Determinar caminhos ``bons'' (\emph{routes}) da origem ao destino através da rede de roteadores.
+  \end{block}
+  \begin{itemize}
+    \item \textbf{Caminho}: seqüência de roteadores que os pacotes atravessarán
+    \item ``Bom'': menor ``custo'', ``mais rápido'', ``menos congestionado''
+    \item \alert{``Roteo é um dos top-10 desafíos de rede!''}
+  \end{itemize}
+  \begin{exampleblock}{Escalabilidade --- o problema}
+    \begin{itemize}
+      \item com \emph{milliões} de destinos não se podem guardar todas as rotas nas tabelas
+      \item o intercambio de tabelas de roteo saturaría os enlaces
+      \item \textbf{autonomia administrativa}: cada rede quer controlar o próprio roteo
+    \end{itemize}
+  \end{exampleblock}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{Solução da Internet: sistemas autónomos (AS)}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Roteo \emph{intra-AS}} (interior do AS):
+      \begin{itemize}
+        \item todos os roteadores do AS usan \textbf{o mesmo protocolo}
+        \item diferentes AS podem usar protocolos distintos
+        \item roteador de \textbf{porta de enlace} (\emph{gateway}): na borda do AS
+      \end{itemize}
+      \textbf{Roteo \emph{inter-AS}}:
+      \begin{itemize}
+        \item roteo entre AS (BGP!)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[font=\scriptsize,
+          as/.style={draw,rounded corners=3mm,fill=aneliseAzul!10,text width=3.2cm,align=center},
+          rt/.style={draw,circle,minimum size=4mm,fill=aneliseLaranja!25,inner sep=0.3mm},
+          gw/.style={draw,circle,minimum size=4mm,fill=aneliseVerde!45,thick,inner sep=0.3mm},
+        ]
+        \node[as](A){AS 1};
+        \node[rt,above=6mm of A.west](a1) {};
+        \node[rt,above=6mm of A.east](a2) {};
+        \node[gw,below=6mm of A.west](agw1) {};
+        \node[rt,below=6mm of A.east](a4) {};
+        \node[as,right=3.2cm of A](B){AS 2};
+        \node[gw,above=6mm of B.west](bgw1) {};
+        \node[rt,above=6mm of B.east](b2) {};
+        \node[gw,below=6mm of B.east](bgw2) {};
+        \node[rt,below=6mm of B.west](b3) {};
+        \draw[thick,aneliseLaranja] (agw1) -- node[midway,above=1mm,font=\tiny]{BGP} (bgw1);
+        \draw[thick,aneliseLaranja] (a4) -- node[midway,below=1mm,font=\tiny]{BGP} (bgw2);
+        \draw[thick,aneliseGris] (a1) -- (a2);
+        \draw[thick,aneliseGris] (a2) -- (agw1);
+        \draw[thick,aneliseGris] (agw1) -- (a4);
+        \draw[thick,aneliseGris] (a4) -- (a1);
+        \draw[thick,aneliseGris] (b2) -- (bgw1);
+        \draw[thick,aneliseGris] (bgw1) -- (b3);
+        \draw[thick,aneliseGris] (b3) -- (bgw2);
+        \draw[thick,aneliseGris] (bgw2) -- (b2);
+        \node[below=6mm of A.south,font=\tiny]{intra-AS: OSPF/RIP};
+        \node[below=6mm of B.south,font=\tiny]{intra-AS: OSPF/RIP};
+      \end{tikzpicture}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Capa de enlace}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{Capa de enlace: introdução}
+  \begin{itemize}
+    \item \textbf{Nós}: hosts e roteadores
+    \item \textbf{Enlaces}: canales de comunicação entre nós \emph{adjacentes}
+      \begin{itemize}
+        \item cabeados, sem fio, LANs
+      \end{itemize}
+    \item Unidade da capa 2: \textbf{frame} (quadro), que encapsula um datagrama
+    \item Responsabilidade: transferir o datagrama de um nó ao nó \emph{fisicamente adjacente}
+  \end{itemize}
+  \begin{block}{Analogia do transporte}
+    Viagem Princeton $\rightarrow$ Lausana: limusina (Princeton$\rightarrow$JFK), avión (JFK$\rightarrow$Genève), trem (Genève$\rightarrow$Lausanne).
+    \begin{itemize}
+      \item turista $=$ datagrama \quad transporte $=$ enlace \quad modo $=$ protocolo de enlace \quad agente de viagens $=$ algoritmo de roteo
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{Servícios da capa de enlace}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Enquadramento e acesso ao meio:}
+      \begin{itemize}
+        \item encapsular datagrama em frame (header+trailer)
+        \item acesso ao canal si o meio é compartilhado
+        \item endereços \textbf{MAC} no header para identificar origem/destino (diferente do IP!)
+      \end{itemize}
+      \textbf{Entrega confiable entre nós adjacentes:}
+      \begin{itemize}
+        \item rara em fibra/par trançado (baixa BER)
+        \item essencial em enlaces sem fio (altas taxas de erro)
+        \item \alert{Q: por que confiabilidade a nível de enlace \emph{e} fim-a-fim?}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Controle de fluxo:}
+      \begin{itemize}
+        \item sincronização entre nó emisor e receptor adjacentes
+      \end{itemize}
+      \textbf{Detecção e correção de erros:}
+      \begin{itemize}
+        \item \emph{error detection}: receptor detecta erros $\rightarrow$ retransmissão ou descarte
+        \item \emph{error correction}: receptor corrige bit(s) sem retransmissão (FEC)
+      \end{itemize}
+      \textbf{Half/full-duplex:}
+      \begin{itemize}
+        \item half-duplex: ambos transmiten, mas não simultáneamente
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{Endereços MAC e ARP}
+  \begin{itemize}
+    \item \textbf{IP (32 bits / 128 bits)}: endereço de capa de rede da interface --- usado para reenvío (capa 3)
+    \item \textbf{MAC (48 bits)}: \emph{enderezo físico/LAN}, gravado na ROM da NIC --- usado \emph{localmente} para levar o frame de interface a interface fisicamente conectada
+      \begin{itemize}
+        \item notación hexadecimal: \texttt{1A-2F-BB-76-09-AD} (cada dígito $=$ 4 bits)
+      \end{itemize}
+  \end{itemize}
+  \begin{block}{ARP --- Address Resolution Protocol}
+    Dada una IP, \textbf{cómo determinar o MAC correspondente?}
+    \begin{center}
+    \begin{tikzpicture}[font=\scriptsize,
+        nodo/.style={draw,rounded corners=1.2mm,fill=aneliseGris!18,inner sep=0.9mm,text width=2.4cm,align=center},
+        lan/.style={draw,rectangle,fill=aneliseLaranja!12,rounded corners=2mm,text width=7.6cm,align=center},
+      ]
+      \node[lan](lan1){LAN (Ethernet/Wi-Fi)};
+      \node[nodo,above=3mm of lan1.north west,anchor=south](n1){\texttt{137.196.7.78}\\ \texttt{1A-2F-BB-76-09-AD}};
+      \node[nodo,above=3mm of lan1.north east,anchor=south](n2){\texttt{137.196.7.14}\\ \texttt{58-23-D7-FA-20-B0}};
+      \node[nodo,left=8mm of lan1.west,anchor=east](n3){\texttt{137.196.7.23}\\ \texttt{71-65-F7-2B-08-53}};
+      \node[nodo,right=8mm of lan1.east,anchor=west](n4){\texttt{137.196.7.88}\\ \texttt{0C-C4-11-6F-E3-98}};
+      \draw[thick] (n1) -- (lan1.north west);
+      \draw[thick] (n2) -- (lan1.north east);
+      \draw[thick] (n3) -- (lan1.west);
+      \draw[thick] (n4) -- (lan1.east);
+      \node[draw,fill=aneliseAzul!12,rounded corners=2mm,below=4mm of lan1,text width=8cm,align=center](tab){\textbf{Tabla ARP} em cada nó: $\langle$ IP; MAC; TTL $\rangle$\\TTL = tempo de vida (típico 20 min)};
+    \end{tikzpicture}
+    \end{center}
+  \end{block}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{Ethernet CSMA/CD (legado) --- algoritmo}
+  \begin{enumerate}
+    \item A NIC recebe o datagrama da capa de rede e cria o frame
+    \item Se a NIC \textbf{sente o canal ocioso} (\emph{carrier sense}), inicia a transmissão; se ocupado, espera
+    \item Se transmite o frame \textbf{completo} sem detectar outra transmissão $\rightarrow$ \alert{feito!}
+    \item Se detecta outra transmissão \textbf{durante a transmissão} $\rightarrow$ aborta e envia \emph{jam signal} (48 bits)
+    \item \textbf{Backoff exponencial}: após a $m$-ésima colisión, escolje $K\in\{0,1,\ldots,2^m-1\}$, espera $K\cdot 512$ bit-times e vuelve al passo 2
+  \end{enumerate}
+  \begin{alertblock}{Estado atual (2026)}
+    Ethernet moderno é \textbf{full-duplex ponto-a-punto} (switches): CSMA/CD ficou como material histórico; o legado vive nas LANs sem fio em forma de \alert{CSMA/CA} (Aula~4).
+  \end{alertblock}
+\end{frame}
+
+\section{ICMP e Traceroute}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{ICMP --- Internet Control Message Protocol}
+  \begin{itemize}
+    \item Usado por hosts e roteadores para comunicar informação de nível de rede
+      \begin{itemize}
+        \item \emph{error reporting}: host/red/porta/protocolo inalcanzables
+        \item echo request/reply (base do \texttt{ping})
+      \end{itemize}
+    \item Mensajes ICMP viajan \textbf{dentro de datagramas IP}
+    \item Mensaje: \texttt{type} + \texttt{code} + primeros 8 bytes do datagrama que causó o error
+  \end{itemize}
+  \vspace{0.1cm}
+  \begin{center}
+    \scriptsize
+    \begin{tabular}{@{}lll@{}}
+      \textbf{Tipo} & \textbf{Código} & Descripción\\
+      0 & 0 & echo reply (ping)\\
+      3 & 0/1/2/3 & destino red/host/protocolo/porta inalcanzable\\
+      3 & 6/7 & red/host desconocido\\
+      4 & 0 & source quench (congestión; \alert{obsoleto})\\
+      8 & 0 & echo request (ping)\\
+      9/10 & 0 & route advertisement / router discovery\\
+      11 & 0 & TTL expirado (\alert{traceroute!})\\
+      12 & 0 & cabeçalho IP malformado\\
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{Traceroute e ICMP: como funciona}
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \begin{itemize}
+        \item Origem envia \textbf{seqüências de segmentos UDP} hacia o destino:
+          \begin{itemize}
+            \item 1ª seq.\ com \texttt{TTL=1}, 2ª com \texttt{TTL=2}, \ldots
+            \item porta pouco provável
+          \end{itemize}
+        \item Quando o datagrama da $n$-ésima seq.\ chega ao $n$-ésimo roteador:
+          \begin{itemize}
+            \item o roteador descarta o datagrama e devólve \textbf{ICMP tipo 11 código 0}
+            \item incluye nome e IP do roteador
+          \end{itemize}
+        \item Origem registra os \textbf{RTTs} (3 probes por salto)
+      \end{itemize}
+      \textbf{Criterio de parada:}
+      \begin{itemize}
+        \item o segmento UDP chega ao destino; o destino devólve \textbf{ICMP tipo 3 código 3} (porta inalcanzable)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[font=\scriptsize,
+          rt/.style={draw,rounded corners=1mm,fill=aneliseAzul!13,inner sep=1mm,text width=1.3cm,align=center},
+          host/.style={draw,rounded corners=1.5mm,fill=aneliseLaranja!20,inner sep=1mm,text width=1.8cm,align=center},
+        ]
+        \node[host](S){origem\\(traceroute)};
+        \node[rt,right=1.7cm of S](R1){R1\\TTL=1};
+        \node[rt,right=1.7cm of R1](R2){R2\\TTL=2};
+        \node[rt,right=1.7cm of R2](R3){R3\\TTL=3};
+        \node[host,right=1.7cm of R3](D){destino};
+        \draw[->,thick,aneliseVerde] (S) -- node[midway,above=1mm,font=\tiny]{UDP TTL=1} (R1);
+        \draw[->,thick,aneliseVerde] (R1) -- node[midway,above=1mm,font=\tiny]{UDP TTL=2} (R2);
+        \draw[->,thick,aneliseVerde] (R2) -- node[midway,above=1mm,font=\tiny]{UDP TTL=3} (R3);
+        \draw[->,thick,aneliseVerde] (R3) -- node[midway,above=1mm,font=\tiny]{UDP} (D);
+        \draw[->,thick,aneliseLaranja] (R1) to[bend right=18] node[midway,below=1mm,font=\tiny]{ICMP 11/0} (S);
+        \draw[->,thick,aneliseLaranja] (R2) to[bend right=28] node[midway,below=1mm,font=\tiny]{ICMP 11/0} (S);
+        \draw[->,thick,aneliseLaranja] (R3) to[bend right=38] node[midway,below=1mm,font=\tiny]{ICMP 11/0} (S);
+        \draw[->,thick,aneliseVerde!60] (D) to[bend left=32] node[midway,below=1mm,font=\tiny]{ICMP 3/3} (S);
+      \end{tikzpicture}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Análise de protocolos}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{Análisis de paquetes com Wireshark}
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \textbf{Wireshark} (libpcap): analizador de protocolos
+      \begin{itemize}
+        \item captura una \textbf{copia de todos os frames} enviados/recebidos pela placa
+        \item permite inspeccionar em \textbf{todas as capas}: Ethernet $\rightarrow$ IP $\rightarrow$ TCP/UDP $\rightarrow$ aplicación
+        \item software livre e padrão de facto (também \texttt{tcpdump}, \texttt{tshark})
+      \end{itemize}
+      \textbf{Exercício prático:}
+      \begin{enumerate}
+        \item Em um terminal: \texttt{traceroute www.mit.edu}
+        \item Analice a repuesta
+        \item Instale Wireshark (\url{https://www.wireshark.org})
+        \item Repita o traceroute e analice os paquetes ICMP en todas as capas
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[font=\scriptsize,
+           c/.style={draw,rounded corners=2mm,fill=aneliseAzul!13,inner sep=1.2mm,text width=3.2cm,align=center},
+         ]
+        \node[c](app){aplicación\\(browser, e-mail)};
+        \node[c,below=6mm of app](ana){analizador\\ Wireshark (pcap)};
+        \node[c,below=6mm of ana](os){SO\\ transporte TCP/UDP};
+        \node[c,below=6mm of os](os2){rede IP\\ enlace Ethernet\\ física};
+        \draw[->,thick,dashed,aneliseLaranja] (ana.west) to[bend left=15] node[midway,left=2mm,font=\tiny]{copia de} (os.west);
+        \draw[->,thick,aneliseGris] (app) -- (os);
+        \draw[->,thick,aneliseGris] (os) -- (os2);
+        \node[right=0mm of ana.south east,font=\tiny,text width=3cm,anchor=north west](nota){captura requiere privilegios de root};
+      \end{tikzpicture}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Referências}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{Referências e bibliografia}
+  \begin{itemize}
+    \item \textbf{\kurose} --- capítulos 1--6 (8ª ed., 2021; a de 2025 incorpora QUIC, SDN e IA nas redes)
+    \item Consulta de artigos:
+      \begin{itemize}
+        \item \url{https://ieeexplore.ieee.org}
+        \item \url{https://dl.acm.org}
+        \item \url{https://arxiv.org}
+      \end{itemize}
+    \item Bibliografia adicional:
+      \begin{itemize}
+        \item Jacobson, \emph{Congestion Avoidance and Control} (1988) --- clásico; atual: \emph{Bufferbloat} (Gettys, 2011) e QUIC (RFC~9000)
+        \item RFC~791 (IPv4), RFC~8200 (IPv6), RFC~792 (ICMP)
+      \end{itemize}
+  \end{itemize}
+  \begin{exampleblock}{Renovação do exercício}
+    Além do traceroute: levante um servidor HTTP local (\texttt{python3 -m http.server}) e analice con Wireshark o handshake TCP y HTTP/1.1$\rightarrow$HTTP/2 (ALPN).
+  \end{exampleblock}
+\end{frame}
+
+\end{document}

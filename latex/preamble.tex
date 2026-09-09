@@ -1,0 +1,50 @@
+% =============================================================================
+%  PREÁMBULO COMÚN para as aulas de Redes sem Fio (Beamer + TikZ)
+%  Incluido com \input{preamble.tex} en cada aula.
+%  Paleta de cores e estilos são definidos aqui uma única vez.
+% =============================================================================
+
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,calc,backgrounds,decorations.pathmorphing,fit,shadows,shapes.symbols,shapes.geometric}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
+\usepackage{tabularx,booktabs,multirow,array}
+\usepackage[normalem]{ulem}
+\usepackage{hyperref}
+
+% ---------- Paleta de cores própria ----------
+\definecolor{aneliseAzul}{RGB}{20,60,110}
+\definecolor{aneliseVerde}{RGB}{30,140,70}
+\definecolor{aneliseLaranja}{RGB}{215,120,20}
+\definecolor{aneliseGris}{RGB}{90,90,90}
+
+% ---------- Tema ----------
+\usetheme{Madrid}
+\usecolortheme{whale}
+\setbeamercolor{structure}{fg=aneliseAzul}
+\setbeamercolor{title}{fg=aneliseAzul}
+\setbeamercolor{frametitle}{fg=aneliseAzul}
+\setbeamercolor{block title}{fg=aneliseAzul,bg=aneliseGris!12!white}
+\setbeamercolor{block body}{bg=aneliseGris!7!white}
+\hypersetup{colorlinks=true,linkcolor=aneliseAzul,urlcolor=aneliseVerde}
+
+% ---------- Comandos auxiliares ----------
+\newcommand{\kurose}{Kurose \& Ross, \emph{Computer Networking: a Top-Down Approach}}
+\newcommand{\forouzan}{Forouzan, \emph{Data Communications and Networking}}
+\newcommand{\stallings}{Stallings, \emph{Wireless Communications \& Networks}}
+\newcommand{\tanenbaum}{Tanenbaum, \emph{Computer Networks}}
+\newcommand{\rfc}[1]{\href{https://www.rfc-editor.org/rfc/rfc#1.txt}{RFC~#1}}
+% -----------------------------------------------------------------------------
+%  Estilos TikZ comuns para desenhar redes (posicionamento relativo)
+% -----------------------------------------------------------------------------
+\tikzset{
+  host/.style={draw,rounded corners=2mm,fill=aneliseAzul!15,inner sep=1.5mm,font=\scriptsize},
+  rt/.style={draw,rounded corners=1mm,fill=aneliseLaranja!25,inner sep=1mm,font=\scriptsize},
+  nube/.style={draw,cloud,aspect=2.2,fill=aneliseGris!15,inner sep=1.5mm,font=\scriptsize},
+  el/.style={draw,rounded corners=1.2mm,fill=aneliseGris!18,inner sep=0.8mm,font=\scriptsize},
+  enl/.style={thick},
+  enlA/.style={thick,-Stealth},
+}
