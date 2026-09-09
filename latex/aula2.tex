@@ -93,7 +93,7 @@
 
 \begin{frame}{Desvantagens e dificultades (2/2)}
   \begin{itemize}
-    \item \textbf{Consumo de energia} (equipos móviles)
+    \item \textbf{Consumo de energia} (equipamentos móveis)
     \item \textbf{Desempeño}
     \item \textbf{Segurança}
       \begin{itemize}
@@ -107,7 +107,7 @@
     \item \textbf{Riscos à saúde} (debate sobre exposición RF)
   \end{itemize}
   \begin{exampleblock}{Nota atualizada}
-    WPA3 (2018) e WPA3-Enterprise resolveram boa parte dos problemas clásicos de seguridade; a privacidade (captura de identidade) segue sendo um desafio.
+    WPA3 (2018) e WPA3-Enterprise resolveram boa parte dos problemas clásicos de segurança; a privacidade (captura de identidade) segue sendo um desafio.
   \end{exampleblock}
 \end{frame}
 
@@ -123,9 +123,9 @@
       \begin{itemize}
         \item rádio e televisión
       \end{itemize}
-    \item \textbf{Más recentemente aparece en}
+    \item \textbf{Más recentemente aparece em}
       \begin{itemize}
-        \item teléfonos celulares
+        \item telefones celulares
         \item satélites
         \item redes sem fio
       \end{itemize}
@@ -141,7 +141,7 @@
       \draw[->,thick,aneliseVerde] (r) -- (c);
       \draw[->,thick,aneliseVerde] (c) -- (s);
       \draw[->,thick,aneliseVerde] (s) -- (w);
-      \node[above=2mm of r,font=\tiny]{evolución};
+      \node[above=2mm of r,font=\tiny]{evolução};
     \end{tikzpicture}
   \end{center}
 \end{frame}
@@ -151,12 +151,12 @@
     \item Recebem os \textbf{maiores investimentos em P\&D}
     \item Permitem a \textbf{interconexión de diferentes tipos de dispositivos}
       \begin{itemize}
-        \item impresoras, faxes, teléfonos, agendas eletrónicas, computadores pessoais, IoT\ldots
+        \item impresoras, faxes, telefones, agendas eletrónicas, computadores pessoais, IoT\ldots
       \end{itemize}
   \end{itemize}
   \begin{block}{Clasificación (según cobertura)}
     \begin{itemize}
-      \item \textbf{WPAN} --- redes pessoais sem fio: obxectivo eliminar fíos (ex.: Bluetooth, ZigBee, UWB)
+      \item \textbf{WPAN} --- redes pessoais sem fio: objetivo eliminar fios (ex.: Bluetooth, ZigBee, UWB)
       \item \textbf{WLAN} --- redes locais sem fio (ex.: IEEE 802.11)
       \item \textbf{WMAN} --- redes metropolitanas sem fio (ex.: IEEE 802.16 WiMAX)
       \item \textbf{WWAN} --- redes de área extensa (celulares 4G/5G, satélite)
@@ -182,13 +182,13 @@
       \vspace{0.2cm}
       \textbf{Principales problemas}
       \begin{itemize}
-        \item grande atenuación
+        \item grande atenuação
         \item limitado alcance
         \item espectro de frequências disponível
-        \item interferencia
+        \item interferência
         \item dificultad de alcanzar altas taxas
         \item seguridad
-        \item reflexiones del señal en el interior de uma casa
+        \item reflexiones del sinal em el interior de uma casa
       \end{itemize}
     \end{column}
     \begin{column}{0.52\textwidth}
@@ -208,19 +208,19 @@
 
 \begin{frame}{Conceptos básicos: sinais}
   \begin{itemize}
-    \item Información transferida da origem ao destino através de \textbf{señales electromagnéticas}
+    \item Información transferida da origem ao destino através de \textbf{sinais electromagnéticas}
     \item Sinais son:
       \begin{itemize}
         \item \textbf{función del tiempo} (domínio temporal)
-        \item \textbf{función de la frecuencia} (domínio espectral)
+        \item \textbf{función de la frequência} (domínio espectral)
       \end{itemize}
   \end{itemize}
   \begin{center}
     \begin{tikzpicture}[font=\scriptsize,scale=0.9]
-      \begin{axis}[width=6cm,height=3cm,axis lines=middle,xlabel={$t$},ylabel={$A$},ytick=\empty,xtick=\empty,title={Temporal: señal periódica}]
+      \begin{axis}[width=6cm,height=3cm,axis lines=middle,xlabel={$t$},ylabel={$A$},ytick=\empty,xtick=\empty,title={Temporal: sinal periódica}]
         \addplot[domain=0:6.28,samples=100,thick,aneliseAzul]{sin(deg(x)*180/3.14159)};
       \end{axis}
-      \begin{axis}[at={(9cm,0cm)},width=6cm,height=3cm,axis lines=middle,xlabel={$f$},ylabel={$A$},ytick=\empty,title={Espectral: picos en $f$, $2f$}]
+      \begin{axis}[at={(9cm,0cm)},width=6cm,height=3cm,axis lines=middle,xlabel={$f$},ylabel={$A$},ytick=\empty,title={Espectral: picos em $f$, $2f$}]
         \addplot[domain=0:6.28,samples=100,thick,aneliseLaranja]{sin(deg(x)*180/3.14159)};
       \end{axis}
     \end{tikzpicture}
@@ -244,7 +244,7 @@
     \end{itemize}
   \end{block}
   \begin{center}
-    \scriptsize Descripción temporal $=$ ``cómo varia con el tiempo''; descripción espectral $=$ ``composición en frequências''. (Fonte: Profa. Larissa Driemeier)
+    \scriptsize Descripción temporal $=$ ``cómo varia com el tiempo''; descripción espectral $=$ ``composición em frequências''. (Fonte: Profa. Larissa Driemeier)
   \end{center}
 \end{frame}
 
@@ -262,25 +262,25 @@
     \end{itemize}
   \end{block}
   \begin{block}{Bandas ISM}
-    Desde 1985, o FCC (EUA) permitiu o uso \textbf{sen licencia} da banda ISM (Industrial, Scientific, and Medical), siempre que a potência do sinal seja inferior a 1~W. Reguladores equivalentes: ANATEL (BR), ETSI (UE).
+    Desde 1985, o FCC (EUA) permitiu o uso \textbf{sem licencia} da banda ISM (Industrial, Scientific, and Medical), siempre que a potência do sinal seja inferior a 1~W. Reguladores equivalentes: ANATEL (BR), ETSI (UE).
   \end{block}
 \end{frame}
 
-\begin{frame}{Características del medio de transmisión}
+\begin{frame}{Características del medio de transmissão}
   \begin{columns}
     \begin{column}{0.55\textwidth}
       \begin{itemize}
         \item \textbf{Atenuación} --- potência cae com a distância
-        \item \textbf{Perdida en el espacio libre} --- espalhamento del señal
+        \item \textbf{Perdida em el espacio libre} --- espalhamento del sinal
         \item \textbf{Ruidos} (térmico, intermodulación, diafonía, impulsivo)
         \item \textbf{Desvanecimiento} (\emph{fading}) --- variación temporal de la potência
-        \item \textbf{Absorción atmosférica} --- vapor de água, oxígeno (picos en 22~GHz y 60~GHz)
+        \item \textbf{Absorción atmosférica} --- vapor de água, oxígeno (picos em 22~GHz y 60~GHz)
       \end{itemize}
       \vspace{0.2cm}
-      \textbf{Comparação com o fío:}
+      \textbf{Comparação com o fio:}
       \begin{itemize}
-        \item Ethernet: onda \textbf{confinada} $\rightarrow$ menos interferencia, menos atenuación; BER $\sim 10^{-7}$
-        \item Sem fio: meio \textbf{no-guiado}, BER típica $\sim 10^{-4}$ (hasta $10^{-2}$ en interiores)
+        \item Ethernet: onda \textbf{confinada} $\rightarrow$ menos interferência, menos atenuação; BER $\sim 10^{-7}$
+        \item Sem fio: meio \textbf{no-guiado}, BER típica $\sim 10^{-4}$ (hasta $10^{-2}$ em interiores)
       \end{itemize}
     \end{column}
     \begin{column}{0.45\textwidth}
@@ -288,10 +288,10 @@
       \begin{tikzpicture}[font=\scriptsize]
         \node[host](Tx){TX};
         \node[host,right=4.5cm of Tx](Rx){RX};
-        \draw[thick,dashed,aneliseLaranja] (Tx) -- node[midway,above=2mm,font=\tiny]{señal directa (atenuada)} (Rx);
+        \draw[thick,dashed,aneliseLaranja] (Tx) -- node[midway,above=2mm,font=\tiny]{sinal directa (atenuada)} (Rx);
         \draw[thick,dashed,aneliseGris] (Tx) to[bend right=35] node[midway,below=1mm,font=\tiny]{reflejada} (Rx);
         \draw[thick,dashed,aneliseGris] (Tx) to[bend right=65] node[midway,below=2mm,font=\tiny]{difractada} (Rx);
-        \node[below=3mm of Rx,font=\tiny,text width=4cm,align=center]{multitrayectoria $\rightarrow$ llegada en instantes distintos};
+        \node[below=3mm of Rx,font=\tiny,text width=4cm,align=center]{multitrayectoria $\rightarrow$ llegada em instantes distintos};
       \end{tikzpicture}
       \end{center}
     \end{column}
@@ -302,26 +302,26 @@
 
 \begin{frame}{Atenuación: definición}
   \begin{itemize}
-    \item Potência de un sinal cae com a distância $\rightarrow$ \textbf{atenuación}
+    \item Potência de un sinal cae com a distância $\rightarrow$ \textbf{atenuação}
     \item O sinal recebido deve ter potência suficiente para que o circuito do receptor possa detectá-lo e interpretá-lo
-    \item Sinal de máis debe manter um nível suficientemente más alto que o ruido para ser recebido sem erros
+    \item Sinal de mais deve manter um nível suficientemente más alto que o ruido para ser recebido sem erros
   \end{itemize}
   \begin{block}{Consecuencias}
     \begin{itemize}
-      \item além de uma certa distância, a atenuación é muito forte $\rightarrow$ se usam \textbf{repetidores}
+      \item além de uma certa distância, a atenuação é muito forte $\rightarrow$ se usam \textbf{repetidores}
       \item maior no espaço libre (meio no-guiado)
       \item varia com a frequência (maior nas frequências altas) $\rightarrow$ técnicas de \textbf{equalización}
     \end{itemize}
   \end{block}
 \end{frame}
 
-\begin{frame}{Perdidas en el espacio libre y por penetración}
+\begin{frame}{Perdidas em el espacio libre y por penetración}
   \begin{columns}
     \begin{column}{0.5\textwidth}
-      \textbf{Perdida en el espacio libre}
+      \textbf{Perdida em el espacio libre}
       \begin{itemize}
-        \item tipo particular de atenuación
-        \item o sinal se espalha conforme a distância aumenta $\rightarrow$ atenuación creciente
+        \item tipo particular de atenuação
+        \item o sinal se espalha conforme a distância aumenta $\rightarrow$ atenuação creciente
         \item o sinal se dispersa por uma área cada vez mayor
       \end{itemize}
     \end{column}
@@ -343,7 +343,7 @@
 \end{frame}
 
 \begin{frame}{Ruidos}
-  \textbf{Alteracións sofridas pelo sinal transmitido entre transmissión e recepción.} Quatro tipos principales:
+  \textbf{Alteracións sofridas pelo sinal transmitido entre transmissión e recepção.} Quatro tipos principales:
   \begin{description}
     \item[Térmico] Uniformemente distribuido através do espectro
     \item[Intermodulación] Compartilhamento de um meio entre sinais de diferentes frequências
@@ -361,9 +361,9 @@
       \item $\mathrm{SINR} = 10\log_{10}(S/R)$, com $S=$ potência do sinal, $R=$ potência do ruido
     \end{itemize}
   \end{block}
-  \begin{block}{Condiciones para correcta recepción}
+  \begin{block}{Condiciones para correcta recepção}
     \begin{enumerate}
-      \item Nível do sinal acima do \textbf{limiar de recepción}: $S >$ threshold (W)
+      \item Nível do sinal acima do \textbf{limiar de recepção}: $S >$ threshold (W)
       \item \textbf{SINR acima do limiar de captura}: $10\log_{10}(S/R) >$ capture threshold (dB)
     \end{enumerate}
   \end{block}
@@ -373,8 +373,8 @@
 
 \begin{frame}{Diferencias frente ao enlace cabeado}
   \begin{enumerate}
-    \item \textbf{Forza reducida del señal:} os sinais de rádio se atenuam ao propagarse através da matéria (\emph{path loss})
-    \item \textbf{Interferencia de outras fuentes:} as frequências padronizadas (ex.: 2,4~GHz) são compartilhadas por outros equipos (teléfonos sem fio, microondas, motores)
+    \item \textbf{Forza reducida del sinal:} os sinais de rádio se atenuam ao propagarse através da matéria (\emph{path loss})
+    \item \textbf{Interferencia de outras fuentes:} as frequências padronizadas (ex.: 2,4~GHz) são compartilhadas por outros equipamentos (telefones sem fio, microondas, motores)
     \item \textbf{Propagación de múltiplos caminhos:} o sinal se refleja no suelo e em objetos; o sinal principal e os refletidos chegam em instantes lixeiramente diferentes
   \end{enumerate}
   \begin{alertblock}{Conclusión}
@@ -388,7 +388,7 @@
       \textbf{Reflexión}
       \begin{itemize}
         \item superfície grande comparada ao comprimento de onda
-        \item sinais podem ser recebidos sen visada direta
+        \item sinais podem ser recebidos sem visada direta
       \end{itemize}
     \end{column}
     \begin{column}{0.32\textwidth}
@@ -396,7 +396,7 @@
       \begin{itemize}
         \item canto de corpo impenetrable \textbf{grande} comparado ao comprimento de onda
         \item se propaga em diferentes direções
-        \item sen visada direta
+        \item sem visada direta
       \end{itemize}
     \end{column}
     \begin{column}{0.32\textwidth}
@@ -439,11 +439,11 @@
     \begin{column}{0.5\textwidth}
       Causado por reflexión, difracción, espalhamento:
       \begin{itemize}
-        \item reflexión: interferencia construtiva/destrutiva no receptor
+        \item reflexión: interferência construtiva/destrutiva no receptor
         \item difracción: obstrución por superfícies irregulares
         \item espalhamento: muitos objetos pequenos
       \end{itemize}
-      Flutuaciones: \emph{shadowing}, pequenas mudanças de posición/dirección da antena, obstáculos móviles.
+      Flutuaciones: \emph{shadowing}, pequenas mudanças de posición/endereço da antena, obstáculos móveis.
     \end{column}
   \end{columns}
 \end{frame}
@@ -453,17 +453,17 @@
     \begin{column}{0.55\textwidth}
       \textbf{Vapor de água}
       \begin{itemize}
-        \item pico de atenuación en 22~GHz
-        \item menor atenuación abaixo de 15~GHz
+        \item pico de atenuação em 22~GHz
+        \item menor atenuação abaixo de 15~GHz
       \end{itemize}
       \textbf{Oxígeno}
       \begin{itemize}
-        \item pico en 60~GHz
-        \item menor atenuación abaixo de 30~GHz
+        \item pico em 60~GHz
+        \item menor atenuação abaixo de 30~GHz
       \end{itemize}
       \textbf{Chuva e néboa}
       \begin{itemize}
-        \item dispersam ondas $\rightarrow$ atenuación (causa principal de perdas em zonas chuvosas)
+        \item dispersam ondas $\rightarrow$ atenuação (causa principal de perdas em zonas chuvosas)
         \item soluções: distâncias curtas ou bandas de baja frequência
       \end{itemize}
     \end{column}
@@ -511,7 +511,7 @@
       \end{itemize}
     \item \textbf{Sin visada direta:}
       \begin{itemize}
-        \item difracción y dispersión son os meios primarios de recepción
+        \item difracción y dispersión son os meios primarios de recepção
       \end{itemize}
   \end{itemize}
 \end{frame}
@@ -527,14 +527,14 @@
         \item centralizada em um \textbf{multiplexador}
         \item clasificación segundo a variable de separación:
           \begin{itemize}
-            \item \textbf{TDM} (tempo) --- usada en IEEE 802.16
+            \item \textbf{TDM} (tempo) --- usada em IEEE 802.16
             \item \textbf{FDM} (frequência)
             \item \textbf{WDM} (comprimento de onda, fibra)
           \end{itemize}
       \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
-      \textbf{Duplexaçión} (comunicación entre dúas estaciones)
+      \textbf{Duplexaçión} (comunicação entre dúas estaciones)
       \begin{itemize}
         \item \textbf{simplex:} un único sentido
         \item \textbf{half-duplex}: dois sentidos, pero no simultáneos
@@ -553,7 +553,7 @@
   \end{columns}
 \end{frame}
 
-\section{Técnicas de transmisión}
+\section{Técnicas de transmissão}
 
 \begin{frame}{Codificación e modulación}
   \begin{block}{Codificaciones (\emph{banda base})}
@@ -571,7 +571,7 @@
     \end{itemize}
   \end{block}
   \begin{alertblock}{Por que modular?}
-    Ondas quadradas das codificaciones conteñen múltiplas frequências; atenuación e velocidad de propagación variam com a frequência $\rightarrow$ codificación en banda base só para curtas distancias e baixas velocidades. Algúns meios (fibra, RF) exigen que o sinal ocupe uma determinada faixa; ademais, múltiples estacións deben aceder ao mesmo meio físico.
+    Ondas quadradas das codificaciones conteñen múltiplas frequências; atenuação e velocidade de propagación variam com a frequência $\rightarrow$ codificación em banda base só para curtas distancias e baixas velocidades. Algúns meios (fibra, RF) exigen que o sinal ocupe uma determinada faixa; ademais, múltiples estações devem aceder ao mesmo meio físico.
   \end{alertblock}
 \end{frame}
 
@@ -620,7 +620,7 @@
     \begin{column}{0.52\textwidth}
       \begin{itemize}
         \item M-QAM: varia \textbf{amplitude e fase} da portadora entre $M$ valores
-        \item quanto maior o número de símbolos, maior a probabilidade de erros (ruido, atenuación, dificultade de distinguir símbolos)
+        \item quanto maior o número de símbolos, maior a probabilidade de erros (ruido, atenuação, dificultade de distinguir símbolos)
         \item usada no IEEE 802.11 e 802.16; base de Wi-Fi 6 (1024-QAM, 4096-QAM)
       \end{itemize}
       \begin{exampleblock}{Exemplo (OFDM 802.11a/g)}
@@ -653,18 +653,18 @@
   \end{block}
   \textbf{Obxetivos:}
   \begin{itemize}
-    \item minimizar interferencia em frequências específicas
-    \item minimizar interferencia por múltiplos caminhos
+    \item minimizar interferência em frequências específicas
+    \item minimizar interferência por múltiplos caminhos
   \end{itemize}
   \textbf{Costos:} desperdício de banda para um usuário individual.
 
-  \textbf{Vantaxe:} vários usuários (redes) podem usar simultáneamente a mesma banda sem interferencias significativas $\rightarrow$ eficiente en termos de banda.
+  \textbf{Vantaxe:} vários usuários (redes) podem usar simultáneamente a mesma banda sem interferências significativas $\rightarrow$ eficiente em termos de banda.
   \begin{block}{Secuencias pseudo-aleatorias}
-    Parecen aleatorias pero podem ser reproducidas polos receptores (chip sequence).
+    Parecen aleatorias pero podem ser reproducidas pelos receptores (chip sequence).
   \end{block}
   \begin{itemize}
     \item Interferencias son (na súa mayoría) de \textbf{banda estreita} $\rightarrow$ interferen só nunha pequena faixa del sinal
-    \item Minimiza atenuación por múltiplos caminhos; permite compartir faixa; privacidade
+    \item Minimiza atenuação por múltiplos caminhos; permite compartir faixa; privacidade
     \item 1999: OFDM y HR-DSSS para mayor largura de banda
   \end{itemize}
 \end{frame}
@@ -673,7 +673,7 @@
   \begin{columns}
     \begin{column}{0.55\textwidth}
       \begin{itemize}
-        \item modulación con portadora que \textbf{salta de frequência} en función do tempo sobre uma larga faixa
+        \item modulación com portadora que \textbf{salta de frequência} em función do tempo sobre uma larga faixa
         \item o \textbf{código de salto} (hopping code) determina as frequências e a orde
         \item recomendaçión FCC banda 2,4~GHz: $\geq 75$ frequências por canal, máximo 400~ms por salto
         \item um sinal de banda estreita só interfere se transmite na mesma frequência ao mesmo tempo
@@ -684,7 +684,7 @@
       \begin{exampleblock}{Características}
         \begin{itemize}
           \item permite coexistencia de várias redes na mesma área (secuencias de saltos distintas)
-          \item usado en Bluetooth e primeras versions 802.11
+          \item usado em Bluetooth e primeras versions 802.11
         \end{itemize}
       \end{exampleblock}
       \begin{center}
@@ -702,29 +702,29 @@
 
 \begin{frame}{DSSS --- Direct Sequence Spread Spectrum}
   \begin{itemize}
-    \item multiplexaçión del sinal por uma \textbf{secuencia pseudo-aleatoria} (chipping) de taxa moito maior
-    \item XOR dos datos con a secuencia: bit $0 \rightarrow$ secuencia; bit $1 \rightarrow$ complemento
+    \item multiplexaçión del sinal por uma \textbf{secuencia pseudo-aleatoria} (chipping) de taxa muito maior
+    \item XOR dos datos com a secuencia: bit $0 \rightarrow$ secuencia; bit $1 \rightarrow$ complemento
     \item o \textbf{fator de espalhamento} (número de chips por bit) determina a banda passante do sinal resultante
     \item 802.11b: secuencia de 11 chips $\rightarrow$ 11~Mbps
   \end{itemize}
   \begin{block}{Trade-off}
     \begin{itemize}
-      \item máis caro e maior consumo de energia
-      \item maior robustez frente a interferencia de banda estreita y multitrayectoria
+      \item mais caro e maior consumo de energia
+      \item maior robustez frente a interferência de banda estreita y multitrayectoria
     \end{itemize}
   \end{block}
 \end{frame}
 
 \begin{frame}{OFDM --- Orthogonal Frequency Division Multiplexing}
   \begin{itemize}
-    \item divide o espectro en \textbf{múltiples sub-bandas estreitas}; envía bits em cada sub-banda
+    \item divide o espectro em \textbf{múltiples sub-bandas estreitas}; envía bits em cada sub-banda
     \item todas as sub-bandas dedicadas a uma única fonte (diferente do FDM)
     \item subportadoras \textbf{ortogonales} (centradas nos ceros das adyacentes)
   \end{itemize}
   \begin{block}{802.11a/g/n}
     \begin{itemize}
       \item canal de 20~MHz, 52 subportadoras (48 datos + 4 control)
-      \item transmissión en paralelo; canles solapados sen interferencia mutua
+      \item transmissión em paralelo; canais solapados sem interferência mutua
       \item taxa de 250\,000 símbolos/s
     \end{itemize}
   \end{block}
@@ -757,23 +757,23 @@
 
 \begin{frame}{Ventaxes de OFDM}
   \begin{itemize}
-    \item \textbf{Maior inmunidade a ruido e interferencias}
+    \item \textbf{Maior inmunidade a ruido e interferências}
       \begin{itemize}
-        \item subportadoras independentes: pódese descartar uma ou varias e usar as restantes
+        \item subportadoras independentes: pode-se descartar uma ou varias e usar as restantes
       \end{itemize}
-    \item usado en IEEE 802.11 y 802.16 (WiMAX)
+    \item usado em IEEE 802.11 y 802.16 (WiMAX)
   \end{itemize}
 \end{frame}
 
-\section{Redes con e sen infraestrutura}
+\section{Redes com e sem infraestrutura}
 
-\begin{frame}{Redes sem fio: duas categorías}
+\begin{frame}{Redes sem fio: duas categorias}
   \begin{columns}
     \begin{column}{0.5\textwidth}
-      \textbf{Redes con infraestrutura}
+      \textbf{Redes com infraestrutura}
       \begin{itemize}
-        \item toda a comunicación a través de um \textbf{punto de acceso}
-        \item ex.: redes celulares, Wi-Fi en modo infraestrutura
+        \item toda a comunicação a través de um \textbf{punto de acceso}
+        \item ex.: redes celulares, Wi-Fi em modo infraestrutura
       \end{itemize}
       \begin{center}
         \begin{tikzpicture}[font=\scriptsize]
@@ -788,11 +788,11 @@
       \end{center}
     \end{column}
     \begin{column}{0.5\textwidth}
-      \textbf{Redes sen infraestrutura (ad hoc)}
+      \textbf{Redes sem infraestrutura (ad hoc)}
       \begin{itemize}
         \item estações se comunican directamente
-        \item ad hoc de comunicación directa
-        \item ad hoc de múltiplos saltos (nós tamén roteadores)
+        \item ad hoc de comunicação directa
+        \item ad hoc de múltiplos saltos (nós também roteadores)
       \end{itemize}
       \begin{center}
         \begin{tikzpicture}[font=\scriptsize]
@@ -823,16 +823,16 @@
       \end{itemize}
       \textbf{Aplicacións}
       \begin{itemize}
-        \item ambientes sen infraestrutura ou con infraestrutura non fiable
+        \item ambientes sem infraestrutura ou com infraestrutura não fiable
         \item reunións inesperadas, treinos militares, catástrofes, drones (FANET)
       \end{itemize}
     \end{column}
     \begin{column}{0.45\textwidth}
-      \begin{block}{Por que non CSMA/CD?}
+      \begin{block}{Por que não CSMA/CD?}
         \begin{itemize}
-          \item grande diferencia de potencia entre sinal transmitido e recibido
-          \item difícil separación sinal/ruido, transmisión/recepción
-          \item nin todas as estacións escoitan as outras (colisión no transmisor non implica colisión no receptor)
+          \item grande diferencia de potência entre sinal transmitido e recibido
+          \item difícil separación sinal/ruido, transmissão/recepção
+          \item nin todas as estações escoitan as outras (colisión no transmisor não implica colisión no receptor)
           \item problema do \textbf{terminal escondido}
         \end{itemize}
       \end{block}
@@ -851,13 +851,13 @@
           \node[host,right=1.6cm of B](C){C};
           \draw[->,thick,aneliseAzul] (A) -- node[midway,above=1mm,font=\tiny]{TX} (B);
           \draw[->,thick,aneliseLaranja] (C) -- node[midway,below=1mm,font=\tiny]{TX} (B);
-          \node[below=2mm of B,font=\tiny,text width=3cm,align=center]{A e C non se oeñen $\rightarrow$ colisión en B};
+          \node[below=2mm of B,font=\tiny,text width=3cm,align=center]{A e C não se oeñen $\rightarrow$ colisión em B};
         \end{tikzpicture}
       \end{center}
       \begin{itemize}
-        \item ocorre con sobreposición de áreas de cobertura
-        \item non importa a interferencia no transmisor, senón no receptor
-        \item protocolos centralizados o coordenación de APs o canles distintos
+        \item ocorre com sobreposición de áreas de cobertura
+        \item não importa a interferência no transmisor, senón no receptor
+        \item protocolos centralizados o coordenación de APs o canais distintos
       \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
@@ -870,12 +870,12 @@
           \node[host,right=1.4cm of C](D){D};
           \draw[->,thick,aneliseAzul] (A) -- (B);
           \draw[->,thick,aneliseAzul] (C) -- (D);
-          \node[below=2mm of C,font=\tiny,text width=3.4cm,align=center]{C pode transmitir a D, pero ``pensa que non''};
+          \node[below=2mm of C,font=\tiny,text width=3.4cm,align=center]{C pode transmitir a D, pero ``pensa que não''};
         \end{tikzpicture}
       \end{center}
       \begin{itemize}
         \item C escolta a A $\rightarrow$ adía; pero D está fora da área de A
-        \item desperdício de oportunidade (CSMA puro non funciona ben)
+        \item desperdício de oportunidade (CSMA puro não funciona ben)
       \end{itemize}
     \end{column}
   \end{columns}
@@ -885,7 +885,7 @@
 
 \begin{frame}{Bibliografia}
   \begin{itemize}
-    \item \textbf{\kurose{}} --- Capítulo 6 (Redes sem fio e redes móviles)
+    \item \textbf{\kurose{}} --- Capítulo 6 (Redes sem fio e redes móveis)
     \item \textbf{\forouzan{}} --- Capítulos 3, 4, 5
     \item \textbf{\stallings{}} --- Capítulos 1, 2, 5, 6, 7 e 11
     \item \textbf{\tanenbaum{}} --- Capítulos 1, 2 e 4

@@ -19,7 +19,7 @@
 
 \title{Redes sem Fio: informe de melloras e proposta de novas aulas\\
 \large Conversión  PDF $\rightarrow$ \LaTeX/Beamer\,$+$\,TikZ}
-\author{Profa. Anelise Munaretto \\ \small Documento de traballo}
+\author{Profa. Anelise Munaretto \\ \small Documento de trabalho}
 \date{2026}
 
 \begin{document}
@@ -27,19 +27,19 @@
 
 \section{Resumo da conversión}
 
-Convertíronse as 6 presentacións orixinais en \texttt{.pdf} a ficheiros
+Convertíronse as 6 presentacións orixinais em \texttt{.pdf} a ficheiros
 \LaTeX{} coa clase \texttt{beamer} (relación de aspecto 16:9), usando \texttt{tikz}
-para todos os diagramas. O resultado compila con \texttt{tectonic} (e \texttt{pdflatex}
-sen modificacións), xera o mesmo contido académico e engade material actualizado.
+para todos os diagramas. O resultado compila com \texttt{tectonic} (e \texttt{pdflatex}
+sem modificacións), xera o mesmo contido académico e engade material atualizado.
 
 \begin{center}
 \small
 \begin{tabular}{@{}llll@{}}
 \toprule
-\textbf{Arquivo orixinal} & \textsc{Contido} & \textsc{Arquivo LaTeX} & \textsc{Páxinas}\\
+\textbf{Arquivo original} & \textsc{Contido} & \textsc{Arquivo LaTeX} & \textsc{Páxinas}\\
 \midrule
 \texttt{aula1.pdf} & Internet: revisión & \texttt{latex/aula1.tex} & 24\\
-\texttt{aula2.pdf} & Introdución ás redes sen fío & \texttt{latex/aula2.tex} & 36\\
+\texttt{aula2.pdf} & Introdución às redes sem fio & \texttt{latex/aula2.tex} & 36\\
 \texttt{aula3.pdf} & Roteamento ad hoc (AODV, DSR, TBRPF, OLSR) & \texttt{latex/aula3.tex} & 25\\
 \texttt{aula4.pdf} & Protocolos MAC (ALOHA, CSMA, 802.11) & \texttt{latex/aula4.tex} & 26\\
 \texttt{aula5.pdf} & Redes emerxentes & \texttt{latex/aula5.tex} & 13\\
@@ -63,30 +63,30 @@ enlaces), o que garante \textbf{coherencia visual} entre todas as aulas.
 \begin{enumerate}
   \item \textbf{Diagramas TikZ redeseñados}: a pila de protocolos, encapsulación,
         subredes CIDR, ARP, traceroute, SDN plano datos/control, terminal oculto,
-        CSMA/CA con RTS/CTS/NAV, token bucket $+$ WFQ, consternación 16-QAM, etc.
-  \item \textbf{Contido actualizado a 2026}:
+        CSMA/CA com RTS/CTS/NAV, token bucket $+$ WFQ, consternación 16-QAM, etc.
+  \item \textbf{Contido atualizado a 2026}:
   \begin{itemize}
     \item Aula 1: IPv6, SDN (OpenFlow), QUIC/HTTP3, exercicios Wireshark renovados.
     \item Aula 2: Wi-Fi 6/6E/7 (802.11ax/be), 5G NR, nota sobre WPA3.
     \item Aula 3: RFCs exactos de AODV, OLSR, TBRPF, DSR; comparativa proactivo/reativo.
-    \item Aula 4: CSMA/CD como material histórico; 802.11e/ax e OFDMA como evolución.
+    \item Aula 4: CSMA/CD como material histórico; 802.11e/ax e OFDMA como evolução.
     \item Aula 5: completa reescritura: Wi-Fi 6/6E/7, LoRa vs.\ Sigfox vs.\ NB-IoT,
           5G eMBB/uRLLC/mMTC, satélite LEO (Starlink), DTN, FANET/VANET, NTN 3GPP.
-    \item Aula 6: RFCs de RSVP/Intserv; 802.11e EDCA; QOLSR e FTS (traballos da autora);
+    \item Aula 6: RFCs de RSVP/Intserv; 802.11e EDCA; QOLSR e FTS (trabalhos da autora);
           conexión co \emph{network slicing} 5G.
   \end{itemize}
-  \item \textbf{Estrutura pedagóxica mellorada}: cada aula ten \texttt{section} con
+  \item \textbf{Estrutura pedagóxica mellorada}: cada aula ten \texttt{section} com
         TOC, bloques (\texttt{block/alertblock/exampleblock}) para destacar ideas
         clave, e exercicios prácticos.
-  \item \textbf{Corrección de erros do orixinal}: encodificación corrupta en varias
-        diapositivas (Aula 3); figuras sen fonte; referencias RFC desactualizadas.
+  \item \textbf{Corrección de erros do original}: encodificación corrupta em varias
+        diapositivas (Aula 3); figuras sem fonte; referencias RFC desactualizadas.
   \item \textbf{Comentarios educativos engadidos}: preguntas retóricas
-        (``Por que non CSMA/CD en sen fío?'') e cadros ``Nota actualizada''.
+        (``Por que não CSMA/CD em sem fio?'') e cadros ``Nota actualizada''.
 \end{enumerate}
 
 \section{Material novo incluído}
 
-Na Aula 5 engadiuse material completamente novo (non estaba no PDF orixinal):
+Na Aula 5 engadiuse material completamente novo (não estaba no PDF original):
 \begin{itemize}
   \item \emph{LPWAN}: comparativa técnica LoRaWAN vs.\ Sigfox vs.\ NB-IoT/LTE-M.
   \item \emph{5G New Radio}: eMBB/uRLLC/mMTC, network slicing, beamforming, MEC,
@@ -94,17 +94,17 @@ Na Aula 5 engadiuse material completamente novo (non estaba no PDF orixinal):
   \item \emph{Satélite LEO}: Starlink, enlaces láser ISL, integración NTN (3GPP Rel.\ 17+).
   \item \emph{Wi-Fi 6E/7}: banda de 6~GHz, MLO, QAM-4096.
   \item \emph{Tecnoloxías actuais de IoT}: Matter/Thread/UWB/Zigbee 3.0 como
-        evolución de WPAN.
+        evolução de WPAN.
 \end{itemize}
 
-Tamén se engadiron nas Aulas 1--6 \textbf{naipes de actualización} que poñen o
-contido histórico en contexto (CSMA/CD legado, PCF non implementado, Intserv/Diffserv
+Tamén se engadiron nas Aulas 1--6 \textbf{naipes de atualização} que poñen o
+contido histórico em contexto (CSMA/CD legado, PCF não implementado, Intserv/Diffserv
 como antecedentes do slicing 5G).
 
 \section{Proposta de novas aulas (renovación do curso)}
 
 Recoméndase ampliar o curso coas seguintes \textbf{aulas novas}, que actualizan o
-temario ás tecnoloxías de 2024--2026:
+temario às tecnoloxías de 2024--2026:
 
 \begin{enumerate}
   \item \textbf{Aula 7: 5G e redes móbiles de nova xeración}
@@ -112,42 +112,42 @@ temario ás tecnoloxías de 2024--2026:
     \item Arquitectura 5G (SA vs.\ NSA), network slicing, MEC, beamforming masivo,
           mMIMO, mmWave, RedCap, NR-U.
     \item Evolución 5G-Advanced (Rel.\ 18) e cara ao 6G.
-    \item Traballo: análise de cobertura/throughput con datos abertos da ANATEL.
+    \item Traballo: análise de cobertura/throughput com datos abertos da ANATEL.
   \end{itemize}
 
-  \item \textbf{Aula 8: IoT sen fío e LPWAN}
+  \item \textbf{Aula 8: IoT sem fio e LPWAN}
   \begin{itemize}
     \item LoRaWAN (clases A/B/C, ADR), Sigfox, NB-IoT/LTE-M, Wi-SUN, mioty.
-    \item Protocolos de aplicación: MQTT/CoAP/LwM2M; integración con plataformas
+    \item Protocolos de aplicación: MQTT/CoAP/LwM2M; integración com plataformas
           (The Things Network, ChirpStack).
-    \item Traballo: montar unha rede LoRaWAN con \emph{dragino}+RPi e unha gateway
+    \item Traballo: montar uma rede LoRaWAN com \emph{dragino}+RPi e uma gateway
           TTN.
   \end{itemize}
 
   \item \textbf{Aula 9: redes vehiculares e mobilidade intelixente}
   \begin{itemize}
     \item C-V2X vs.\ 802.11p/ITS-G5; platooning, segurança V2X (Day-1/2 use cases);
-          a evolución cara a 5G-V2X (NR-V2X).
+          a evolução cara a 5G-V2X (NR-V2X).
     \item Traballo: simulación SUMO/ns-3 dun escenario urbano.
   \end{itemize}
 
-  \item \textbf{Aula 10: drones e redes non terrestres (NTN)}
+  \item \textbf{Aula 10: drones e redes não terrestres (NTN)}
   \begin{itemize}
-    \item FANET, enjambres de UAV, roteamento 3D, handover entre satélites LEO.
+    \item FANET, enxames de UAV, roteamento 3D, handover entre satélites LEO.
     \item Starlink/OneWeb/Kuiper; integración NTN no 3GPP (Rel.\ 17/18).
   \end{itemize}
 
-  \item \textbf{Aula 11: IA e ML nas redes sen fío}
+  \item \textbf{Aula 11: IA e ML nas redes sem fio}
   \begin{itemize}
-    \item Aplicacións: predición de mobilidade, \emph{resource allocation} con RL,
-          \emph{spectrum sensing} con ML, \emph{network automation} (genie/IA do 6G).
-    \item Traballo: modelo sinxelo de clasificación de CSI con Python/sklearn.
+    \item Aplicacións: predición de mobilidade, \emph{resource allocation} com RL,
+          \emph{spectrum sensing} com ML, \emph{network automation} (genie/IA do 6G).
+    \item Traballo: modelo sinxelo de clasificación de CSI com Python/sklearn.
   \end{itemize}
 
-  \item \textbf{Aula 12: seguridade en redes sen fío}
+  \item \textbf{Aula 12: segurança em redes sem fio}
   \begin{itemize}
     \item WPA2/WPA3, WPA3-Enterprise, EAP-TLS; ataques (KRACK, evil twin, rogue AP);
-          seguridade IoT (LoRaWAN AES-128, certifcados); 5G AKA.
+          segurança IoT (LoRaWAN AES-128, certifcados); 5G AKA.
   \end{itemize}
 \end{enumerate}
 
@@ -156,12 +156,12 @@ temario ás tecnoloxías de 2024--2026:
 \begin{itemize}
   \item \textbf{Reutilización total do preámbulo}: crear un \texttt{curso.tex} mestre
         que inclúa as 6 (ou 12) aulas como \texttt{input}; así xerase un PDF único.
-  \item \textbf{Exercicios con Simuladores}: ns-3 (802.11ax), OMNeT++/INET,
-        SUMO (vehicular), MATLAB (mmWave). Engadir unha \emph{sesión de laboratorio}
+  \item \textbf{Exercicios com Simuladores}: ns-3 (802.11ax), OMNeT++/INET,
+        SUMO (vehicular), MATLAB (mmWave). Engadir uma \emph{sesión de laboratorio}
         ao final de cada bloque.
-  \item \textbf{Prácticas con Wireshark renovadas}: capturas de QUIC, TLS1.3,
+  \item \textbf{Prácticas com Wireshark renovadas}: capturas de QUIC, TLS1.3,
         RTP de WebRTC, MQTT sobre LoRaWAN.
-  \item \textbf{Notas de versión e control de cambios} en cada ficheiro \texttt{.tex}.
+  \item \textbf{Notas de versión e control de cambios} em cada ficheiro \texttt{.tex}.
   \item \textbf{Tradución coherente}: o material mixto galego/castelán dos PDF
         orixinais unificouse ao galego; recomendase manter ese criterio.
 \end{itemize}

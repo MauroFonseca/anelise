@@ -32,7 +32,7 @@
       \begin{itemize}
         \item quantidade de energia limitada
         \item capacidade de procesamiento limitada (PDAs, sensores,\ldots)
-        \item alcance de transmisión pequeno
+        \item alcance de transmissão pequeno
       \end{itemize}
       \textbf{Topología dinámica}
       \begin{itemize}
@@ -61,13 +61,13 @@
   \begin{block}{Objetivo 1: conectividad total}
     Desarrollar uma infraestructura de rede onde necessário:
     \begin{itemize}
-      \item roteamento ad hoc $\rightarrow$ redes auto-organizables, sen mantemento nin administración
+      \item roteamento ad hoc $\rightarrow$ redes auto-organizables, sem mantemento nin administración
       \item roteamento passando por outros terminais
     \end{itemize}
   \end{block}
-  \begin{block}{Objetivo 2: mesmo serviço que una rede con infraestructura}
+  \begin{block}{Objetivo 2: mesmo serviço que una rede com infraestructura}
     \begin{itemize}
-      \item mobilidade, descubrimiento de servicio, roteamento ad hoc
+      \item mobilidade, descubrimiento de serviço, roteamento ad hoc
       \item outros: autoconfiguración, localización, seguridad, consciencia do papel, redes de sensores
     \end{itemize}
   \end{block}
@@ -75,12 +75,12 @@
 
 \begin{frame}{Arquitectura ad hoc}
   \begin{itemize}
-    \item creación de uma \textbf{conectividad multisalto} entre um grupo de nós sem fio, frecuentemente en movimento
-    \item os nós móviles actúan como \textbf{roteadores} y como \textbf{origen/destino}
-    \item necessidade de um protocolo de roteamento que encontre uma ou várias rutas multisalto
+    \item criação de uma \textbf{conectividad multisalto} entre um grupo de nós sem fio, frequentemente em movimento
+    \item os nós móveis actúan como \textbf{roteadores} y como \textbf{origen/destino}
+    \item necessidade de um protocolo de roteamento que encontre uma ou várias rotas multisalto
       \begin{itemize}
-        \item dinámico para adaptarse á topoloxía cambiante
-        \item desafíos: interferencias, limitacións de potencia
+        \item dinámico para adaptarse à topoloxía cambiante
+        \item desafios: interferências, limitações de potência
       \end{itemize}
   \end{itemize}
   \begin{center}
@@ -111,17 +111,17 @@
 \begin{frame}{Necesidades do roteamento ad hoc}
   \begin{columns}
     \begin{column}{0.55\textwidth}
-      \textbf{Distribución dos camiños}
+      \textbf{Distribución dos caminhos}
       \begin{itemize}
-        \item camiños multisalto
-        \item sen loops (bucles)
+        \item caminhos multisalto
+        \item sem loops (bucles)
         \item minimizar \emph{overhead}
         \item multicast? inundación eficiente?
       \end{itemize}
     \end{column}
     \begin{column}{0.45\textwidth}
       \begin{itemize}
-        \item \textbf{adaptativa á topoloxía dinámica}
+        \item \textbf{adaptativa à topoloxía dinámica}
         \item \textbf{baixo consumo}: banda e potência
         \item \textbf{escalabilidade} (número de nós)
         \item efectos ante caída de enlaces
@@ -133,19 +133,19 @@
 \begin{frame}{Problemas dos protocolos clásicos DV/LS}
   \begin{block}{DV --- Distance Vector (ex.: RIP)}
     \begin{itemize}
-      \item podem formar \textbf{bucles (loops)}: moito desperdicio en meios sen fío (banda, potência)
+      \item podem formar \textbf{bucles (loops)}: muito desperdicio em meios sem fio (banda, potência)
       \item normalmente complexo evitalos
     \end{itemize}
   \end{block}
   \begin{block}{LS --- Link State (ex.: OSPF)}
     \begin{itemize}
-      \item custo para almacenar tablas e overhead de comunicación
+      \item custo para almacenar tablas e overhead de comunicação
     \end{itemize}
   \end{block}
-  \begin{alertblock}{Aínda máis problemas}
+  \begin{alertblock}{Aínda mais problemas}
     \begin{itemize}
-      \item actualización periódica gasta enerxía (emisor e receptor)
-      \item a converxencia debe ser \textbf{rápida en ad hoc}, sen actualizacións moi frecuentes
+      \item atualização periódica gasta enerxía (emisor e receptor)
+      \item a converxencia deve ser \textbf{rápida em ad hoc}, sem actualizacións moi frecuentes
     \end{itemize}
   \end{alertblock}
 \end{frame}
@@ -178,11 +178,11 @@
 \begin{frame}{AODV --- Ad hoc On-Demand Distance Vector}
   \begin{itemize}
     \item Charles Perkins et al. (Nokia Research Center)
-    \item \textbf{A protocolo adaptado a redes con alteracións frecuentes de rutas} (manutención de rutas improductiva)
-    \item pode adaptarse a redes con gran taxa de transmisión
+    \item \textbf{A protocolo adaptado a redes com alteracións frecuentes de rotas} (manutención de rotas improductiva)
+    \item pode adaptarse a redes com gran taxa de transmissão
     \item baseado no \textbf{roteamento de vector de distancia baixo demanda}
       \begin{itemize}
-        \item descubrimiento de ruta por \emph{inundación} (flooding)
+        \item descubrimiento de rota por \emph{inundación} (flooding)
         \item cálculo de tablas de roteamento (almacenaxe temporal)
         \item avaliación de overheads
       \end{itemize}
@@ -194,12 +194,12 @@
 
 \begin{frame}{Mensaxes do protocolo AODV}
   \begin{description}
-    \item[Route Request (RREQ)] ``Necesito unha ruta''
-    \item[Route Response (RREP)] ``Anunciar a ruta''
-    \item[Route Error (RERR)] ``Anular a ruta''
+    \item[Route Request (RREQ)] ``Necesito uma rota''
+    \item[Route Response (RREP)] ``Anunciar a rota''
+    \item[Route Error (RERR)] ``Anular a rota''
   \end{description}
   \begin{itemize}
-    \item respostas periódicas da ruta aos vecinos que actúan como \texttt{HELLO}, para instalación e renovación
+    \item respostas periódicas da rota aos vizinhos que actúan como \texttt{HELLO}, para instalación e renovación
   \end{itemize}
   \begin{center}
     \begin{tikzpicture}[font=\scriptsize,
@@ -231,24 +231,24 @@
   \end{center}
 \end{frame}
 
-\begin{frame}{Descubrimiento da ruta (AODV)}
+\begin{frame}{Descubrimiento da rota (AODV)}
   \begin{columns}
     \begin{column}{0.55\textwidth}
       \begin{enumerate}
-        \item Una ruta entre 2 nós é encontrada mediante o envío de \textbf{RREQ} a toda a localidade
-        \item inicia en localidade pequena; aumenta con fallas no descubrimiento
+        \item Una rota entre 2 nós é encontrada mediante o envio de \textbf{RREQ} a toda a localidade
+        \item inicia em localidade pequena; aumenta com fallas no descubrimiento
         \item un \textbf{RREP} é enviado:
           \begin{itemize}
-            \item polo destino
-            \item por un nó vecino que xa teña ruta establecida
+            \item pelo destino
+            \item por un nó vizinho que xa teña rota establecida
           \end{itemize}
-        \item os nós intermediarios almacenan temporalmente a ruta
+        \item os nós intermediarios almacenan temporalmente a rota
       \end{enumerate}
-      \textbf{Errores de ruta}
+      \textbf{Errores de rota}
       \begin{itemize}
-        \item a ruta expira si non se atualiza
-        \item os roteadores almacenan os usuarios da ruta; ao expirar notifícanse (RERR)
-        \item nova mensaxe \texttt{route request} será enviada
+        \item a rota expira si não se atualiza
+        \item os roteadores almacenan os usuários da rota; ao expirar notifícanse (RERR)
+        \item nova mensagem \texttt{route request} será enviada
       \end{itemize}
     \end{column}
     \begin{column}{0.45\textwidth}
@@ -270,7 +270,7 @@
           \draw[dashed,thick,aneliseLaranja] (f) -- (B);
           \node[below=0.5mm of S,font=\tiny]{A};
           \node[above=0.5mm of B,font=\tiny]{B};
-          \node[draw,fill=aneliseVerde!15,rounded corners=1.5mm,below=6mm of d,text width=2.8cm,align=center](err){ruta A$\rightarrow$B\\expira $\rightarrow$ RERR};
+          \node[draw,fill=aneliseVerde!15,rounded corners=1.5mm,below=6mm of d,text width=2.8cm,align=center](err){rota A$\rightarrow$B\\expira $\rightarrow$ RERR};
           \draw[dashed,->] (d.south) -- (err);
         \end{tikzpicture}
       \end{center}
@@ -284,9 +284,9 @@
   \begin{itemize}
     \item David Johnson et al. (Rice University)
     \item \textbf{Mensaxes:} Route Discovery, Route Maintenance
-    \item \textbf{Múltiples rutas} disponibles
-    \item permite a cada emisor \textbf{seleccionar e controlar as rutas utilizadas}
-    \item soporta máis de 200 nós
+    \item \textbf{Múltiples rotas} disponibles
+    \item permite a cada emisor \textbf{seleccionar e controlar as rotas utilizadas}
+    \item soporta mais de 200 nós
     \item alta mobilidade dos nós
   \end{itemize}
   \begin{exampleblock}{RFC}
@@ -294,17 +294,17 @@
   \end{exampleblock}
 \end{frame}
 
-\begin{frame}{Descubrimiento da ruta (DSR)}
+\begin{frame}{Descubrimiento da rota (DSR)}
   \begin{columns}
     \begin{column}{0.5\textwidth}
       \begin{enumerate}
-        \item Una ruta entre 2 nós é encontrada mediante \textbf{RREQ}
-        \item o RREQ \textbf{constrúe unha ruta cara a fonte} en cada camino (nós rexistran o seu predecesor)
-        \item o \textbf{primeiro RREQ que chega é aceptado}; o destino responde por ese camino informando a ruta
-        \item o roteamento \textbf{baseado na fonte} é utilizado polo tráfico de datos
+        \item Una rota entre 2 nós é encontrada mediante \textbf{RREQ}
+        \item o RREQ \textbf{constrói uma rota para fonte} em cada camino (nós registram o seu predecessor)
+        \item o \textbf{primeiro RREQ que chega é aceptado}; o destino responde por ese camino informando a rota
+        \item o roteamento \textbf{baseado na fonte} é utilizado pelo tráfico de datos
       \end{enumerate}
       \begin{exampleblock}{Exemplo}
-        Ruta detectada: \texttt{(A, B, F, J, K)} --- encabezada no paquete.
+        Ruta detectada: \texttt{(A, B, F, J, K)} --- encabezada no pacote.
       \end{exampleblock}
     \end{column}
     \begin{column}{0.5\textwidth}
@@ -343,22 +343,22 @@
     \begin{column}{0.55\textwidth}
       \textbf{Confiabilidade do enlace}
       \begin{itemize}
-        \item rutas de tránsito almacenadas (para saber a quem enviar RERR)
-        \item confirmacións da capa de rede avaliadas (transferencia, detección de nós con fallas)
-        \item tras múltiples retransmisións:
+        \item rotas de tránsito almacenadas (para saber a quem enviar RERR)
+        \item confirmacións da capa de rede avaliadas (transferencia, detección de nós com fallas)
+        \item após múltiples retransmisións:
           \begin{itemize}
             \item o nó declarado fóra de servizo
             \item RERR aos emisores que usan ese nó
-            \item os paquetes de datos son rexeitados
+            \item os pacotes de datos son rexeitados
           \end{itemize}
       \end{itemize}
     \end{column}
     \begin{column}{0.45\textwidth}
-      \textbf{Manutención da ruta}
+      \textbf{Manutención da rota}
       \begin{itemize}
-        \item se un nó roteador ou enlace cambia, as rutas baseadas na fonte deixan de ser válidas
-        \item os nós responden con \textbf{RERR}, activando o descubrimiento de nova ruta
-        \item os nós poden tentar alterar a ruta e difundila
+        \item se un nó roteador ou enlace cambia, as rotas baseadas na fonte deixan de ser válidas
+        \item os nós responden com \textbf{RERR}, activando o descubrimiento de nova rota
+        \item os nós podem tentar alterar a rota e difundila
       \end{itemize}
     \end{column}
   \end{columns}
@@ -369,28 +369,28 @@
 \begin{frame}{TBRPF --- Topology Broadcast Based on Reverse-Path Forwarding}
   \begin{itemize}
     \item Richard Ogier et al. (SRI International)
-    \item os nós envían \textbf{só unha parte da tabla de roteamento aos vecinos}
-    \item descubrimiento de vecindad con \textbf{HELLO diferenciados}: só se informan cambios de estado dos vecinos
-    \item utiliza o algoritmo \textbf{Shortest Path First} (menor camiño) para elección da mellor ruta
+    \item os nós envían \textbf{só uma parte da tabla de roteamento aos vizinhos}
+    \item descubrimiento de vecindad com \textbf{HELLO diferenciados}: só se informan cambios de estado dos vizinhos
+    \item utiliza o algoritmo \textbf{Shortest Path First} (menor caminho) para seleção da melhor rota
   \end{itemize}
   \begin{exampleblock}{RFC}
     RFC 3684 (2004) --- \emph{Topology Dissemination Based on Reverse-Path Forwarding (TBRPF)}.
   \end{exampleblock}
   \begin{block}{Mensaxes}
     \begin{itemize}
-      \item \texttt{HELLO}: descubrimiento e manutención da relación entre vecinos
+      \item \texttt{HELLO}: descubrimiento e manutención da relación entre vizinhos
       \item \texttt{TOPOLOGY UPDATE}: distribución dun subconxunto de información para interconectividad
     \end{itemize}
   \end{block}
 \end{frame}
 
-\begin{frame}{Distribución da actualización da topoloxía (TBRPF)}
+\begin{frame}{Distribución da atualização da topoloxía (TBRPF)}
   \begin{itemize}
     \item información da topoloxía é distribuída ao subconxunto de nós que poidan necesitala
       \begin{itemize}
         \item é necesaria información sobre un nó se o roteamento o utiliza\ldots
       \end{itemize}
-    \item por iso un nó roteador calcula todas as rutas de todos os nós que posúan tal información
+    \item por iso un nó roteador calcula todas as rotas de todos os nós que posúan tal información
   \end{itemize}
   \begin{center}
     \begin{tikzpicture}[font=\scriptsize,
@@ -417,28 +417,28 @@
   \begin{itemize}
     \item Philippe Jacquet et al. (INRIA Rocquencourt)
     \item optimización para redes ad hoc mediante \textbf{MPRs (Multipoint Relays)}
-    \item só os nós MPR poden transmitir as mensaxes de descubrimiento da rede
-    \item adaptado a redes con \textbf{baixa mobilidade}
-    \item utiliza \textbf{Shortest Path First} (menor camiño)
+    \item só os nós MPR podem transmitir as mensagens de descubrimiento da rede
+    \item adaptado a redes com \textbf{baixa mobilidade}
+    \item utiliza \textbf{Shortest Path First} (menor caminho)
   \end{itemize}
   \begin{exampleblock}{RFC}
     RFC 3626 (2003) --- \emph{Optimized Link State Routing Protocol (OLSR)}.
   \end{exampleblock}
   \begin{block}{Mensaxes}
     \begin{itemize}
-      \item \texttt{HELLO}: descubrimiento e manutención de vecinos
+      \item \texttt{HELLO}: descubrimiento e manutención de vizinhos
       \item \texttt{TC} (Topology Control): distribución de información de conectividade
     \end{itemize}
   \end{block}
 \end{frame}
 
-\begin{frame}{Relacións entre nós vecinos e elección de MPR}
+\begin{frame}{Relacións entre nós vizinhos e seleção de MPR}
   \begin{columns}
     \begin{column}{0.5\textwidth}
-      \textbf{Cada equipo emite un \texttt{HELLO} periódico}
+      \textbf{Cada equipamento emite un \texttt{HELLO} periódico}
       \begin{itemize}
-        \item anuncia aos vecinos
-        \item determina quen está conectado aínda
+        \item anuncia aos vizinhos
+        \item determina quem está conectado ainda
         \item selecciona os nós MPR (MultiPoint Relays)
       \end{itemize}
       \textbf{MPRs}
@@ -469,7 +469,7 @@
         \end{tikzpicture}
       \end{center}
       \begin{itemize}
-        \item a topoloxía pode cambiar: nós móviles, rutas e grupo MPR cambian
+        \item a topoloxía pode cambiar: nós móveis, rotas e grupo MPR cambian
       \end{itemize}
     \end{column}
   \end{columns}
@@ -480,19 +480,19 @@
     \begin{column}{0.55\textwidth}
       \textbf{Reativos (baixo demanda) --- AODV, DSR}
       \begin{itemize}
-        \item baseados en inundación
-        \item non hai garantía de ruta óptima
-        \item menor overhead cando hai pouco tráfico
-        \item atraso (latencia) no descubrimiento de ruta
+        \item baseados em inundación
+        \item não há garantía de rota óptima
+        \item menor overhead quando hai pouco tráfico
+        \item atraso (latencia) no descubrimiento de rota
       \end{itemize}
     \end{column}
     \begin{column}{0.45\textwidth}
       \textbf{Proactivos --- OLSR, TBRPF}
       \begin{itemize}
         \item descubren continuamente a topoloxía
-        \item mensaxes HELLO periódicos
-        \item garantía de ruta óptima
-        \item posibilidade de obter varias rutas
+        \item mensagens HELLO periódicos
+        \item garantía de rota óptima
+        \item posibilidade de obter varias rotas
         \item maior overhead continuo
       \end{itemize}
     \end{column}
@@ -504,15 +504,15 @@
       ]
       \node[rt](p1){Proactivo\\ (OLSR)};
       \node[re,right=3cm of p1](r1){Reativo\\ (AODV)};
-      \node[below=3mm of p1,font=\tiny,text width=2.6cm,align=center](pp){ruta sempre dispoñible\\sen atraso de descubrimento};
-      \node[below=3mm of r1,font=\tiny,text width=2.6cm,align=center](rr){ruta só cando se pide\\atraso de descubrimento};
+      \node[below=3mm of p1,font=\tiny,text width=2.6cm,align=center](pp){rota sempre dispoñible\\sem atraso de descubrimento};
+      \node[below=3mm of r1,font=\tiny,text width=2.6cm,align=center](rr){rota só quando se pide\\atraso de descubrimento};
     \end{tikzpicture}
   \end{center}
 \end{frame}
 
-\section{Roteamento en redes de sensores}
+\section{Roteamento em redes de sensores}
 
-\begin{frame}{Roteamento en redes de sensores: características}
+\begin{frame}{Roteamento em redes de sensores: características}
   \begin{columns}
     \begin{column}{0.5\textwidth}
       \textbf{Recursos limitados}
@@ -524,18 +524,18 @@
       \textbf{Topoloxía dinámica}
       \begin{itemize}
         \item mobilidade, falla de nós
-        \item sensores inactivos en períodos de baixa actividad
+        \item sensores inactivos em períodos de baixa actividad
       \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
       \textbf{Escalabilidade} e \textbf{tempo de vida}
       \begin{itemize}
-        \item redundancia --- nós poden falhar
-        \item o obxectivo principal é \textbf{economizar enerxía}
+        \item redundancia --- nós podem falhar
+        \item o objetivo principal é \textbf{economizar enerxía}
       \end{itemize}
       \textbf{Tipos de roteamento}
       \begin{itemize}
-        \item plano (flat), comunicación directa
+        \item plano (flat), comunicação directa
         \item multisalto de enerxía mínima
         \item aglomeración (clustering), aglomeración dinámica
         \item inundación (flooding), gradiente
@@ -545,7 +545,7 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{Protocolos de roteamento en sensores}
+\begin{frame}{Protocolos de roteamento em sensores}
   \begin{columns}
     \begin{column}{0.5\textwidth}
       \textbf{Plano} (\emph{flat)}
@@ -573,8 +573,8 @@
 \begin{frame}{Difusión Direccionada (Directed Diffusion)}
   \begin{itemize}
     \item proposto por Estrin et al. (1999)
-    \item o nó \textbf{nomea os datos} usando un ou máis atributos
-    \item o nó cliente \textbf{require os datos} mediante \textbf{intereses}
+    \item o nó \textbf{nomea os datos} usando un ou mais atributos
+    \item o nó cliente \textbf{requer os datos} mediante \textbf{intereses}
     \item nós intermediarios \textbf{propagan os intereses}
     \item os intereses establecen \textbf{gradientes de datos} cara ao nó que expresou o interese
   \end{itemize}
@@ -607,14 +607,14 @@
   \begin{itemize}
     \item proposto por Heinzelman et al. (2000)
     \item recolección de datos \textbf{centralizada e periódica} (redes proactivas)
-    \item os nós organízanse en \textbf{aglomerados (clusters)}:
+    \item os nós organízanse em \textbf{aglomerados (clusters)}:
       \begin{itemize}
         \item cada cluster ten un \textbf{cluster-head (base local)}
-        \item cada nó decide a súa base local (menor custo de comunicación)
-        \item \textbf{rotación aleatoria de bases} para nós con maior enerxía
+        \item cada nó decide a súa base local (menor custo de comunicação)
+        \item \textbf{rotación aleatoria de bases} para nós com maior enerxía
         \item \textbf{agregación de datos local}
       \end{itemize}
-    \item cada base crea un \textbf{agendamento TDMA} (rádio apagado, sen colisións)
+    \item cada base crea un \textbf{agendamento TDMA} (rádio apagado, sem colisións)
     \item cada cluster usa un código CDMA diferente
     \item alto consumo nas bases, pero só 5\% son bases; rotación aleatoria $\rightarrow$ \textbf{maior vida da rede}
   \end{itemize}
@@ -627,14 +627,14 @@
       \toprule
       \textbf{Hierárquico} & \textbf{Plano}\\
       \midrule
-      evita colisións (TDMA) & non evita colisións\\
+      evita colisións (TDMA) & não evita colisións\\
       agregación nos cluster-heads & agregación nos nós intermediarios\\
-      require sincronización local e global & enlaces formados ``on-the-fly''\\
-      overhead de formación de cluster & rutas só nas rexións con datos\\
+      requer sincronização local e global & enlaces formados ``on-the-fly''\\
+      overhead de formación de cluster & rotas só nas rexións com datos\\
       disipación uniforme de enerxía & disipación depende do tráfico\\
-      alocación xusta de canal & xustiza non garantida\\
+      alocación xusta de canal & xustiza não garantida\\
       baixa latencia (cluster-heads dispoñibles) & latencia ao esperar nós intermediarios\\
-      roteamento simple, non óptimo & roteamento complexo, óptimo\\
+      roteamento simple, não óptimo & roteamento complexo, óptimo\\
       \bottomrule
     \end{tabular}
   \end{center}
@@ -642,9 +642,9 @@
 
 \section{Redes mesh}
 
-\begin{frame}{Roteamento en redes mesh}
+\begin{frame}{Roteamento em redes mesh}
   \begin{itemize}
-    \item utilizan protocolos de roteamento ad hoc con modificación nas \textbf{métricas}: DSR e OLSR
+    \item utilizan protocolos de roteamento ad hoc com modificación nas \textbf{métricas}: DSR e OLSR
     \item proxectos de referencia:
       \begin{itemize}
         \item \textbf{MIT Roofnet}: base de roofnet/Meraki mesh networks --- \url{https://pdos.csail.mit.edu/roofnet/}

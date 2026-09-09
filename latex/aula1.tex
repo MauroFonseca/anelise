@@ -2,7 +2,7 @@
 % =============================================================================
 %  AULA 1 — Redes de Computadores: Internet (revisión de conceptos)
 %  Curso: Redes sin cables  |  Profa. Anelise Munaretto
-%  Convertida de .pdf a Beamer + TikZ; contenido actualizado (IPv6, SDN, ICMP).
+%  Convertida de .pdf a Beamer + TikZ; conteúdo atualizado (IPv6, SDN, ICMP).
 %  Compilar: tectonic aula1.tex
 % =============================================================================
 \documentclass[aspectratio=169,11pt]{beamer}
@@ -138,7 +138,7 @@
     \end{itemize}
   \end{block}
   \begin{alertblock}{Discussão}
-    \emph{``Layering considered harmful?''} A estratificação rígida pode limitar o desempeño (e.g., QUIC funde funções de transporte $+$ segurança); por isso a pesquisa moderna explora o \emph{cross-layer design}.
+    \emph{``Layering considered harmful?''} A estratificação rígida pode limitar o desempenho (e.g., QUIC funde funções de transporte $+$ segurança); por isso a pesquisa moderna explora o \emph{cross-layer design}.
   \end{alertblock}
 \end{frame}
 
@@ -154,8 +154,8 @@
       \node[caja,above=9mm of t] (b) {bagagem (check-in)};
       \node[caja,right=20mm of b] (b2) {bagagem (retiro)};
       \node[caja,above=9mm of b] (g) {portões (embarque)};
-      \node[caja,above=9mm of g] (p) {pista (despegue/aterrizaje)};
-      \node[caja,above=9mm of p] (r) {roteo de aeronaves};
+      \node[caja,above=9mm of g] (p) {pista (takeoff/landing)};
+      \node[caja,above=9mm of p] (r) {roteamento de aeronaves};
       \draw[flecha] (t) -- (t2);
       \draw[flecha] (b) -- (b2);
       % etiquetas à direita
@@ -163,7 +163,7 @@
       \node[right=2mm of b2,align=left](e2){capa ``bagagem''};
       \node[right=2mm of g,align=left](e3){capa ``portões''};
       \node[right=2mm of p,align=left](e4){capa ``pista''};
-      \node[right=2mm of r,align=left](e5){capa ``roteo''};
+      \node[right=2mm of r,align=left](e5){capa ``roteamento''};
       \draw[dashed] (t2.east) -- (e1.west);
       \draw[dashed] (b2.east) -- (e2.west);
       \draw[dashed] (g.east) -- (e3.west);
@@ -182,7 +182,7 @@
       ]
       \node[capa](aplic) {Aplicação\\(FTP, SMTP, HTTP, DNS, QUIC)};
       \node[capa,below=7mm of aplic] (transp) {Transporte\\transferência processo-a-processo\\(TCP, UDP)};
-      \node[capa,below=7mm of transp] (rede) {Rede\\roteo de datagramas origem$\rightarrow$destino\\(IP, protocolos de roteo)};
+      \node[capa,below=7mm of transp] (rede) {Rede\\roteamento de datagramas origem$\rightarrow$destino\\(IP, protocolos de roteamento)};
       \node[capa,below=7mm of rede] (enl) {Enlace\\transferência entre elementos vizinhos\\(Ethernet, 802.11 (Wi-Fi), PPP)};
       \node[capa,below=7mm of enl] (fis) {Física\\bits ``no fio''};
       \draw[thick,dashed,aneliseGris] (aplic.south) -- (transp.north);
@@ -206,8 +206,8 @@
       \node[capa,below=5mm of pr](se){5. Sesión\\(sincronização, \emph{checkpointing}, recuperação)};
       \node[capa,below=5mm of se](tr){4. Transporte};
       \node[capa,below=5mm of tr](re){3. Rede};
-      \node[capa,below=5mm of re](en){2. Enlace};
-      \node[capa,below=5mm of en](fi){1. Física};
+      \node[capa,below=5mm of re](em){2. Enlace};
+      \node[capa,below=5mm of em](fi){1. Física};
       \node[right=1.6cm of pr,text width=3.6cm,align=left,draw,rounded corners=1.5mm,fill=aneliseLaranja!14](obs){A pila da Internet ``perde'' estas capas!\\Servicios como cifrado/compresión são implementados na \textbf{aplicación}.};
       \draw[->,thick,aneliseLaranja] (obs) -- (pr.east);
     \end{tikzpicture}
@@ -239,7 +239,7 @@
       % etiquetas
       \node[left=4mm of Hn,anchor=east](l3){datagrama};
       \node[left=4mm of Ht,anchor=east](l2){segmento};
-      \node[left=4mm of M,anchor=east](l1){mensaje};
+      \node[left=4mm of M,anchor=east](l1){mensagem};
       \node[left=4mm of Hl,anchor=east](l4){frame};
       \draw[dashed,thick,aneliseGris] (l3.east) -- (Hn.west);
       \draw[dashed,thick,aneliseGris] (l2.east) -- (Ht.west);
@@ -255,7 +255,7 @@
       \node[draw,rounded corners=2mm,fill=aneliseGris!15,text width=3.8cm,align=center](f1){frame:\\ \alert{H$_l$} H$_n$ H$_t$ M};
       \node[draw,rounded corners=2mm,fill=aneliseGris!15,below=7mm of f1,text width=3.8cm,align=center](d1){datagrama:\\ \alert{H$_n$} H$_t$ M};
       \node[draw,rounded corners=2mm,fill=aneliseGris!15,below=7mm of d1,text width=3.8cm,align=center](s1){segmento:\\ \alert{H$_t$} M};
-      \node[draw,rounded corners=2mm,fill=aneliseGris!15,below=7mm of s1,text width=3.8cm,align=center](m1){mensaje: M};
+      \node[draw,rounded corners=2mm,fill=aneliseGris!15,below=7mm of s1,text width=3.8cm,align=center](m1){mensagem: M};
       \draw[->,thick,aneliseVerde] (s1.east) to[bend left=15] (d1.east);
       \draw[->,thick,aneliseVerde] (d1.east) to[bend left=15] (f1.east);
     \end{tikzpicture}
@@ -272,7 +272,7 @@
       \textbf{Transporta segmentos da origem ao destino:}
       \begin{itemize}
         \item no envio, \textbf{encapsula} segmentos em datagramas
-        \item na recepción, entrega segmentos à capa de transporte
+        \item na recepção, entrega segmentos à capa de transporte
         \item protocolos de capa de rede em \textbf{todo host e roteador}
         \item o roteador examina campos do cabeçalho de cada datagrama IP
       \end{itemize}
@@ -285,8 +285,8 @@
         \node[pila](sap){aplic.};
         \node[pila,below=3.5mm of sap](str){transp.};
         \node[pila,below=3.5mm of str](sre){rede};
-        \node[pila,below=3.5mm of sre](sen){enlace};
-        \node[pila,below=3.5mm of sen](sfi){física};
+        \node[pila,below=3.5mm of sre](sem){enlace};
+        \node[pila,below=3.5mm of sem](sfi){física};
         \node[pila,right=1.6cm of sre](re1){rede};
         \node[pila,below=3.5mm of re1](en1){enlace};
         \node[pila,below=3.5mm of en1](fi1){física};
@@ -301,7 +301,7 @@
         \draw[thick,aneliseGris] (sre.east) -- (re1.west);
         \draw[thick,aneliseGris] (re1.east) -- (re2.west);
         \draw[thick,aneliseGris] (re2.east) -- (dre.west);
-        \draw[thick,aneliseGris] (sen.east) -- (en1.west);
+        \draw[thick,aneliseGris] (sem.east) -- (en1.west);
         \draw[thick,aneliseGris] (en1.east) -- (en2.west);
         \draw[thick,aneliseGris] (en2.east) -- (den.west);
         \draw[thick,aneliseGris] (sfi.east) -- (fi1.west);
@@ -354,7 +354,7 @@
 % ---------------------------------------------------------------------------
 \begin{frame}{Direccionamiento IP: introducción}
   \begin{itemize}
-    \item Dirección IP: \textbf{identificador de 32 bits} para a interface de host/roteador
+    \item Endereço IP: \textbf{identificador de 32 bits} para a interface de host/roteador
     \item \textbf{Interface}: conexión entre host/roteador e enlace físico
       \begin{itemize}
         \item roteadores normalmente têm \textbf{múltiplas interfaces}
@@ -396,7 +396,7 @@
 % ---------------------------------------------------------------------------
 \begin{frame}{Subredes (subnets)}
   \begin{itemize}
-    \item Dirección IP $=$ \textbf{parte de subred} (bits altos) + \textbf{parte de host} (bits baixos)
+    \item Endereço IP $=$ \textbf{parte de subred} (bits altos) + \textbf{parte de host} (bits baixos)
     \item \textbf{Subred}: interfaces de dispositivo com a mesma parte de subred
       \begin{itemize}
         \item podem alcançarse fisicamente \emph{sem roteador intermediario}
@@ -441,20 +441,20 @@
 \section{Roteo}
 
 % ---------------------------------------------------------------------------
-\begin{frame}{Protocolos de roteo: objetivo}
+\begin{frame}{Protocolos de roteamento: objetivo}
   \begin{block}{Objetivo}
     Determinar caminhos ``bons'' (\emph{routes}) da origem ao destino através da rede de roteadores.
   \end{block}
   \begin{itemize}
-    \item \textbf{Caminho}: seqüência de roteadores que os pacotes atravessarán
+    \item \textbf{Caminho}: sequência de roteadores que os pacotes atravessarán
     \item ``Bom'': menor ``custo'', ``mais rápido'', ``menos congestionado''
-    \item \alert{``Roteo é um dos top-10 desafíos de rede!''}
+    \item \alert{``Roteo é um dos top-10 desafios de rede!''}
   \end{itemize}
   \begin{exampleblock}{Escalabilidade --- o problema}
     \begin{itemize}
       \item com \emph{milliões} de destinos não se podem guardar todas as rotas nas tabelas
-      \item o intercambio de tabelas de roteo saturaría os enlaces
-      \item \textbf{autonomia administrativa}: cada rede quer controlar o próprio roteo
+      \item o intercambio de tabelas de roteamento saturaría os enlaces
+      \item \textbf{autonomia administrativa}: cada rede quer controlar o próprio roteamento
     \end{itemize}
   \end{exampleblock}
 \end{frame}
@@ -471,7 +471,7 @@
       \end{itemize}
       \textbf{Roteo \emph{inter-AS}}:
       \begin{itemize}
-        \item roteo entre AS (BGP!)
+        \item roteamento entre AS (BGP!)
       \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
@@ -525,7 +525,7 @@
   \begin{block}{Analogia do transporte}
     Viagem Princeton $\rightarrow$ Lausana: limusina (Princeton$\rightarrow$JFK), avión (JFK$\rightarrow$Genève), trem (Genève$\rightarrow$Lausanne).
     \begin{itemize}
-      \item turista $=$ datagrama \quad transporte $=$ enlace \quad modo $=$ protocolo de enlace \quad agente de viagens $=$ algoritmo de roteo
+      \item turista $=$ datagrama \quad transporte $=$ enlace \quad modo $=$ protocolo de enlace \quad agente de viagens $=$ algoritmo de roteamento
     \end{itemize}
   \end{block}
 \end{frame}
@@ -571,7 +571,7 @@
     \item \textbf{IP (32 bits / 128 bits)}: endereço de capa de rede da interface --- usado para reenvío (capa 3)
     \item \textbf{MAC (48 bits)}: \emph{enderezo físico/LAN}, gravado na ROM da NIC --- usado \emph{localmente} para levar o frame de interface a interface fisicamente conectada
       \begin{itemize}
-        \item notación hexadecimal: \texttt{1A-2F-BB-76-09-AD} (cada dígito $=$ 4 bits)
+        \item notação hexadecimal: \texttt{1A-2F-BB-76-09-AD} (cada dígito $=$ 4 bits)
       \end{itemize}
   \end{itemize}
   \begin{block}{ARP --- Address Resolution Protocol}
@@ -617,10 +617,10 @@
   \begin{itemize}
     \item Usado por hosts e roteadores para comunicar informação de nível de rede
       \begin{itemize}
-        \item \emph{error reporting}: host/red/porta/protocolo inalcanzables
+        \item \emph{error reporting}: host/red/porta/protocolo inalcançáveis
         \item echo request/reply (base do \texttt{ping})
       \end{itemize}
-    \item Mensajes ICMP viajan \textbf{dentro de datagramas IP}
+    \item Mensajes ICMP viajam \textbf{dentro de datagramas IP}
     \item Mensaje: \texttt{type} + \texttt{code} + primeros 8 bytes do datagrama que causó o error
   \end{itemize}
   \vspace{0.1cm}
@@ -629,8 +629,8 @@
     \begin{tabular}{@{}lll@{}}
       \textbf{Tipo} & \textbf{Código} & Descripción\\
       0 & 0 & echo reply (ping)\\
-      3 & 0/1/2/3 & destino red/host/protocolo/porta inalcanzable\\
-      3 & 6/7 & red/host desconocido\\
+      3 & 0/1/2/3 & destino red/host/protocolo/porta inalcançável\\
+      3 & 6/7 & red/host desconhecido\\
       4 & 0 & source quench (congestión; \alert{obsoleto})\\
       8 & 0 & echo request (ping)\\
       9/10 & 0 & route advertisement / router discovery\\
@@ -659,7 +659,7 @@
       \end{itemize}
       \textbf{Criterio de parada:}
       \begin{itemize}
-        \item o segmento UDP chega ao destino; o destino devólve \textbf{ICMP tipo 3 código 3} (porta inalcanzable)
+        \item o segmento UDP chega ao destino; o destino devólve \textbf{ICMP tipo 3 código 3} (porta inalcançável)
       \end{itemize}
     \end{column}
     \begin{column}{0.45\textwidth}
@@ -690,7 +690,7 @@
 \section{Análise de protocolos}
 
 % ---------------------------------------------------------------------------
-\begin{frame}{Análisis de paquetes com Wireshark}
+\begin{frame}{Análisis de pacotes com Wireshark}
   \begin{columns}
     \begin{column}{0.55\textwidth}
       \textbf{Wireshark} (libpcap): analizador de protocolos
@@ -702,9 +702,9 @@
       \textbf{Exercício prático:}
       \begin{enumerate}
         \item Em um terminal: \texttt{traceroute www.mit.edu}
-        \item Analice a repuesta
+        \item Analice a resposta
         \item Instale Wireshark (\url{https://www.wireshark.org})
-        \item Repita o traceroute e analice os paquetes ICMP en todas as capas
+        \item Repita o traceroute e analice os pacotes ICMP em todas as capas
       \end{enumerate}
     \end{column}
     \begin{column}{0.45\textwidth}
@@ -719,7 +719,7 @@
         \draw[->,thick,dashed,aneliseLaranja] (ana.west) to[bend left=15] node[midway,left=2mm,font=\tiny]{copia de} (os.west);
         \draw[->,thick,aneliseGris] (app) -- (os);
         \draw[->,thick,aneliseGris] (os) -- (os2);
-        \node[right=0mm of ana.south east,font=\tiny,text width=3cm,anchor=north west](nota){captura requiere privilegios de root};
+        \node[right=0mm of ana.south east,font=\tiny,text width=3cm,anchor=north west](nota){captura requer privilegios de root};
       \end{tikzpicture}
       \end{center}
     \end{column}
@@ -745,7 +745,7 @@
       \end{itemize}
   \end{itemize}
   \begin{exampleblock}{Renovação do exercício}
-    Além do traceroute: levante um servidor HTTP local (\texttt{python3 -m http.server}) e analice con Wireshark o handshake TCP y HTTP/1.1$\rightarrow$HTTP/2 (ALPN).
+    Além do traceroute: levante um servidor HTTP local (\texttt{python3 -m http.server}) e analice com Wireshark o handshake TCP y HTTP/1.1$\rightarrow$HTTP/2 (ALPN).
   \end{exampleblock}
 \end{frame}
 

@@ -26,15 +26,15 @@
   \textbf{Dous tipos de enlaces:}
   \begin{itemize}
     \item \textbf{Punto-a-punto} (ex.: protocolo PPP)
-    \item \textbf{Broadcast} (fío ou medio compartilhado): Ethernet tradicional, 802.11 LAN sen fío
+    \item \textbf{Broadcast} (fio ou medio compartilhado): Ethernet tradicional, 802.11 LAN sem fio
   \end{itemize}
   \begin{block}{Problema central}
-    Canal de comunicación único e compartilhado:
+    Canal de comunicação único e compartilhado:
     \begin{itemize}
-      \item dúas ou máis transmisións simultáneas $\rightarrow$ \textbf{interferencia}
-      \item \textbf{colisión} se un nó recibe dúas ou máis sinais ao mesmo tempo
-      \item protocolo de acceso múltiple $=$ algoritmo distribuído que determina cando cada estación pode transmitir
-      \item \alert{non hai canal out-of-band para coordinación}
+      \item dúas ou mais transmissões simultáneas $\rightarrow$ \textbf{interferência}
+      \item \textbf{colisión} se un nó recibe dúas ou mais sinais ao mesmo tempo
+      \item protocolo de acceso múltiple $=$ algoritmo distribuído que determina quando cada estação pode transmitir
+      \item \alert{não há canal out-of-band para coordinación}
     \end{itemize}
   \end{block}
 \end{frame}
@@ -42,17 +42,17 @@
 \begin{frame}{Protocolo ideal de acceso múltiple}
   Canal de broadcast de taxa $R$ bps. Obxectivos:
   \begin{enumerate}
-    \item Cando un nó quere transmitir, pode envialo a taxa $R$
-    \item Cando $M$ nós queren transmitir, cada un envía a taxa media $R/M$
+    \item Quando un nó quere transmitir, pode envialo a taxa $R$
+    \item Quando $M$ nós queren transmitir, cada un envía a taxa media $R/M$
     \item \textbf{Totalmente descentralizado:}
       \begin{itemize}
         \item ningún nó especial para coordinar
-        \item ningunha sincronización de reloxos nin compartimentos
+        \item ningunha sincronização de reloxos nin compartimentos
       \end{itemize}
     \item \textbf{Simples}
   \end{enumerate}
   \begin{alertblock}{Trade-off}
-    Particionamento (obxectivos 1--2) vs.\ acceso aleatorio (obxectivos 3--4): non se poden ter todos á vez $\rightarrow$ por iso existen distintas familias de protocolos.
+    Particionamento (obxectivos 1--2) vs.\ acceso aleatorio (obxectivos 3--4): não se podem ter todos à vez $\rightarrow$ por iso existen distintas familias de protocolos.
   \end{alertblock}
 \end{frame}
 
@@ -65,16 +65,16 @@
       \node[caja](root){Protocolos MAC};
       \node[caja,left=3cm of root,yshift=0.2cm](part){Particionamento do canal\\(TDMA, FDMA, CDMA)};
       \node[caja,below=1.5cm of root](ale){Acceso aleatorio\\(ALOHA, S-ALOHA, CSMA,\\CSMA/CD, CSMA/CA)};
-      \node[caja,right=3cm of root,yshift=0.2cm](turn){Pasaxe de quenda\\(Polling, Token)};
+      \node[caja,right=3cm of root,yshift=0.2cm](turn){Pasaxe de turno\\(Polling, Token)};
       \draw[fre] (root.south west) to[bend left=10] (part.east);
       \draw[fre] (root.south) -- (ale.north);
       \draw[fre] (root.south east) to[bend right=10] (turn.west);
     \end{tikzpicture}
   \end{center}
   \begin{itemize}
-    \item \textbf{Particionamento:} divide o canal en anacos (tempo, frecuencia, código); aloca un anaco a cada nó
-    \item \textbf{Acceso aleatorio:} o canal non se divide; permítense colisións e ``recupérase''
-    \item \textbf{Pasaxe de quenda:} os nós transmiten nos seus turnos; con máis volume poden usar turnos máis longos
+    \item \textbf{Particionamento:} divide o canal em anacos (tempo, frequência, código); aloca un anaco a cada nó
+    \item \textbf{Acceso aleatorio:} o canal não se divide; permítense colisións e ``recupérase''
+    \item \textbf{Pasaxe de turno:} os nós transmiten nos seus turnos; com mais volume podem usar turnos mais longos
   \end{itemize}
 \end{frame}
 
@@ -82,10 +82,10 @@
 
 \begin{frame}{TDMA --- Time Division Multiple Access}
   \begin{itemize}
-    \item acceso ao canal por ``quendas''
-    \item cada estación controla un \textbf{slot} (compartimento) de tamaño fixo (tempo de transmisión dun paquete) en cada quenda
-    \item divide o tempo en \textbf{quadros temporais} con $N$ slots ($N=$ número de computadores)
-    \item \alert{slots non usados desperdícianse}
+    \item acceso ao canal por ``turnos''
+    \item cada estação controla un \textbf{slot} (compartimento) de tamaño fixo (tempo de transmissão dun pacote) em cada turno
+    \item divide o tempo em \textbf{quadros temporais} com $N$ slots ($N=$ número de computadores)
+    \item \alert{slots não usados desperdícianse}
   \end{itemize}
   \begin{center}
     \begin{tikzpicture}[font=\scriptsize,
@@ -106,15 +106,15 @@
     \end{tikzpicture}
   \end{center}
   \begin{exampleblock}{Exemplo}
-    Rede local con 6 estacións; as 1, 3 e 4 teñen paquetes; os slots 2, 5 e 6 quedan baleiros e desperdícianse.
+    Rede local com 6 estações; as 1, 3 e 4 têm pacotes; os slots 2, 5 e 6 quedan baleiros e desperdícianse.
   \end{exampleblock}
 \end{frame}
 
 \begin{frame}{FDMA --- Frequency Division Multiple Access}
   \begin{itemize}
-    \item o espectro do canal divídese en \textbf{bandas de frecuencia}
-    \item cada estación recibe unha banda
-    \item \alert{tempo de transmisión non usado nas bandas desperdíciase}
+    \item o espectro do canal divídese em \textbf{bandas de frequência}
+    \item cada estação recibe uma banda
+    \item \alert{tempo de transmissão não usado nas bandas desperdíciase}
   \end{itemize}
   \begin{center}
     \begin{tikzpicture}[font=\scriptsize,
@@ -126,7 +126,7 @@
       \node[banda,fill=aneliseVerde!40,below=0.1cm of f3](f4){est. 4 (dato)};
       \node[banda,fill=aneliseGris!15,below=0.1cm of f4](f5){est. 5 (baleira)};
       \node[banda,fill=aneliseGris!15,below=0.1cm of f5](f6){est. 6 (baleira)};
-      \node[right=2mm of f1.east,font=\tiny]{frecuencia};
+      \node[right=2mm of f1.east,font=\tiny]{frequência};
     \end{tikzpicture}
   \end{center}
 \end{frame}
@@ -136,9 +136,9 @@
 \begin{frame}{Protocolos de acceso aleatorio}
   \begin{block}{Ideas base}
     \begin{itemize}
-      \item cando o nó ten un paquete: transmite a toda a taxa $R$
-      \item non hai regra de coordinación a priori
-      \item dúas ou máis transmisións simultáneas $\rightarrow$ \textbf{colisión}
+      \item quando o nó ten un pacote: transmite a toda a taxa $R$
+      \item não há regra de coordinación a priori
+      \item dúas ou mais transmissões simultáneas $\rightarrow$ \textbf{colisión}
     \end{itemize}
   \end{block}
   \begin{block}{O protocolo especifica}
@@ -154,15 +154,15 @@
   \textbf{Suposicións:}
   \begin{itemize}
     \item todos os frames do mesmo tamaño
-    \item tempo dividido en slots (tempo de transmisión dun frame)
+    \item tempo dividido em slots (tempo de transmissão dun frame)
     \item os nós transmiten só ao inicio de slot; están sincronizados
-    \item se 2 ou máis transmiten no slot, todos detectan a colisión
+    \item se 2 ou mais transmiten no slot, todos detectan a colisión
   \end{itemize}
   \textbf{Operación:}
   \begin{itemize}
-    \item cando un nó obtén un novo frame, transmite no próximo slot
-    \item sen colisión: pode enviar o novo frame no próximo slot
-    \item con colisión: retransmite en cada slot subsecuente con probabilidade $p$ ata éxito
+    \item quando un nó obtén un novo frame, transmite no próximo slot
+    \item sem colisión: pode enviar o novo frame no próximo slot
+    \item com colisión: retransmite em cada slot subsecuente com probabilidade $p$ ata éxito
   \end{itemize}
   \begin{center}
     \begin{tikzpicture}[font=\scriptsize,
@@ -188,12 +188,12 @@
 
 \begin{frame}{Eficiencia do Slotted ALOHA}
   \begin{itemize}
-    \item eficiencia $=$ fracción de slots con éxito cando hai moitos nós con moitos frames
-    \item $N$ nós con moitos frames; cada un transmite no slot con probabilidade $p$
+    \item eficiencia $=$ fracción de slots com éxito quando hai muitos nós com muitos frames
+    \item $N$ nós com muitos frames; cada un transmite no slot com probabilidade $p$
     \item prob.\ de éxito dun nó $= p(1-p)^{N-1}$
     \item prob.\ de éxito de calquera nó $= Np(1-p)^{N-1}$
     \item óptimo $p^*$ maximiza $Np(1-p)^{N-1}$
-    \item límite cando $N\to\infty$: $\dfrac{1}{e} = 0{,}37$
+    \item límite quando $N\to\infty$: $\dfrac{1}{e} = 0{,}37$
   \end{itemize}
   \begin{alertblock}{Conclusión}
     No máximo: uso do canal para datos útiles: $\mathbf{37\%}$ do tempo!
@@ -202,11 +202,11 @@
 
 \begin{frame}{ALOHA puro (unslotted)}
   \begin{itemize}
-    \item operación máis simple: \textbf{sen sincronización}
-    \item o paquete envíase sen esperar inicio de slot
+    \item operación mais simple: \textbf{sem sincronização}
+    \item o pacote envíase sem esperar inicio de slot
     \item a probabilidade de colisión aumenta:
       \begin{itemize}
-        \item paquete enviado en $t_0$ colide con outros enviados en $[t_0-1,\ t_0+1]$
+        \item pacote enviado em $t_0$ colide com outros enviados em $[t_0-1,\ t_0+1]$
       \end{itemize}
   \end{itemize}
   \begin{block}{Eficiencia}
@@ -226,15 +226,15 @@
   \begin{block}{Idea}
     \textbf{Escoita antes de transmitir:}
     \begin{itemize}
-      \item se o canal parece baleiro $\rightarrow$ transmite o paquete
-      \item se o canal está ocupado $\rightarrow$ adía a transmisión
+      \item se o canal parece baleiro $\rightarrow$ transmite o pacote
+      \item se o canal está ocupado $\rightarrow$ adía a transmissão
     \end{itemize}
     \emph{``Non interrumpas aos demáis!''}
   \end{block}
   \begin{block}{Colisións no CSMA}
     \begin{itemize}
-      \item o atraso de propagación implica que dous nós poden non ouvir a transmisión do outro
-      \item colisión: todo o tempo de transmisión do paquete desperdíciase
+      \item o atraso de propagación implica que dous nós podem não ouvir a transmissão do outro
+      \item colisión: todo o tempo de transmissão do pacote desperdíciase
       \item \textbf{importancia da distancia e do atraso de propagación}
     \end{itemize}
   \end{block}
@@ -243,19 +243,19 @@
 \begin{frame}{CSMA/CD --- Collision Detection}
   \begin{itemize}
     \item detección de portadora e deferencia como CSMA
-    \item colisións detectadas en tempo máis curto
-    \item transmisións con colisión interrómpense $\rightarrow$ menos desperdicio
+    \item colisións detectadas em tempo mais curto
+    \item transmissões com colisión interrómpense $\rightarrow$ menos desperdicio
   \end{itemize}
   \begin{block}{Como se detecta a colisión?}
     \begin{itemize}
-      \item \textbf{fácil en LANs cableadas}: medición da intensidade do sinal, comparación do transmitido e recibido
-      \item \textbf{difícil en LANs sen fío}: o receptor está apagado mentres transmite!
+      \item \textbf{fácil em LANs cableadas}: medición da intensidade do sinal, comparación do transmitido e recibido
+      \item \textbf{difícil em LANs sem fio}: o receptor está apagado mentres transmite!
     \end{itemize}
   \end{block}
   \begin{exampleblock}{Ethernet usa CSMA/CD}
     \begin{itemize}
-      \item sen slots; \emph{carrier sense}: non transmite se detecta outra estación
-      \item \emph{collision detection}: aborta ao detectar outra transmisión
+      \item sem slots; \emph{carrier sense}: não transmite se detecta outra estação
+      \item \emph{collision detection}: aborta ao detectar outra transmissão
       \item \emph{random access}: antes de retransmitir espera un período aleatorio
     \end{itemize}
   \end{exampleblock}
@@ -263,45 +263,45 @@
 
 \begin{frame}{Algoritmo CSMA/CD da Ethernet}
   \begin{enumerate}
-    \item A estación recibe un datagrama da capa de rede e crea un frame
+    \item A estação recibe un datagrama da capa de rede e crea un frame
     \item Se detecta canal libre, comeza a transmitir; se ocupado, espera ata que quede libre
-    \item Se transmite o frame completo sen detectar outra transmisión $\rightarrow$ ``éxito!''
-    \item Se detecta outra transmisión mentres transmite $\rightarrow$ aborta e envía \emph{jam signal} (48 bits)
-    \item Tras abortar: \emph{exponential backoff}: tras a $m$-ésima colisión, elixe $K\in\{0,1,\ldots,2^m-1\}$, espera $K\cdot 512$ bit-times e volve ao paso 2
+    \item Se transmite o frame completo sem detectar outra transmissão $\rightarrow$ ``éxito!''
+    \item Se detecta outra transmissão mentres transmite $\rightarrow$ aborta e envía \emph{jam signal} (48 bits)
+    \item Tras abortar: \emph{exponential backoff}: após a $m$-ésima colisión, seleciona $K\in\{0,1,\ldots,2^m-1\}$, espera $K\cdot 512$ bit-times e volve ao paso 2
   \end{enumerate}
   \begin{exampleblock}{Valores típicos}
     Bit time (10~Mbps) $= 0{,}1\,\mu$s; $K=1023 \Rightarrow$ espera $\approx 50$~ms.
-    Backoff: primeira colisión $K\in\{0,1\}$; segunda $\{0,1,2,3\}$; tras 10 ou máis $\{0,\ldots,1023\}$.
+    Backoff: primeira colisión $K\in\{0,1\}$; segunda $\{0,1,2,3\}$; após 10 ou mais $\{0,\ldots,1023\}$.
   \end{exampleblock}
 \end{frame}
 
 \begin{frame}{Eficiencia do CSMA/CD}
   \begin{itemize}
     \item $t_{\text{prop}}$ = propagación máxima entre 2 nós na LAN
-    \item $t_{\text{trans}}$ = tempo de transmisión dun frame de tamaño máximo
+    \item $t_{\text{trans}}$ = tempo de transmissão dun frame de tamaño máximo
   \end{itemize}
   \begin{block}{Ethernet 10~Mbps}
     $t_{\text{prop}} = 51{,}2\,\mu$s, $t_{\text{trans}} = 1{,}2$~ms $\Rightarrow$ eficiencia $\approx 82{,}6\%$.
   \end{block}
   \begin{itemize}
-    \item tende a 1 cando $t_{\text{prop}}\to 0$ ou $t_{\text{trans}}\to\infty$
-    \item \textbf{moito mellor que ALOHA}, e segue sendo descentralizado, simple e barato
+    \item tende a 1 quando $t_{\text{prop}}\to 0$ ou $t_{\text{trans}}\to\infty$
+    \item \textbf{muito melhor que ALOHA}, e segue sendo descentralizado, simple e barato
   \end{itemize}
   \begin{alertblock}{Nota actualizada}
     Ethernet moderno (switches) é full-duplex; CSMA/CD queda como material histórico.
   \end{alertblock}
 \end{frame}
 
-\section{Pasaxe de quenda}
+\section{Pasaxe de turno}
 
-\begin{frame}{Protocolos MAC con pasaxe de quenda}
+\begin{frame}{Protocolos MAC com pasaxe de turno}
   \begin{columns}
     \begin{column}{0.5\textwidth}
       \textbf{Por que outra familia?}
       \begin{itemize}
-        \item particionamento: eficiente con carga alta, ineficiente con carga baixa (un nó só recibe $1/N$)
-        \item acceso aleatorio: eficiente con carga baixa (un nó usa todo), colisións con carga alta
-        \item \textbf{pasaxe de quenda}: busca o mellor de ambos
+        \item particionamento: eficiente com carga alta, ineficiente com carga baixa (un nó só recibe $1/N$)
+        \item acceso aleatorio: eficiente com carga baixa (un nó usa todo), colisións com carga alta
+        \item \textbf{pasaxe de turno}: busca o melhor de ambos
       \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
@@ -312,7 +312,7 @@
       \end{itemize}
       \textbf{Token passing}
       \begin{itemize}
-        \item un token pasa de nó a nó secuencialmente (mensaxe token)
+        \item un token pasa de nó a nó secuencialmente (mensagem token)
         \item problemas: overhead de token, latencia, punto único de falla (token)
       \end{itemize}
     \end{column}
@@ -335,7 +335,7 @@
 
 \section{CSMA/CA e 802.11}
 
-\begin{frame}{Wireless Ethernet: por que non CSMA/CD?}
+\begin{frame}{Wireless Ethernet: por que não CSMA/CD?}
   \begin{columns}
     \begin{column}{0.55\textwidth}
       \textbf{802.3 (Ethernet)}: CSMA/CD
@@ -345,15 +345,15 @@
       \textbf{802.11 (WLAN)}: CSMA/CA (Collision Avoidance)
       \begin{itemize}
         \item tanto A como C ``senten'' o canal desocupado ao mesmo tempo e ambos envían
-        \item co CSMA/CD a colisión pode detectarse no emisor; \alert{por que non co CSMA/CA?}
+        \item co CSMA/CD a colisión pode detectarse no emisor; \alert{por que não co CSMA/CA?}
       \end{itemize}
     \end{column}
     \begin{column}{0.45\textwidth}
       \begin{block}{Razóns}
         \begin{itemize}
-          \item comunicación \textbf{half-duplex}
-          \item grande diferenza entre potencia de transmisión e recepción
-          \item medio sen fío
+          \item comunicação \textbf{half-duplex}
+          \item grande diferenza entre potência de transmissão e recepção
+          \item medio sem fio
         \end{itemize}
       \end{block}
       \begin{center}
@@ -375,18 +375,18 @@
 \begin{frame}{IEEE 802.11 MAC: CSMA/CA}
   \begin{block}{Emisor 802.11 CSMA}
     \begin{itemize}
-      \item se o canal é sentido baleiro por \textbf{DIFS} segundos $\rightarrow$ envía o frame completo (sen detección de colisión)
+      \item se o canal é sentido baleiro por \textbf{DIFS} segundos $\rightarrow$ envía o frame completo (sem detección de colisión)
       \item se o canal é sentido ocupado $\rightarrow$ \textbf{binary backoff}
     \end{itemize}
   \end{block}
   \begin{block}{Receptor 802.11 CSMA}
     \begin{itemize}
-      \item se o frame recíbese OK $\rightarrow$ retorna \textbf{ACK} tras \textbf{SIFS} segundos
+      \item se o frame recíbese OK $\rightarrow$ retorna \textbf{ACK} após \textbf{SIFS} segundos
     \end{itemize}
   \end{block}
   \begin{exampleblock}{NAV --- Network Allocation Vector}
     \begin{itemize}
-      \item o frame 802.11 ten un campo co tempo de transmisión
+      \item o frame 802.11 ten un campo co tempo de transmissão
       \item outros nós (escoltando) difiren o acceso por \textbf{NAV} unidades de tempo
     \end{itemize}
   \end{exampleblock}
@@ -397,15 +397,15 @@
     \begin{column}{0.5\textwidth}
       \begin{itemize}
         \item gran diferenza na forza do sinal, problemas do canal físico (\emph{shadowing})
-        \item dúas estacións non poden comunicarse na mesma área
+        \item dúas estações não podem comunicarse na mesma área
       \end{itemize}
       \textbf{Terminal oculto:}
       \begin{enumerate}
-        \item A e C non se ouen
+        \item A e C não se ouen
         \item A transmite a B
-        \item C quere transmitir a B; C non pode recibir A; C sente o medio desocupado (\emph{carrier sense fails})
-        \item colisión en B
-        \item A non pode detectar a colisión (\emph{collision detection fails})
+        \item C quere transmitir a B; C não pode recibir A; C sente o medio desocupado (\emph{carrier sense fails})
+        \item colisión em B
+        \item A não pode detectar a colisión (\emph{collision detection fails})
         \item A está ``oculto'' para C
       \end{enumerate}
     \end{column}
@@ -419,12 +419,12 @@
           \node[n,right=1.8cm of B](C){C};
           \draw[->,thick,aneliseLaranja] (A) -- node[midway,above=1mm,font=\tiny]{TX} (B);
           \draw[->,thick,aneliseLaranja] (C) -- node[midway,below=1mm,font=\tiny]{TX} (B);
-          \draw[dashed,thick,aneliseGris] (A) to[bend left=25] node[midway,below=4mm,font=\tiny]{non se oeñen} (C);
-          \node[below=2mm of B,font=\tiny]{colisión en B};
+          \draw[dashed,thick,aneliseGris] (A) to[bend left=25] node[midway,below=4mm,font=\tiny]{não se oeñen} (C);
+          \node[below=2mm of B,font=\tiny]{colisión em B};
         \end{tikzpicture}
       \end{center}
       \begin{alertblock}{Consecuencia}
-        802.11 non usa detección de portadora pura; colisións só dedúcense tras a transmisión (CRC / ausencia de ACK).
+        802.11 não usa detección de portadora pura; colisións só dedúcense após a transmissão (CRC / ausencia de ACK).
       \end{alertblock}
     \end{column}
   \end{columns}
@@ -435,12 +435,12 @@
     \begin{column}{0.5\textwidth}
       \textbf{DIFS --- Distributed Inter Frame Space}
       \begin{itemize}
-        \item unha estación pode transmitir só se sente o canal desocupado por un tempo \textbf{DIFS}
-        \item obxectivo: separar datos e ACK con IFS distintos (SIFS $<$ DIFS)
+        \item uma estação pode transmitir só se sente o canal desocupado por un tempo \textbf{DIFS}
+        \item objetivo: separar datos e ACK com IFS distintos (SIFS $<$ DIFS)
       \end{itemize}
       \textbf{Backoff}
       \begin{itemize}
-        \item cando o canal inicialmente está ocupado, a estación debe diferir; cando queda desocupado por DIFS, difire aínda por un tempo aleatorio (\emph{backoff time})
+        \item quando o canal inicialmente está ocupado, a estação deve diferir; quando queda desocupado por DIFS, difire ainda por un tempo aleatorio (\emph{backoff time})
         \item \textbf{slotted backoff}: extraer $K\in(0,W-1)$; decrementar cada slot-time
         \item \textbf{backoff freezing}: o contador ``conxélase'' mentres o canal estea ocupado
       \end{itemize}
@@ -449,9 +449,9 @@
       \textbf{Regras de backoff}
       \begin{itemize}
         \item primeiro: $K\in(0,\mathrm{CW}_{\min})$
-        \item sen éxito: $K\in(0, 2(\mathrm{CW}_{\min}+1)-1)$
+        \item sem éxito: $K\in(0, 2(\mathrm{CW}_{\min}+1)-1)$
         \item novamente: $K\in(0, 2^2(\mathrm{CW}_{\min}+1)-1)$
-        \item tras $m$ fallos: $K\in(0, 2^m(\mathrm{CW}_{\min}+1)-1)$
+        \item após $m$ fallos: $K\in(0, 2^m(\mathrm{CW}_{\min}+1)-1)$
       \end{itemize}
       \begin{exampleblock}{802.11 clásico}
         $\mathrm{CW}_{\min}=31$, $\mathrm{CW}_{\max}=1023$ ($m=5$). Resultado: \textbf{backoff exponencial}.
@@ -473,14 +473,14 @@
     \item introducido por dúas razóns:
       \begin{enumerate}
         \item resolve o problema do \textbf{terminal oculto}
-        \item aumenta o throughput con paquetes longos
+        \item aumenta o throughput com pacotes longos
       \end{enumerate}
   \end{itemize}
   \begin{block}{Mecanismo}
     \begin{itemize}
       \item o transmissor envía \textbf{RTS} curto
       \item o receptor responde \textbf{CTS}
-      \item CTS reserva o canal para o transmissor, notificando ás outras estacións (posiblemente ocultas)
+      \item CTS reserva o canal para o transmissor, notificando às outras estações (posiblemente ocultas)
       \item RTS e CTS levan o tempo que o canal estará ocupado $\rightarrow$ as outras actualizan o \textbf{NAV} (\emph{virtual carrier sensing})
     \end{itemize}
   \end{block}
@@ -494,7 +494,7 @@
     \begin{tikzpicture}[font=\scriptsize,
         n/.style={draw,circle,minimum size=7mm,fill=aneliseAzul!15,inner sep=0.5mm},
       ]
-      \node[n](A){A (orixe)};
+      \node[n](A){A (origem)};
       \node[n,right=2.2cm of A](B){B (destino)};
       \node[n,above=1.5cm of B](C){C (outros)};
       \node[n,below=1.5cm of B](D){D (outros)};
@@ -506,21 +506,21 @@
     \end{tikzpicture}
   \end{center}
   \begin{itemize}
-    \item evita colisións con estacións ocultas
+    \item evita colisións com estações ocultas
     \item NAV $=$ acceso diferido (\emph{virtual carrier sensing})
-    \item 802.11 permite CSMA, CSMA/CA con reservas, e PCF (polling desde o AP)
+    \item 802.11 permite CSMA, CSMA/CA com reservas, e PCF (polling desde o AP)
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Throughput do RTS/CTS e relación IFS}
   \begin{columns}
     \begin{column}{0.5\textwidth}
-      \textbf{Cando convén RTS/CTS?}
+      \textbf{Quando convén RTS/CTS?}
       \begin{itemize}
         \item RTS/CTS contras: overhead maior
         \item RTS/CTS pros: duración do tempo de colisión reducida
-        \item convén para \textbf{paquetes longos} e \textbf{moitos terminais} (colisión!)
-        \item máis robusto ante maior número de usuarios e configuración de $\mathrm{CW}_{\min}$
+        \item convén para \textbf{pacotes longos} e \textbf{muitos terminais} (colisión!)
+        \item mais robusto ante maior número de usuários e configuración de $\mathrm{CW}_{\min}$
       \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
@@ -528,12 +528,12 @@
       \begin{center}
         \begin{tikzpicture}[font=\scriptsize]
           \node[draw,fill=aneliseGris!14,rounded corners=2mm,text width=4.4cm,align=center](ifs){SIFS $<$ PIFS $<$ DIFS};
-          \node[draw,fill=aneliseVerde!12,rounded corners=2mm,below=4mm of ifs,text width=4.6cm,align=center](pcf){PIFS usado polo PCF\\ (point coordination function)};
+          \node[draw,fill=aneliseVerde!12,rounded corners=2mm,below=4mm of ifs,text width=4.6cm,align=center](pcf){PIFS usado pelo PCF\\ (point coordination function)};
           \node[draw,fill=aneliseLaranja!12,rounded corners=2mm,below=4mm of pcf,text width=4.8cm,align=center](nota){PCF nunca foi implementado};
         \end{tikzpicture}
       \end{center}
       \begin{itemize}
-        \item PCF: esquema baseado en polling desde o AP (opcional, case nunca implementado)
+        \item PCF: esquema baseado em polling desde o AP (opcional, case nunca implementado)
       \end{itemize}
     \end{column}
   \end{columns}
@@ -550,7 +550,7 @@
       \draw[->,thick,aneliseLaranja] (TX) -- node[midway,above=1mm,font=\tiny]{frame} (RX);
       \draw[->,thick,aneliseLaranja] (TX) -- node[midway,left=1mm,font=\tiny]{frame} (C);
       \draw[<->,thick,aneliseVerde] (RX) -- node[midway,above=2mm,font=\tiny]{ACK} (C);
-      \node[draw,fill=aneliseGris!12,rounded corners=2mm,below=5mm of RX,text width=5.2cm,align=center](ex){C recibe o frame de TX; C non alcanza RX; pero C setea NAV e protexe o ACK de RX};
+      \node[draw,fill=aneliseGris!12,rounded corners=2mm,below=5mm of RX,text width=5.2cm,align=center](ex){C recibe o frame de TX; C não alcanza RX; pero C setea NAV e protexe o ACK de RX};
     \end{tikzpicture}
   \end{center}
 \end{frame}
@@ -561,23 +561,23 @@
   \begin{columns}
     \begin{column}{0.55\textwidth}
       \begin{itemize}
-        \item mecanismo de acceso baseado en \textbf{quenda} (\emph{polling})
+        \item mecanismo de acceso baseado em \textbf{turno} (\emph{polling})
         \item o acceso decide o \textbf{point coordinator} (PC): tipicamente o AP
-        \item acceso libre de contención (sen colisións no canal)
-        \item parte \textbf{opcional} da especificación $\rightarrow$ case nunca implementado; posible uso con 802.11e
-        \item os APs envían \textbf{beacons} en intervalos regulares (0,1~s)
+        \item acceso libre de contención (sem colisións no canal)
+        \item parte \textbf{opcional} da especificación $\rightarrow$ case nunca implementado; posible uso com 802.11e
+        \item os APs envían \textbf{beacons} em intervalos regulares (0,1~s)
       \end{itemize}
     \end{column}
     \begin{column}{0.45\textwidth}
       \textbf{Dúas períodos entre beacons:}
       \begin{itemize}
-        \item \textbf{CFP} (Contention Free Period): o AP envía \emph{CF-Poll} a cada estación
+        \item \textbf{CFP} (Contention Free Period): o AP envía \emph{CF-Poll} a cada estação
         \item \textbf{CP} (Contention Period): úsase DCF
       \end{itemize}
       \begin{alertblock}{Limitacións}
         \begin{itemize}
-          \item transición CP$\to$CFP non determinista (espera a fin da transmisión)
-          \item round robin interroga todas as estacións, mesmo sen datos $\rightarrow$ problemas de escalabilidade
+          \item transición CP$\to$CFP não determinista (espera a fin da transmissão)
+          \item round robin interroga todas as estações, mesmo sem datos $\rightarrow$ problemas de escalabilidade
         \end{itemize}
       \end{alertblock}
     \end{column}
@@ -587,17 +587,17 @@
 \begin{frame}{Resumo dos protocolos MAC}
   \begin{block}{Como se xestiona un canal compartido?}
     \begin{enumerate}
-      \item \textbf{Particionamento do canal} (tempo, frecuencia, código): TDMA, FDMA, CDMA
+      \item \textbf{Particionamento do canal} (tempo, frequência, código): TDMA, FDMA, CDMA
       \item \textbf{Particionamento aleatorio (dinámico)}: ALOHA, S-ALOHA, CSMA, CSMA/CD
         \begin{itemize}
-          \item detección de portadora: fácil en cables, difícil en sen fío
+          \item detección de portadora: fácil em cables, difícil em sem fio
           \item CSMA/CD: Ethernet \quad CSMA/CA: 802.11
         \end{itemize}
-      \item \textbf{Pasaxe de quenda}: polling centralizado, token
+      \item \textbf{Pasaxe de turno}: polling centralizado, token
     \end{enumerate}
   \end{block}
   \begin{alertblock}{Evolución (atualizado)}
-    802.11e/ax (OFDMA, QoS), 802.11s mesh, 5G NR (scheduling centralizado) son evolucións destas ideas.
+    802.11e/ax (OFDMA, QoS), 802.11s mesh, 5G NR (scheduling centralizado) son evoluções destas ideas.
   \end{alertblock}
 \end{frame}
 
