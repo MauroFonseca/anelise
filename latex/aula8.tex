@@ -1,0 +1,218 @@
+% !TEX program = tectonic
+% =============================================================================
+%  AULA 8 — IoT sem Fio e LPWAN
+%  Curso: Redes sem Fio  |  Profa. Anelise Munaretto
+%  Conteúdo: LoRaWAN, Sigfox, NB-IoT, LTE-M, protocolos de aplicação.
+%  Compilar: tectonic aula8.tex
+% =============================================================================
+\documentclass[aspectratio=169,11pt]{beamer}
+\input{preamble.tex}
+
+\title[Redes sem Fio]{Redes sem Fio\\ IoT sem Fio e LPWAN}
+\subtitle{Aula 8}
+\author[Anelise Munaretto]{Profa. Anelise Munaretto}
+\institute[Curso]{Redes sem Fio --- Ciência da Computação}
+\date{2026}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+\section{Introdução}
+
+\begin{frame}{IoT --- Internet das Coisas}
+  \begin{block}{Definição}
+    Rede de objetos físicos (\emph{coisas}) equipados com sensores, atuadores e conectividade, capazes de coletar e trocar dados.
+  \end{block}
+  \begin{itemize}
+    \item Projeção: 30--50 bilhões de dispositivos IoT até 2030
+    \item Desafios: bateria, alcance, custo, densidade, segurança
+  \end{itemize}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Tecnologias LPWAN}
+      \begin{itemize}
+        \item LoRaWAN
+        \item Sigfox
+        \item NB-IoT / LTE-M
+        \item Wi-SUN, mioty
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Atributos típicos}
+      \begin{itemize}
+        \item alcance: 2--15~km (rural até 50~km)
+        \item taxa: 0,1--250~kbps
+        \item bateria: 5--10 anos
+        \item custo de módulo: \$2--\$10
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{LoRaWAN}
+
+\begin{frame}{LoRaWAN --- arquitetura e operação}
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \textbf{Camada física: LoRa (CSS)}
+      \begin{itemize}
+        \item Chirp Spread Spectrum (sub-GHz: 868/915~MHz)
+        \item 6 \emph{spreading factors} (SF7--SF12)
+        \item sensibilidade até $-137$~dBm
+      \end{itemize}
+      \textbf{Camada MAC: LoRaWAN}
+      \begin{itemize}
+        \item topologia \emph{star-of-stars}
+        \item \textbf{Classes}: A (ALOHA), B (beacon), C (escuta contínua)
+        \item \emph{Adaptive Data Rate} (ADR)
+        \item autenticação AES-128 (Join-Request/Accept)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize,
+            nd/.style={draw,circle,minimum size=5mm,fill=aneliseAzul!15,inner sep=0.4mm},
+            gw/.style={draw,rounded corners=1.5mm,fill=aneliseLaranja!25,inner sep=1mm,text width=1.8cm,align=center},
+          ]
+          \node[nd](s1){S};
+          \node[nd,right=0.8cm of s1](s2){S};
+          \node[nd,right=0.8cm of s2](s3){S};
+          \node[gw,above=1.4cm of s2](gw1){Gateway};
+          \node[gw,right=1.4cm of gw1](gw2){Gateway};
+          \node[draw,fill=aneliseVerde!20,rounded corners=1.5mm,above=1.4cm of gw2,text width=2.2cm,align=center](ns){Servidor\\de rede};
+          \draw[thick,aneliseVerde] (s1) -- (gw1);
+          \draw[thick,aneliseVerde] (s2) -- (gw1);
+          \draw[thick,aneliseVerde] (s3) -- (gw2);
+          \draw[thick,aneliseLaranja] (gw1) -- (gw2);
+          \draw[thick,aneliseLaranja] (gw2) -- (ns);
+          \node[below=1mm of s1,font=\tiny]{\emph{end-device}};
+        \end{tikzpicture}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{LoRaWAN: classes e ADR}
+  \begin{itemize}
+    \item \textbf{Classe A}: uplink seguido de duas janelas de downlink (mínimo consumo)
+    \item \textbf{Classe B}: janelas de recepção periódicas (beacon)
+    \item \textbf{Classe C}: receptor sempre ligado (downlink contínuo)
+  \end{itemize}
+  \begin{block}{ADR --- Adaptive Data Rate}
+    \begin{itemize}
+      \item A rede otimiza SF e potência de transmissão
+      \item SF12 $\rightarrow$ maior alcance, menor taxa (290~bps)
+      \item SF7 $\rightarrow$ menor alcance, maior taxa (5,4~kbps)
+      \item Economia de bateria (até 10 anos com 2 pilhas AA)
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\section{Sigfox}
+
+\begin{frame}{Sigfox --- UNB (Ultra-Narrow Band)}
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \begin{itemize}
+        \item Banda ISM sub-GHz (868/915~MHz)
+        \item Largura de canal: 100~Hz (ultra-estreita)
+        \item Uplink: 140 mensagens/dia, 100~bps
+        \item Downlink: 4 mensagens/dia (opcional)
+        \item Alcance: 10--50~km (rural)
+        \item Modelo de operadora (SIGFOX)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{block}{Comparativo LoRaWAN vs.\ Sigfox}
+        \begin{itemize}
+          \item LoRaWAN: bidirecional, flexível, redes privadas
+          \item Sigfox: ultra-simples, unidirecional, operadora
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{NB-IoT e LTE-M}
+
+\begin{frame}{NB-IoT e LTE-M (3GPP)}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{NB-IoT (Narrowband IoT)}
+      \begin{itemize}
+        \item 200~kHz, dentro da banda LTE
+        \item taxa: até 250~kbps (DL), 20~kbps (UL)
+        \item penetração indoor superior
+        \item sem mobilidade (fixo/estacionário)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{LTE-M (eMTC)}
+      \begin{itemize}
+        \item 1,4~MHz, dentro da banda LTE
+        \item taxa: até 1~Mbps
+        \item suporta mobilidade e \emph{voice}
+        \item ideal para rastreadores, wearables
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \vspace{0.2cm}
+  \begin{block}{Vantagens sobre LPWAN não-celular}
+    \begin{itemize}
+      \item QoS garantida (recurso dedicado)
+      \item segurança nativa (SIM, AKA)
+      \item integração com 5G core (mMTC)
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\section{Protocolos de aplicação}
+
+\begin{frame}{Protocolos de aplicação para IoT}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{MQTT}
+      \begin{itemize}
+        \item \emph{Subscribe/Publish} via broker
+        \item leve, suporta QoS 0/1/2
+        \item padrão de facto para IoT
+      \end{itemize}
+      \textbf{CoAP}
+      \begin{itemize}
+        \item UDP + REST (como HTTP)
+        \item multicast nativo
+        \item muito usado em Constrained RESTful Environments
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{LwM2M (Lightweight M2M)}
+      \begin{itemize}
+        \item gerenciamento de dispositivo
+        \item sobre CoAP ou MQTT
+        \item padrão OMA SpecWorks
+      \end{itemize}
+      \textbf{HTTP/2 e gRPC}
+      \begin{itemize}
+        \item para gateways/pontos de agregação
+        \item streaming bidirecional
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Bibliografia}
+
+\begin{frame}{Bibliografia}
+  \begin{itemize}
+    \item LoRa Alliance, \emph{LoRaWAN 1.0.4 Specification}, 2020
+    \item 3GPP TS 36.300, \emph{Evolved Universal Terrestrial Radio Access (E-UTRA) and Evolved Packet Core (EPC)}
+    \item 3GPP TR 45.820, \emph{Cellular system support for ultra-low complexity and low throughput Internet of Things (CIoT)}
+    \item J. de Carvalho Silva et al., ``LoRaWAN --- A low power WAN protocol for IoT: A review and opportunities'', \emph{Computer Networks}, 2017
+    \item MQTT v5.0 OASIS Standard, 2019
+  \end{itemize}
+\end{frame}
+
+\end{document}

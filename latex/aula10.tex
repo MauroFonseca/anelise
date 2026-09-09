@@ -1,0 +1,165 @@
+% !TEX program = tectonic
+% =============================================================================
+%  AULA 10 — Drones, Satélites e Redes Não Terrestres (NTN)
+%  Curso: Redes sem Fio  |  Profa. Anelise Munaretto
+%  FANET, UAV, LEO satélite, 3GPP NTN.
+%  Compilar: tectonic aula10.tex
+% =============================================================================
+\documentclass[aspectratio=169,11pt]{beamer}
+\input{preamble.tex}
+
+\title[Redes sem Fio]{Redes sem Fio\\ Drones, Satélites e\\ Redes Não Terrestres}
+\subtitle{Aula 10}
+\author[Anelise Munaretto]{Profa. Anelise Munaretto}
+\institute[Curso]{Redes sem Fio --- Ciência da Computação}
+\date{2026}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+\section{FANET}
+
+\begin{frame}{FANET --- Flying Ad-Hoc Network}
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \textbf{Rede formada por VANTs (UAVs)}
+      \begin{itemize}
+        \item Comunicação multiplataforma (drone a drone)
+        \item Nós com alta mobilidade (até 100~km/h)
+        \item Topologia 3D em mudança constante
+        \item Desafios:
+          \begin{itemize}
+            \item link budget variável
+            \item handover frequente
+            \item energia limitada (bateria)
+            \item roteamento 3D
+          \end{itemize}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \textbf{Aplicações}
+      \begin{itemize}
+        \item vigilância e monitoramento
+        \item agricultura de precisão
+        \item entrega de pacotes
+        \item busca e salvamento
+        \item mapeamento 3D
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \begin{center}
+    \begin{tikzpicture}[font=\scriptsize,
+        d/.style={draw,circle,minimum size=5mm,fill=aneliseAzul!15,inner sep=0.4mm},
+      ]
+      \node[d](d1){};
+      \node[d,right=1.6cm of d1](d2){};
+      \node[d,above=1.2cm of d2](d3){};
+      \node[d,right=1.6cm of d2](d4){};
+      \node[d,below=1.2cm of d4](d5){};
+      \draw[thick,aneliseLaranja] (d1) -- (d2) -- (d3);
+      \draw[thick,aneliseLaranja] (d2) -- (d4) -- (d5);
+      \draw[dashed,thick,aneliseGris] (d3) to[bend left=20] (d4);
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\section{NTN}
+
+\begin{frame}{Redes Não Terrestres (NTN) --- 3GPP}
+  \begin{block}{Definição}
+    Redes que utilizam plataformas aerotransportadas ou espaciais (satélites LEO/MEO/GEO, HAPS, UAVs).
+  \end{block}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Categorias}
+      \begin{itemize}
+        \item \textbf{LEO}: 300--1500~km, latência 20--40~ms
+        \item \textbf{MEO}: 7000--25000~km, latência 50--80~ms
+        \item \textbf{GEO}: 35~786~km, latência $>$ 250~ms
+        \item \textbf{HAPS}: 18--25~km (estratosfera)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Integração 5G}
+      \begin{itemize}
+        \item 3GPP Rel.\ 17 (2022): suporte básico NTN
+        \item Rel.\ 18 (2024): NTN NR, IoT-NTN
+        \item Desafios: Doppler elevado, atraso de propagação, handover entre satélites
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Constelações LEO: Starlink, OneWeb, Kuiper}
+  \begin{itemize}
+    \item \textbf{Starlink} (SpaceX): $>$ 7000 satélites, banda Ku/Ka/E, laser ISL, latência 20--40~ms
+    \item \textbf{OneWeb}: ~650 satélites, banda Ku, parceria com Eutelsat
+    \item \textbf{Project Kuiper} (Amazon): ~3200 satélites, banda Ka
+    \item \textbf{Telesat Lightspeed}: LEO, foco em backhaul corporativo
+  \end{itemize}
+  \begin{center}
+    \begin{tikzpicture}[font=\scriptsize,
+        t/.style={draw,rectangle,fill=aneliseLaranja!20,rounded corners=1mm,inner sep=1mm},
+        s/.style={draw,circle,fill=aneliseAzul!15,inner sep=0.5mm},
+      ]
+      \node[t](terra){Terminal};
+      \node[s,above=1.6cm of terra](s1){Sat};
+      \node[s,above=1.2cm of s1](s2){Sat};
+      \node[s,above=1.2cm of s2](s3){Sat};
+      \node[t,above=1.6cm of s3](gw){Gateway};
+      \draw[thick,aneliseVerde] (terra) -- (s1) -- (s2) -- (s3) -- (gw);
+      \node[right=1mm of s2,font=\tiny]{enlace laser ISL};
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\section{Desafios}
+
+\begin{frame}{Desafios de comunicação com drones e NTN}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Mobilidade 3D}
+      \begin{itemize}
+        \item roteamento geográfico adaptativo (GPSR, GRP)
+        \item predição de trajetória com ML
+        \item handover suave entre drones/satélites
+      \end{itemize}
+      \textbf{Energia}
+      \begin{itemize}
+        \item otimização de rota para economizar bateria
+        \item energy harvesting (painéis solares em UAV/HAPS)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Atenuação e Doppler}
+      \begin{itemize}
+        \item alta atenuação em mmWave (drone $\rightarrow$ solo)
+        \item efeito Doppler elevado (satélite LEO a 7,5~km/s)
+        \item pre-compensação de frequência
+      \end{itemize}
+      \textbf{Regulatório}
+      \begin{itemize}
+        \item espectro dedicado vs.\ ISM
+        \item licenciamento por país
+        \item segurança e privacidade
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Bibliografia}
+
+\begin{frame}{Bibliografia}
+  \begin{itemize}
+    \item 3GPP TR 38.811, \emph{Study on NR to support NTN}
+    \item 3GPP TR 38.821, \emph{Solutions for NR to support NTN}
+    \item IEEE Commun. Mag., Special Issue on 5G NTN, 2022
+    \item O. S. Oubbati et al., ``A survey on UAV-aided vehicular networks'', \emph{IEEE Commun. Surv. Tut.}, 2020
+    \item M. Mozaffari et al., ``A tutorial on UAVs for wireless networks'', \emph{IEEE Commun. Surv. Tut.}, 2019
+  \end{itemize}
+\end{frame}
+
+\end{document}

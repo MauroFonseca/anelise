@@ -1,8 +1,8 @@
-# Compilar todas las aulas y el informe de mejoras
-# Requisito: tener `tectonic` instalado (https://tectonic-typesetting.github.io)
+# Compilar todas as aulas e o informe de melhorias
+# Requisito: ter `tectonic` instalado
 #   brew install tectonic   (macOS)
 
-AULAS  = aula1 aula2 aula3 aula4 aula5 aula6
+AULAS  = aula1 aula2 aula3 aula4 aula5 aula6 aula7 aula8 aula9 aula10 aula11 aula12
 PDFS   = $(AULAS:=.pdf) informe_melloras.pdf
 
 all: $(PDFS)
@@ -10,7 +10,7 @@ all: $(PDFS)
 %.pdf: %.tex preamble.tex
 	tectonic -X compile --keep-intermediates $*.tex
 
-informe_melloras.pdf: inform ../docs/informe_melloras.tex
+informe_melloras.pdf: informe ../docs/informe_melloras.tex
 	tectonic -X compile --keep-intermediates ../docs/informe_melloras.tex
 
 clean:

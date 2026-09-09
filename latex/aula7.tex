@@ -1,0 +1,240 @@
+% !TEX program = tectonic
+% =============================================================================
+%  AULA 7 — Redes sem Fio: 5G e Redes Móveis de Nova Geração
+%  Curso: Redes sem Fio  |  Profa. Anelise Munaretto
+%  Conteúdo atualizado 2026: 5G SA/NSA, network slicing, MEC, mMIMO, mmWave.
+%  Compilar: tectonic aula7.tex
+% =============================================================================
+\documentclass[aspectratio=169,11pt]{beamer}
+\input{preamble.tex}
+
+\title[Redes sem Fio]{Redes sem Fio\\ 5G e Redes Móveis de Nova Geração}
+\subtitle{Aula 7}
+\author[Anelise Munaretto]{Profa. Anelise Munaretto}
+\institute[Curso]{Redes sem Fio --- Ciência da Computação}
+\date{2026}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+\begin{frame}{Agenda}
+  \tableofcontents
+\end{frame}
+
+\section{Evolução das redes móveis}
+
+\begin{frame}{Evolução: de 1G a 5G/6G}
+  \begin{center}
+    \scriptsize
+    \begin{tabular}{@{}llll@{}}
+      \toprule
+      \textbf{Geração} & \textbf{Período} & \textbf{Tecnologia} & \textbf{Taxa típica}\\
+      \midrule
+      1G & 1980s & AMPS, NMT (analógico) & ---\\
+      2G & 1990s & GSM, CDMA (digital) & 64~kbps\\
+      3G & 2000s & UMTS, CDMA2000 & 2~Mbps\\
+      4G (LTE) & 2010s & OFDMA, MIMO & 150~Mbps\\
+      5G NR & 2020s & OFDM flex., mMIMO & 1--20~Gbps\\
+      5G-Advanced & 2024+ & IA/ML na rede & $>$ 10~Gbps\\
+      6G (pesquisa) & 2030+ & THz, sensing integrado & $>$ 100~Gbps\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  \begin{alertblock}{Salto 4G $\rightarrow$ 5G}
+    Não apenas mais banda: latência de 1~ms, densidade de 10$^6$ dispositivos/km$^2$, \emph{network slicing}, \emph{edge computing}.
+  \end{alertblock}
+\end{frame}
+
+\section{Arquitetura 5G}
+
+\begin{frame}{Arquitetura 5G: SA vs.\ NSA}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{NSA (Non-Standalone)}
+      \begin{itemize}
+        \item usa 5G NR apenas no \emph{data plane}
+        \item \emph{control plane} ainda pelo 4G (eNB)
+        \item implantação rápida; 3GPP Rel.~15
+      \end{itemize}
+      \textbf{SA (Standalone)}
+      \begin{itemize}
+        \item 5G NR tanto em controle quanto em dados
+        \item new 5G core (SBA --- Service-Based Architecture)
+        \item permite \emph{slicing}, URLLC, mMTC
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize,
+            nf/.style={draw,rounded corners=2mm,fill=aneliseAzul!13,inner sep=1mm,text width=2.6cm,align=center},
+            nc/.style={draw,rounded corners=2mm,fill=aneliseLaranja!20,inner sep=1mm,text width=2.6cm,align=center},
+          ]
+          \node[nf](ue){UE};
+          \node[nc,right=1.6cm of ue](gnb){gNB (5G)};
+          \node[nf,right=1.6cm of gnb](cn){5GC (SBA)};
+          \draw[<->,thick,aneliseVerde] (ue) -- (gnb);
+          \draw[<->,thick,aneliseVerde] (gnb) -- (cn);
+          \node[below=1mm of cn,font=\tiny,text width=3.2cm,align=center]{SA: controle e dados sobre 5G};
+          \node[draw,fill=aneliseGris!15,rounded corners=1.5mm,below=1.6cm of gnb](leg){Arquitetura 5G SA simples};
+        \end{tikzpicture}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{SBA --- Service-Based Architecture}
+  \begin{itemize}
+    \item Core 5G baseado em \textbf{serviços} (não em nós fixos)
+    \item Funções de rede (NF) expõem APIs RESTful
+      \begin{itemize}
+        \item AMF (mobilidade), SMF (sessão), UPF (pacotes), NRF (registro), AUSF (autenticação), \ldots
+      \end{itemize}
+    \item \textbf{Interfaces abertas}: desacoplamento entre funções
+    \item Facilita \emph{network slicing} e implantação em nuvem
+  \end{itemize}
+  \begin{center}
+    \begin{tikzpicture}[font=\scriptsize,
+        nf/.style={draw,rounded corners=1.5mm,fill=aneliseAzul!13,inner sep=0.8mm,minimum width=1.8cm,align=center},
+      ]
+      \node[nf](amf){AMF};
+      \node[nf,right=1cm of amf](smf){SMF};
+      \node[nf,right=1cm of smf](upf){UPF};
+      \node[nf,above=1cm of amf](nrf){NRF};
+      \node[nf,above=1cm of smf](ausf){AUSF};
+      \node[nf,below=1cm of upf](pcf){PCF};
+      \draw[thick,aneliseGris] (amf) -- (smf) -- (upf);
+      \draw[thick,aneliseGris] (nrf) -- (amf);
+      \draw[thick,aneliseGris] (ausf) -- (smf);
+      \draw[thick,aneliseGris] (pcf) -- (upf);
+      \node[draw,fill=aneliseVerde!12,rounded corners=2mm,below=4mm of pcf](bus){\texttt{bus de serviço}};
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\section{Tecnologias-chave}
+
+\begin{frame}{Tecnologias-chave do 5G NR}
+  \begin{columns}
+    \begin{column}{0.48\textwidth}
+      \textbf{mmWave (ondas milimétricas)}
+      \begin{itemize}
+        \item bandas 24--28~GHz, 39~GHz, 60~GHz
+        \item grande largura de banda ($\times$10) mas alta atenuação
+        \item \emph{beamforming} e \emph{beam management} obrigatórios
+      \end{itemize}
+      \textbf{Massive MIMO}
+      \begin{itemize}
+        \item dezenas/milhares de antenas (64T64R, 128T128R)
+        \item multiplexação espacial (MU-MIMO)
+        \item ganho de array, precisão de ângulo
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{OFDM flexível (numerologia)}
+      \begin{itemize}
+        \item subportadoras de 15/30/60/120~kHz
+        \item \emph{slot} de 0,5~ms a 62,5~$\mu$s
+      \end{itemize}
+      \textbf{Network Slicing}
+      \begin{itemize}
+        \item redes virtuais sobre a mesma infraestrutura
+        \item eMBB (banda larga), URLLC (latência), mMTC (IoT)
+        \item isolamento de recursos por \emph{slice}
+      \end{itemize}
+      \textbf{MEC --- Multi-access Edge Computing}
+      \begin{itemize}
+        \item computação na borda da rede RAN
+        \item latência $<$ 10~ms para aplicações críticas
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Casos de uso: eMBB, URLLC, mMTC}
+  \begin{center}
+    \begin{tikzpicture}[font=\scriptsize,
+        c/.style={draw,rounded corners=2mm,fill=aneliseAzul!13,text width=3.4cm,align=center,inner sep=1.2mm},
+      ]
+      \node[c](embb){\textbf{eMBB}\\ Enhanced Mobile Broadband\\ $>$ 1~Gbps\\ streaming 8K, VR/AR};
+      \node[c,right=2.6cm of embb](urllc){\textbf{URLLC}\\ Ultra-Reliable Low Latency\\ 1~ms, 99,999\%\\ indústria 4.0, veículos autônomos};
+      \node[c,right=2.6cm of urllc](mmtc){\textbf{mMTC}\\ Massive Machine-Type\\ 10$^6$ disp./km$^2$\\ IoT massivo, sensores};
+      \draw[thick,aneliseLaranja] (embb.east) -- (urllc.west);
+      \draw[thick,aneliseGris] (urllc.east) -- (mmtc.west);
+    \end{tikzpicture}
+  \end{center}
+  \begin{block}{5G-Advanced (3GPP Rel.\ 18, 2024)}
+    \begin{itemize}
+      \item IA/ML na otimização da rede (RM-NET)
+      \item \emph{RedCap}: IoT de média taxa (Reduced Capability)
+      \item NR-U (5G em espectro não licenciado)
+      \item NTN (satélite) integrado ao 5G
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\section{5G e sem fio}
+
+\begin{frame}{5G NR e Wi-Fi: convergência}
+  \begin{itemize}
+    \item 5G NR-U compete e coopera com Wi-Fi 6/6E na banda de 6~GHz
+    \item \textbf{ATSSS} (Access Traffic Steering, Switching, Splitting): tráfego pode ser dividido entre 5G e Wi-Fi simultaneamente
+    \item \textbf{5G LAN}: redes privativas 5G para indústria (substituindo Wi-Fi/Ethernet)
+    \item \textbf{Comparação prática}:
+      \begin{itemize}
+        \item Wi-Fi 7: mais barato, ideal para ambientes internos densos
+        \item 5G NR: mobilidade, \emph{slicing}, QoS fim-a-fim, cobertura externa
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\section{Rumo ao 6G}
+
+\begin{frame}{Rumo ao 6G (2030+)}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Bandas THz (0,1--10 THz)}
+      \begin{itemize}
+        \item largura de banda extrema ($>$ 100~Gbps)
+        \item comunicação + \emph{sensing} integrados (ISAC)
+        \item desafios: alcance, hardware, regulação
+      \end{itemize}
+      \textbf{IA nativa na rede}
+      \begin{itemize}
+        \item planejamento, alocação, predição com ML
+        \item \emph{zero-touch} operações (ZSM)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Rede 3D integrada}
+      \begin{itemize}
+        \item terrestre + satélite LEO + \emph{drone base stations}
+        \item cobertura global contínua
+      \end{itemize}
+      \textbf{Sustentabilidade}
+      \begin{itemize}
+        \item redes \emph{green}: eficiência energética por bit
+        \item energy harvesting para IoT
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \begin{exampleblock}{Pesquisa aberta}
+    3GPP Rel.\ 21 (2028) definirá os requisitos; ITU-R WP5D prepara o IMT-2030.
+  \end{exampleblock}
+\end{frame}
+
+\section{Bibliografia}
+
+\begin{frame}{Bibliografia}
+  \begin{itemize}
+    \item 3GPP TR 38.300, \emph{NR; Overall description; Stage-2}
+    \item 3GPP TS 23.501, \emph{System Architecture for the 5G System (5GS)}
+    \item 3GPP TR 38.811, \emph{Ntn; Solutions for NR to support NTN}
+    \item ITU-R M.2160, \emph{IMT-2030 Framework}
+    \item M. Shafi et al., ``5G: A tutorial overview of standards, trials, challenges, deployment and practice'', \emph{IEEE JSAC}, 2017
+  \end{itemize}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,150 @@
+% !TEX program = tectonic
+% =============================================================================
+%  AULA 11 — IA e Machine Learning nas Redes sem Fio
+%  Curso: Redes sem Fio  |  Profa. Anelise Munaretto
+%  ML para otimização, predição, alocação de recursos.
+%  Compilar: tectonic aula11.tex
+% =============================================================================
+\documentclass[aspectratio=169,11pt]{beamer}
+\input{preamble.tex}
+
+\title[Redes sem Fio]{Redes sem Fio\\ IA e Machine Learning\\ nas Redes sem Fio}
+\subtitle{Aula 11}
+\author[Anelise Munaretto]{Profa. Anelise Munaretto}
+\institute[Curso]{Redes sem Fio --- Ciência da Computação}
+\date{2026}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+\section{Motivação}
+
+\begin{frame}{Por que IA/ML em redes sem fio?}
+  \begin{block}{Crise de complexidade}
+    Redes 5G/6G têm centenas de parâmetros ajustáveis; otimização manual é inviável. IA/ML oferece soluções para:
+  \end{block}
+  \begin{itemize}
+    \item predição de tráfego e mobilidade
+    \item alocação dinâmica de recursos (espectro, potência, beam)
+    \item detecção de anomalias e falhas
+    \item gerenciamento autônomo (\emph{zero-touch})
+    \item otimização cross-layer
+  \end{itemize}
+\end{frame}
+
+\section{Técnicas}
+
+\begin{frame}{Técnicas de ML aplicadas}
+  \begin{columns}
+    \begin{column}{0.48\textwidth}
+      \textbf{Aprendizagem Supervisionada}
+      \begin{itemize}
+        \item classificação de interferência
+        \item predição de SNR/CQI
+        \item detecção de tipo de tráfego
+      \end{itemize}
+      \textbf{Aprendizagem Não-Supervisionada}
+      \begin{itemize}
+        \item agrupamento de padrões de mobilidade
+        \item compressão de CSI
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{Aprendizagem por Reforço (RL)}
+      \begin{itemize}
+        \item \emph{resource block allocation}
+        \item escalonamento de pacotes
+        \item controle de admissão
+      \end{itemize}
+      \textbf{Aprendizagem Profunda (DL)}
+      \begin{itemize}
+        \item \emph{channel estimation} com autoencoders
+        \item beamforming com CNN
+        \item predição de séries temporais (LSTM)
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{RL para alocação de recursos}
+  \begin{center}
+    \begin{tikzpicture}[font=\scriptsize,
+        c/.style={draw,rounded corners=2mm,fill=aneliseAzul!13,inner sep=1mm,text width=2.8cm,align=center},
+      ]
+      \node[c](agent){Agente\\ (alocador)};
+      \node[c,right=2.4cm of agent](env){Ambiente\\ (rede sem fio)};
+      \draw[->,thick,aneliseLaranja] (agent) -- node[midway,above=1mm,font=\tiny]{ação $A_t$ (alocação de RB)} (env);
+      \draw[->,thick,aneliseVerde] (env.south) to[bend right=20] node[midway,below=1mm,font=\tiny]{$R_{t+1}$ (recompensa, ex.: throughput)} (agent.south);
+      \draw[->,thick,aneliseGris] (env.north) to[bend left=20] node[midway,above=1mm,font=\tiny]{$S_{t+1}$ (novo estado)} (agent.north);
+    \end{tikzpicture}
+  \end{center}
+  \begin{itemize}
+    \item Exemplo: alocação de RBs em 5G usando Deep Q-Learning (DQN)
+    \item Estado: filas CQI, buffer; Ação: RBs por usuário; Recompensa: throughput $\times$ justiça (Jain)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Exemplo prático: predição de mobilidade}
+  \begin{itemize}
+    \item \textbf{Problema}: antecipar handover para evitar perda de pacotes
+    \item \textbf{Método}: LSTM treinado com sequências de RSSI/RSRP
+    \item \textbf{Entrada}: série temporal de 10 medições de potência (5 vizinhos)
+    \item \textbf{Saída}: célula-alvo e tempo estimado de handover
+    \item \textbf{Resultado}: redução de 40\% em falhas de handover (trabalhos reais)
+  \end{itemize}
+  \begin{block}{Implementação}
+    Python + TensorFlow/Keras, treino offline com dados de drive-test, inferência no MEC ou no próprio UE.
+  \end{block}
+\end{frame}
+
+\section{Desafios}
+
+\begin{frame}{Desafios de ML em redes sem fio}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Dados}
+      \begin{itemize}
+        \item coleta de dados rotulados (CSI, tráfego)
+        \item privacidade (GDPR, nuvem vs.\ borda)
+        \item distribuição não-estacionária (mobilidade)
+      \end{itemize}
+      \textbf{Complexidade}
+      \begin{itemize}
+        \item inferência em tempo real (latência)
+        \item tamanho do modelo (memória do dispositivo)
+        \item \emph{federated learning} para escalar
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Confiabilidade}
+      \begin{itemize}
+        \item modelos precisam generalizar
+        \item interpretabilidade (explainable AI)
+        \item robustez a ataques adversários
+      \end{itemize}
+      \textbf{Padronização}
+      \begin{itemize}
+        \item 3GPP Rel.\ 18: RM-NET (ML para RAN)
+        \item O-RAN Alliance: rApp e xApp com ML
+        \item ITU-T ML5G
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Bibliografia}
+
+\begin{frame}{Bibliografia}
+  \begin{itemize}
+    \item C. Zhang et al., ``Deep learning in mobile and wireless networking: A survey'', \emph{IEEE Commun. Surv. Tut.}, 2019
+    \item N. C. Luong et al., ``Applications of deep reinforcement learning in communications and networking'', \emph{IEEE Commun. Mag.}, 2019
+    \item 3GPP TR 38.817, \emph{Study on RAN-centric data collection and utilization (RAN-CU)}
+    \item O-RAN Alliance, \emph{O-RAN Working Group 2: AI/ML Workflow Description}
+    \item ITU-T Y.3172, \emph{Architectural framework for ML in future networks}
+  \end{itemize}
+\end{frame}
+
+\end{document}

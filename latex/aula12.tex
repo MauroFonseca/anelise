@@ -1,0 +1,155 @@
+% !TEX program = tectonic
+% =============================================================================
+%  AULA 12 — Segurança em Redes sem Fio
+%  Curso: Redes sem Fio  |  Profa. Anelise Munaretto
+%  WPA2/WPA3, 802.1X, KRACK, IoT security, 5G AKA.
+%  Compilar: tectonic aula12.tex
+% =============================================================================
+\documentclass[aspectratio=169,11pt]{beamer}
+\input{preamble.tex}
+
+\title[Redes sem Fio]{Redes sem Fio\\ Segurança em Redes sem Fio}
+\subtitle{Aula 12}
+\author[Anelise Munaretto]{Profa. Anelise Munaretto}
+\institute[Curso]{Redes sem Fio --- Ciência da Computação}
+\date{2026}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+\section{Protocolos de Segurança Wi-Fi}
+
+\begin{frame}{Evolução da segurança em Wi-Fi}
+  \begin{center}
+    \scriptsize
+    \begin{tabular}{@{}llll@{}}
+      \toprule
+      \textbf{Padrão} & \textbf{Criptografia} & \textbf{Autenticação} & \textbf{Ano}\\
+      \midrule
+      WEP & RC4 (64/128 bits) & Chave compartilhada & 1999\\
+      WPA & TKIP/RC4 & PSK / 802.1X & 2003\\
+      WPA2 & AES-CCMP & PSK / 802.1X & 2004\\
+      WPA3 & AES-GCMP-256 & SAE (Simult. Auth. of Equals) & 2018\\
+      WPA3-Enterprise & AES-GCMP-128/256 & EAP-TLS, SuiteB & 2018\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  \begin{block}{WPA3: principais novidades}
+    \begin{itemize}
+      \item \textbf{SAE} (Dragonfly handshake): protege contra ataques de dicionário offline
+      \item \textbf{Perfect Forward Secrecy} (PFS)
+      \item \textbf{PMF} (Protected Management Frames): obrigatório
+      \item \textbf{Wi-Fi Easy Connect} (DPP): onboarding seguro
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Ataques conhecidos}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{KRACK (2017)}
+      \begin{itemize}
+        \item Key Reinstallation Attack (Mathy Vanhoef)
+        \item ataque ao 4-way handshake do WPA2
+        \item força reuso de nonce $\rightarrow$ quebra criptografia
+        \item afeta todos os clientes WPA2
+        \item corrigido em patches (CVE-2017-13077 a 13084)
+      \end{itemize}
+      \textbf{Evil Twin / Rogue AP}
+      \begin{itemize}
+        \item AP malicioso com mesmo SSID
+        \item captura de credenciais (phishing)
+        \item WPA3-Enterprise mitiga com certificado de servidor
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Dicionário offline}
+      \begin{itemize}
+        \item WPA2-PSK: capturar 4-way handshake e tentar senhas
+        \item ferramentas: aircrack-ng, hashcat
+        \item WPA3 SAE torna essa abordagem inviável
+      \end{itemize}
+      \textbf{Deauth Attack}
+      \begin{itemize}
+        \item envio de quadros de desautenticação falsos
+        \item PMF obrigatório no WPA3 evita
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Segurança IoT/LPWAN}
+
+\begin{frame}{Segurança em LoRaWAN e LPWAN}
+  \begin{itemize}
+    \item \textbf{LoRaWAN}: criptografia AES-128 (NwkSKey, AppSKey)
+      \begin{itemize}
+        \item OTAA (Over-The-Air Activation) vs.\ ABP (Activation By Personalization)
+        \item OTAA mais seguro: chaves renovadas a cada join
+        \item vulnerabilidade: payload pode ser descriptografado se AppSKey é exposta
+      \end{itemize}
+    \item \textbf{NB-IoT / LTE-M}: segurança herdada do LTE (AES, SIM-based)
+      \begin{itemize}
+        \item autenticação mútua UE-rede (AKA)
+        \item criptografia NAS e AS
+        \item chaves armazenadas no SIM
+      \end{itemize}
+  \end{itemize}
+  \begin{alertblock}{Desafio IoT}
+    Dispositivos com recursos limitados (CPU, memória) dificultam atualizações de segurança e rotação de chaves.
+  \end{alertblock}
+\end{frame}
+
+\section{Segurança 5G}
+
+\begin{frame}{Segurança 5G}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{5G AKA (Authentication and Key Agreement)}
+      \begin{itemize}
+        \item evolução do EPS-AKA (4G)
+        \item SUPI (identidade permanente) cifrado como SUCI
+        \item \emph{home control}: rede doméstica sempre envolvida
+        \item chaves derivadas: K, CK, IK, K$_{\text{AMF}}$, etc.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Inovações de segurança 5G}
+      \begin{itemize}
+        \item \textbf{SEPP}: proteção entre operadoras (signaling)
+        \item \textbf{Network Slicing}: isolamento entre slices
+        \item \textbf{MEC security}: execução confiável na borda
+        \item \textbf{NR encryption}: AES-128/256, Snow3G, ZUC
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Desafios}
+
+\begin{frame}{Desafios de segurança em redes sem fio}
+  \begin{itemize}
+    \item \textbf{Quantum computing}: ameaça a criptografia atual (RSA, ECC)
+    \item \textbf{Supply chain}: backdoors em hardware/chipsets
+    \item \textbf{Privacidade}: rastreamento de dispositivos (MAC aleatório, IMSI catcher)
+    \item \textbf{Atualizações}: dispositivos IoT sem mecanismo de patch
+    \item \textbf{Regulamentação}: Lei Geral de Proteção de Dados (LGPD), ePrivacy
+  \end{itemize}
+\end{frame}
+
+\section{Bibliografia}
+
+\begin{frame}{Bibliografia}
+  \begin{itemize}
+    \item IEEE 802.11i-2004 (WPA2); Wi-Fi Alliance, WPA3 Specification v3.0
+    \item M. Vanhoef, F. Piessens, ``Key Reinstallation Attacks: Forcing Nonce Reuse in WPA2'', ACM CCS 2017
+    \item 3GPP TS 33.501, \emph{Security architecture and procedures for 5G system}
+    \item LoRa Alliance, \emph{LoRaWAN 1.1 Specification: Security}
+    \item NIST SP 800-38B, \emph{Recommendation for Block Cipher Modes of Operation}
+  \end{itemize}
+\end{frame}
+
+\end{document}

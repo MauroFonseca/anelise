@@ -1,0 +1,163 @@
+% !TEX program = tectonic
+% =============================================================================
+%  AULA 9 — Redes Veiculares e Mobilidade Inteligente
+%  Curso: Redes sem Fio  |  Profa. Anelise Munaretto
+%  Conteúdo: C-V2X, 802.11p/ITS-G5, platooning, V2X safety.
+%  Compilar: tectonic aula9.tex
+% =============================================================================
+\documentclass[aspectratio=169,11pt]{beamer}
+\input{preamble.tex}
+
+\title[Redes sem Fio]{Redes sem Fio\\ Redes Veiculares e Mobilidade Inteligente}
+\subtitle{Aula 9}
+\author[Anelise Munaretto]{Profa. Anelise Munaretto}
+\institute[Curso]{Redes sem Fio --- Ciência da Computação}
+\date{2026}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+\section{Introdução}
+
+\begin{frame}{Redes Veiculares: conceitos básicos}
+  \begin{itemize}
+    \item \textbf{VANET} (Vehicular Ad-hoc Network): rede formada por veículos e infraestrutura viária
+    \item Comunicação nas modalidades:
+      \begin{itemize}
+        \item V2V (veículo-veículo)
+        \item V2I (veículo-infraestrutura)
+        \item V2P (veículo-pedestre)
+        \item V2N (veículo-rede)
+      \end{itemize}
+    \item Aplicações:
+      \begin{itemize}
+        \item segurança (collision avoidance, emergency brake)
+        \item eficiência (platooning, gestão de tráfego)
+        \item conforto (infotainment, atualizações OTA)
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\section{PADRÕES}
+
+\begin{frame}{Padrões: IEEE 802.11p vs.\ C-V2X}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{IEEE 802.11p / ITS-G5}
+      \begin{itemize}
+        \item derivado do Wi-Fi (OFDM, 10~MHz)
+        \item banda 5,9~GHz (ITS)
+        \item alcance típico ~300~m
+        \item latência ~50~ms
+        \item comunicação V2V/V2I direta
+        \item sem infraestrutura celular
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{C-V2X (Cellular V2X)}
+      \begin{itemize}
+        \item baseado em LTE/5G NR (3GPP Rel.\ 14/16)
+        \item modo \emph{PC5} (sidelink direto) e \emph{Uu} (via estação base)
+        \item alcance $>$ 500~m (PC5)
+        \item latência $<$ 20~ms (5G NR-V2X)
+        \item suporte a \emph{sensing} cooperativo
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \vspace{0.2cm}
+  \begin{exampleblock}{Tendência 2026}
+    C-V2X (NR-V2X) domina novos projetos; IEEE 802.11p em operação em frotas existentes. China/Europa/América do Norte adotam C-V2X.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{NR-V2X (3GPP Rel.\ 16/17)}
+  \begin{itemize}
+    \item Evolução do LTE-V2X usando 5G NR
+    \item Características-chave:
+      \begin{itemize}
+        \item \textbf{sidelink} avançado: suporte a \emph{unicast}, \emph{groupcast}, \emph{broadcast}
+        \item \textbf{modo 1}: escalonamento gerenciado pelo gNB
+        \item \textbf{modo 2}: escalonamento autônomo (sensing de recursos)
+      \end{itemize}
+    \item Requisitos: latência 3--10~ms, confiabilidade 99,99\%
+    \item Casos de uso: \emph{platooning}, \emph{advanced driving}, \emph{remote driving}
+  \end{itemize}
+  \begin{block}{C-V2X Day-1 vs.\ Day-2}
+    \begin{itemize}
+      \item \textbf{Day-1}: alertas básicos (freio, veículo de emergência, obras)
+      \item \textbf{Day-2}: percepção cooperativa, intenção de manobra, \emph{trajectory sharing}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\section{Platooning}
+
+\begin{frame}{Platooning: comboio de veículos}
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \begin{itemize}
+        \item Veículos seguem em formação fechada (distância 5--15~m)
+        \item \textbf{Líder} define velocidade; demais repetem automaticamente
+        \item Benefícios:
+          \begin{itemize}
+            \item redução de arrasto aerodinâmico (até 20\% economia)
+            \item menor congestionamento
+            \item segurança: reação mais rápida que humana
+          \end{itemize}
+        \item Desafios:
+          \begin{itemize}
+            \item latência $<$ 10~ms
+            \item falha de comunicação
+            \item regulamentação
+          \end{itemize}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize,
+            v/.style={draw,rounded corners=1mm,fill=aneliseAzul!15,inner sep=1mm,text width=1.2cm,align=center},
+          ]
+          \node[v](l){Líder};
+          \node[v,right=1.6cm of l](a){V1};
+          \node[v,right=1.6cm of a](b){V2};
+          \node[v,right=1.6cm of b](c){V3};
+          \draw[thick,aneliseLaranja] (l.east) to[bend left=10] (a.west);
+          \draw[thick,aneliseLaranja] (a.east) to[bend left=10] (b.west);
+          \draw[thick,aneliseLaranja] (b.east) to[bend left=10] (c.west);
+          \node[below=1mm of a,font=\tiny]{C-V2X sidelink};
+        \end{tikzpicture}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Simulação}
+
+\begin{frame}{Simulação de redes veiculares}
+  \begin{itemize}
+    \item \textbf{SUMO} (Simulation of Urban MObility): mobilidade veicular
+    \item \textbf{ns-3 / OMNeT++}: rede de comunicação
+    \item Framework acoplado: \textbf{Veins} (OMNeT++ + SUMO)
+    \item C-V2X: \textbf{Simu5G}, \textbf{ns-3-mmwave}, \textbf{Sionna}
+  \end{itemize}
+  \begin{exampleblock}{Exercício proposto}
+    Simular um cenário urbano com 50 veículos, um semáforo inteligente V2I e medir latência/pacotes perdidos. Comparar 802.11p vs.\ C-V2X.
+  \end{exampleblock}
+\end{frame}
+
+\section{Bibliografia}
+
+\begin{frame}{Bibliografia}
+  \begin{itemize}
+    \item 3GPP TR 37.885, \emph{Study on evaluation methodology of V2X}
+    \item 3GPP TS 23.287, \emph{Architecture enhancements for V2X services}
+    \item IEEE Std 802.11p-2010
+    \item ETSI EN 302 571, \emph{ITS-G5}
+    \item Sommer, Dressler, \emph{Vehicular Networking}, Cambridge Univ. Press, 2018
+  \end{itemize}
+\end{frame}
+
+\end{document}
