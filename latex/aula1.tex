@@ -142,17 +142,17 @@
   \end{center}
 \end{frame}
 
-\section{Capa de protocolos}
+\section{Camada de protocolos}
 
 % ---------------------------------------------------------------------------
-\begin{frame}{Por que \emph{layering} (capas)?}
+\begin{frame}{Por que \emph{layering} (camadas)?}
   As redes são complexas e têm muitas ``peças'' (hosts, roteadores, enlaces, aplicações, protocolos\ldots).
   \begin{block}{Vantagens}
     \begin{itemize}
       \item \textbf{Estrutura explícita} identifica e relaciona as partes de um sistema complexo
       \item \textbf{Modularização} facilita manutenção e atualização
         \begin{itemize}
-          \item mudar a implementação de uma capa é \emph{transparente} para o resto do sistema
+          \item mudar a implementação de uma camada é \emph{transparente} para o resto do sistema
         \end{itemize}
     \end{itemize}
   \end{block}
@@ -178,11 +178,11 @@
       \draw[flecha] (t) -- (t2);
       \draw[flecha] (b) -- (b2);
       % etiquetas à direita
-      \node[right=2mm of t2,align=left](e1){capa ``bilhete''};
-      \node[right=2mm of b2,align=left](e2){capa ``bagagem''};
-      \node[right=2mm of g,align=left](e3){capa ``portões''};
-      \node[right=2mm of p,align=left](e4){capa ``pista''};
-      \node[right=2mm of r,align=left](e5){capa ``roteamento''};
+      \node[right=2mm of t2,align=left](e1){camada ``bilhete''};
+      \node[right=2mm of b2,align=left](e2){camada ``bagagem''};
+      \node[right=2mm of g,align=left](e3){camada ``portões''};
+      \node[right=2mm of p,align=left](e4){camada ``pista''};
+      \node[right=2mm of r,align=left](e5){camada ``roteamento''};
       \draw[dashed] (t2.east) -- (e1.west);
       \draw[dashed] (b2.east) -- (e2.west);
       \draw[dashed] (g.east) -- (e3.west);
@@ -190,25 +190,25 @@
       \draw[dashed] (r.east) -- (e5.west);
     \end{tikzpicture}
   \end{center}
-  Cada capa implementa um \textbf{serviço} mediante suas próprias ações internas, apoiando-se no serviço da capa imediatamente inferior.
+  Cada camada implementa um \textbf{serviço} mediante suas próprias ações internas, apoiando-se no serviço da camada imediatamente inferior.
 \end{frame}
 
 % ---------------------------------------------------------------------------
 \begin{frame}{Pilha de protocolos da Internet}
   \begin{center}
     \begin{tikzpicture}[font=\scriptsize,
-        capa/.style={draw,rounded corners=2mm,fill=aneliseAzul!15,text width=4.2cm,align=center,inner sep=1mm},
+        camada/.style={draw,rounded corners=2mm,fill=aneliseAzul!15,text width=4.2cm,align=center,inner sep=1mm},
       ]
-      \node[capa](aplic) {Aplicação\\(FTP, SMTP, HTTP, DNS, QUIC)};
-      \node[capa,below=7mm of aplic] (transp) {Transporte\\transferência processo-a-processo\\(TCP, UDP)};
-      \node[capa,below=7mm of transp] (rede) {Rede\\roteamento de datagramas origem$\rightarrow$destino\\(IP, protocolos de roteamento)};
-      \node[capa,below=7mm of rede] (enl) {Enlace\\transferência entre elementos vizinhos\\(Ethernet, 802.11 (Wi-Fi), PPP)};
-      \node[capa,below=7mm of enl] (fis) {Física\\bits ``no fio''};
+      \node[camada](aplic) {Aplicação\\(FTP, SMTP, HTTP, DNS, QUIC)};
+      \node[camada,below=7mm of aplic] (transp) {Transporte\\transferência processo-a-processo\\(TCP, UDP)};
+      \node[camada,below=7mm of transp] (rede) {Rede\\roteamento de datagramas origem$\rightarrow$destino\\(IP, protocolos de roteamento)};
+      \node[camada,below=7mm of rede] (enl) {Enlace\\transferência entre elementos vizinhos\\(Ethernet, 802.11 (Wi-Fi), PPP)};
+      \node[camada,below=7mm of enl] (fis) {Física\\bits ``no fio''};
       \draw[thick,dashed,aneliseGris] (aplic.south) -- (transp.north);
       \draw[thick,dashed,aneliseGris] (transp.south) -- (rede.north);
       \draw[thick,dashed,aneliseGris] (rede.south) -- (enl.north);
       \draw[thick,dashed,aneliseGris] (enl.south) -- (fis.north);
-      \node[right=1.4cm of transp,text width=3cm,align=left,draw,rounded corners=1.5mm,fill=aneliseVerde](nota){Modelo de referência TCP/IP (5 capas)};
+      \node[right=1.4cm of transp,text width=3cm,align=left,draw,rounded corners=1.5mm,fill=aneliseVerde](nota){Modelo de referência TCP/IP (5 camadas)};
       \draw[->,thick,aneliseVerde] (nota) -- (rede.east);
     \end{tikzpicture}
   \end{center}
@@ -219,16 +219,16 @@
 \begin{frame}{Modelo de referência ISO/OSI}
   \begin{center}
     \begin{tikzpicture}[font=\scriptsize,
-        capa/.style={draw,rounded corners=2mm,fill=aneliseAzul!15,text width=3.6cm,align=center,inner sep=1mm},
+        camada/.style={draw,rounded corners=2mm,fill=aneliseAzul!15,text width=3.6cm,align=center,inner sep=1mm},
       ]
-      \node[capa](ap){7. Aplicação};
-      \node[capa,below=5mm of ap](pr){6. Apresentação\\(significado dos dados: cifragem, compressão, convenções)};
-      \node[capa,below=5mm of pr](se){5. Sessão\\(sincronização, \emph{checkpointing}, recuperação)};
-      \node[capa,below=5mm of se](tr){4. Transporte};
-      \node[capa,below=5mm of tr](re){3. Rede};
-      \node[capa,below=5mm of re](em){2. Enlace};
-      \node[capa,below=5mm of em](fi){1. Física};
-      \node[right=1.6cm of pr,text width=3.6cm,align=left,draw,rounded corners=1.5mm,fill=aneliseLaranja!14](obs){A pilha da Internet ``perde'' estas capas!\\Serviços como cifragem/compressão são implementados na \textbf{aplicação}.};
+      \node[camada](ap){7. Aplicação};
+      \node[camada,below=5mm of ap](pr){6. Apresentação\\(significado dos dados: cifragem, compressão, convenções)};
+      \node[camada,below=5mm of pr](se){5. Sessão\\(sincronização, \emph{checkpointing}, recuperação)};
+      \node[camada,below=5mm of se](tr){4. Transporte};
+      \node[camada,below=5mm of tr](re){3. Rede};
+      \node[camada,below=5mm of re](em){2. Enlace};
+      \node[camada,below=5mm of em](fi){1. Física};
+      \node[right=1.6cm of pr,text width=3.6cm,align=left,draw,rounded corners=1.5mm,fill=aneliseLaranja!14](obs){A pilha da Internet ``perde'' estas camadas!\\Serviços como cifragem/compressão são implementados na \textbf{aplicação}.};
       \draw[->,thick,aneliseLaranja] (obs) -- (pr.east);
     \end{tikzpicture}
   \end{center}
@@ -280,20 +280,20 @@
       \draw[->,thick,aneliseVerde] (d1.east) to[bend left=15] (f1.east);
     \end{tikzpicture}
   \end{center}
-  \textbf{Encapsulação:} cada capa agrega o seu cabeçalho ($H$); o destinatário realiza a \textbf{desencapsulação} inversa.
+  \textbf{Encapsulação:} cada camada agrega o seu cabeçalho ($H$); o destinatário realiza a \textbf{desencapsulação} inversa.
 \end{frame}
 
-\section{Capa de rede}
+\section{Camada de rede}
 
 % ---------------------------------------------------------------------------
-\begin{frame}{Capa de rede: funções}
+\begin{frame}{Camada de rede: funções}
   \begin{columns}
     \begin{column}{0.52\textwidth}
       \textbf{Transporta segmentos da origem ao destino:}
       \begin{itemize}
         \item no envio, \textbf{encapsula} segmentos em datagramas
-        \item na recepção, entrega segmentos à capa de transporte
-        \item protocolos de capa de rede em \textbf{todo host e roteador}
+        \item na recepção, entrega segmentos à camada de transporte
+        \item protocolos de camada de rede em \textbf{todo host e roteador}
         \item o roteador examina campos do cabeçalho de cada datagrama IP
       \end{itemize}
     \end{column}
@@ -329,14 +329,14 @@
         \draw[thick,aneliseGris] (fi2.east) -- (dfi.west);
       \end{tikzpicture}
       \end{center}
-      \scriptsize O roteador examina cabeçalhos IP; não usa capas superiores.
+      \scriptsize O roteador examina cabeçalhos IP; não usa camadas superiores.
     \end{column}
   \end{columns}
 \end{frame}
 
 % ---------------------------------------------------------------------------
 \begin{frame}{Plano de dados vs.\ plano de controle (SDN)}
-  \begin{block}{Duas funções da capa de rede}
+  \begin{block}{Duas funções da camada de rede}
     \begin{itemize}
       \item \textbf{Encaminhamento (\emph{forwarding})}: mover pacotes da entrada à saída apropriada do roteador \quad (função local --- \alert{plano de dados})
       \item \textbf{Roteamento (\emph{routing})}: determinar a rota origem$\rightarrow$destino \quad (função global --- \alert{plano de controle})
@@ -529,17 +529,17 @@
   \end{columns}
 \end{frame}
 
-\section{Capa de enlace}
+\section{Camada de enlace}
 
 % ---------------------------------------------------------------------------
-\begin{frame}{Capa de enlace: introdução}
+\begin{frame}{Camada de enlace: introdução}
   \begin{itemize}
     \item \textbf{Nós}: hosts e roteadores
     \item \textbf{Enlaces}: canais de comunicação entre nós \emph{adjacentes}
       \begin{itemize}
         \item cabeado, sem fio, LANs
       \end{itemize}
-    \item Unidade da capa 2: \textbf{frame} (quadro), que encapsula um datagrama
+    \item Unidade da camada 2: \textbf{frame} (quadro), que encapsula um datagrama
     \item Responsabilidade: transferir o datagrama de um nó ao nó \emph{fisicamente adjacente}
   \end{itemize}
   \begin{block}{Analogia do transporte}
@@ -551,7 +551,7 @@
 \end{frame}
 
 % ---------------------------------------------------------------------------
-\begin{frame}{Serviços da capa de enlace}
+\begin{frame}{Serviços da camada de enlace}
   \begin{columns}
     \begin{column}{0.5\textwidth}
       \textbf{Enquadramento e acesso ao meio:}
@@ -588,7 +588,7 @@
 % ---------------------------------------------------------------------------
 \begin{frame}{Endereços MAC e ARP}
   \begin{itemize}
-    \item \textbf{IP (32 bits / 128 bits)}: endereço de capa de rede da interface --- usado para reenvio (capa 3)
+    \item \textbf{IP (32 bits / 128 bits)}: endereço de camada de rede da interface --- usado para reenvio (camada 3)
     \item \textbf{MAC (48 bits)}: \emph{endereço físico/LAN}, gravado na ROM da NIC --- usado \emph{localmente} para levar o frame de interface a interface fisicamente conectada
       \begin{itemize}
         \item notação hexadecimal: \texttt{1A-2F-BB-76-09-AD} (cada dígito $=$ 4 bits)
@@ -620,7 +620,7 @@
 % ---------------------------------------------------------------------------
 \begin{frame}{Ethernet CSMA/CD (legado) --- algoritmo}
   \begin{enumerate}
-    \item A NIC recebe o datagrama da capa de rede e cria o frame
+    \item A NIC recebe o datagrama da camada de rede e cria o frame
     \item Se a NIC \textbf{sente o canal ocioso} (\emph{carrier sense}), inicia a transmissão; se ocupado, espera
     \item Se transmite o frame \textbf{completo} sem detectar outra transmissão $\rightarrow$ \alert{feito!}
     \item Se detecta outra transmissão \textbf{durante a transmissão} $\rightarrow$ aborta e envia \emph{jam signal} (48 bits)
@@ -853,7 +853,7 @@
     \item \textbf{\kurose{}} --- caps.~1--6 (revisar caps.~1 e 5)
     \item \textbf{\forouzan{}} --- caps.~3--5 (transmissão, enlace, rede)
     \item \textbf{\stallings{}} --- caps.~1--2 (fundamentos de dados e sinais)
-    \item \textbf{\tanenbaum{}} --- cap.~5 (capa de rede)
+    \item \textbf{\tanenbaum{}} --- cap.~5 (camada de rede)
   \end{itemize}
   \begin{exampleblock}{Dica de estudo}
     Compare o diagrama de camadas TCP/IP com o modelo OSI e refaça o cálculo de latência com $R = 10$~Mbps e $d = 1$~km para treinar.

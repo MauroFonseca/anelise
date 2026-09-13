@@ -90,12 +90,12 @@
     \begin{column}{0.45\textwidth}
       \begin{center}
         \begin{tikzpicture}[font=\scriptsize,
-            capa/.style={draw,rounded corners=2mm,minimum width=3.6cm,minimum height=0.6cm,align=center},
+            camada/.style={draw,rounded corners=2mm,minimum width=3.6cm,minimum height=0.6cm,align=center},
           ]
-          \node[capa,fill=aneliseGris!18](per){\shortstack{Percepção\\sensores e atuadores}};
-          \node[capa,fill=aneliseLaranja!25,below=0.35cm of per](red){\shortstack{Rede\\conectividade e roteamento}};
-          \node[capa,fill=aneliseAzul!15,below=0.35cm of red](mid){\shortstack{Middleware\\processamento e dados}};
-          \node[capa,fill=aneliseVerde!20,below=0.35cm of mid](app){\shortstack{Aplicação\\serviços ao usuário}};
+          \node[camada,fill=aneliseGris!18](per){\shortstack{Percepção\\sensores e atuadores}};
+          \node[camada,fill=aneliseLaranja!25,below=0.35cm of per](red){\shortstack{Rede\\conectividade e roteamento}};
+          \node[camada,fill=aneliseAzul!15,below=0.35cm of red](mid){\shortstack{Middleware\\processamento e dados}};
+          \node[camada,fill=aneliseVerde!20,below=0.35cm of mid](app){\shortstack{Aplicação\\serviços ao usuário}};
           \draw[thick,aneliseAzul,-{Stealth}] (per.south) -- (red.north);
           \draw[thick,aneliseAzul,-{Stealth}] (red.south) -- (mid.north);
           \draw[thick,aneliseAzul,-{Stealth}] (mid.south) -- (app.north);
