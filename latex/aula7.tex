@@ -24,6 +24,22 @@
   \tableofcontents
 \end{frame}
 
+\begin{frame}{Objetivos de aprendizagem}
+  Ao final desta aula, você será capaz de:
+  \begin{itemize}
+    \item \textbf{distinguir} as arquiteturas 5G SA e NSA e as implicações de cada uma na implantação;
+    \item \textbf{explicar} o papel do NRF e das funções de rede na Service-Based Architecture (SBA);
+    \item \textbf{calcular} a latência fim-a-fim de um enlace URLLC e a taxa espectral em mMIMO/mmWave;
+    \item \textbf{comparar} os casos de uso eMBB, URLLC e mMTC e o papel do \emph{network slicing};
+    \item \textbf{descrever} os caminhos de evolução rumo ao 6G (bandas THz, ISAC, redes 3D).
+  \end{itemize}
+  \begin{alertblock}{Pré-requisitos}
+    \begin{itemize}
+      \item Aula 2 (conceitos de enlace sem fio e QoS) e Aula 5 (5G NR, Wi-Fi e LPWAN).
+    \end{itemize}
+  \end{alertblock}
+\end{frame}
+
 \section{Evolução das redes móveis}
 
 \begin{frame}{Evolução: de 1G a 5G/6G}
@@ -79,10 +95,12 @@
           \draw[<->,thick,aneliseVerde] (gnb) -- (cn);
           \node[below=1mm of cn,font=\tiny,text width=3.2cm,align=center]{SA: controle e dados sobre 5G};
           \node[draw,fill=aneliseGris!15,rounded corners=1.5mm,below=1.6cm of gnb](leg){Arquitetura 5G SA simples};
-        \end{tikzpicture}
+        \end{tikzpicture}\\[1mm]
+        {\scriptsize \textbf{Figura 1:} arquitetura 5G SA: UE conectado ao gNB (5G NR), que se liga ao núcleo 5GC baseado em SBA.}
       \end{center}
     \end{column}
   \end{columns}
+  \note{Reforçar que no NSA o controle fica no eNB 4G e a implantação é mais rápida; o SA é o caminho para slicing e URLLC.}
 \end{frame}
 
 \begin{frame}{SBA --- Service-Based Architecture}
@@ -110,8 +128,10 @@
       \draw[thick,aneliseGris] (ausf) -- (smf);
       \draw[thick,aneliseGris] (pcf) -- (upf);
       \node[draw,fill=aneliseVerde!12,rounded corners=2mm,below=4mm of pcf](bus){\texttt{bus de serviço}};
-    \end{tikzpicture}
+    \end{tikzpicture}\\[1mm]
+    {\scriptsize \textbf{Figura 2:} funções de rede do 5GC (AMF, SMF, UPF, NRF, AUSF, PCF) interconectadas pelo \emph{bus} de serviço SBA.}
   \end{center}
+  \note{O NRF é o ``catálogo'' de serviços: cada NF se registra e descobre as demais via APIs RESTful; isso desacopla as funções e viabiliza o slicing.}
 \end{frame}
 
 \section{Tecnologias-chave}
@@ -163,7 +183,8 @@
       \node[c,right=2.6cm of urllc](mmtc){\textbf{mMTC}\\ Massive Machine-Type\\ 10$^6$ disp./km$^2$\\ IoT massivo, sensores};
       \draw[thick,aneliseLaranja] (embb.east) -- (urllc.west);
       \draw[thick,aneliseGris] (urllc.east) -- (mmtc.west);
-    \end{tikzpicture}
+    \end{tikzpicture}\\[1mm]
+    {\scriptsize \textbf{Figura 3:} os três casos de uso do 5G definidos pelo IMT-2020: eMBB, URLLC e mMTC.}
   \end{center}
   \begin{block}{5G-Advanced (3GPP Rel.\ 18, 2024)}
     \begin{itemize}
@@ -223,6 +244,92 @@
   \begin{exampleblock}{Pesquisa aberta}
     3GPP Rel.\ 21 (2028) definirá os requisitos; ITU-R WP5D prepara o IMT-2030.
   \end{exampleblock}
+  \note{Em 6G, o destaque é a convergência comunicação--sensoriamento (ISAC) e a integração com LEO/drones; o IMT-2030 será definido no 3GPP Rel.\ 21.}
+\end{frame}
+
+\begin{frame}{Exercício resolvido: latência fim-a-fim em URLLC}
+  \textbf{Problema:} um quadro de \textbf{1000 bytes} é enviado por um enlace 5G NR a \textbf{1~Gbps}. O enlace tem \textbf{10~km} de comprimento. Estime a latência fim-a-fim (desprezando filas).
+  \begin{block}{Resolução}
+    \begin{enumerate}
+      \item Tempo de transmissão (L = tamanho, R = taxa):
+        \[
+          T_{\text{tx}} = \frac{L}{R} = \frac{1000 \times 8~\text{bits}}{10^9~\text{bps}} = \frac{8000}{10^9} = 8 \times 10^{-6}~\text{s} = \mathbf{8~\mu s}.
+        \]
+      \item Tempo de propagação (d = 10 km, v $\approx c = 3\times10^8$ m/s):
+        \[
+          T_{\text{prop}} = \frac{d}{v} = \frac{10 \times 10^3~\text{m}}{3 \times 10^8~\text{m/s}} \approx 3,33 \times 10^{-5}~\text{s} \approx \mathbf{33,3~\mu s}.
+        \]
+      \item Latência fim-a-fim:
+        \[
+          T_{\text{e2e}} = T_{\text{tx}} + T_{\text{prop}} \approx 8 + 33,3 = \mathbf{41,3~\mu s}.
+        \]
+    \end{enumerate}
+  \end{block}
+  \begin{alertblock}{Leitura do resultado}
+    O alvo URLLC é $\le 1$~ms fim-a-fim; só o enlace consome $\approx 41~\mu$s, sobrando orçamento para \emph{scheduling}, filas e processamento na borda (MEC).
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Resumo da aula}
+  \begin{itemize}
+    \item \textbf{SA vs NSA}: SA usa 5G NR no controle e nos dados sobre o 5GC (SBA); NSA mantém o controle no núcleo 4G.
+    \item \textbf{SBA}: AMF, SMF, UPF, NRF, AUSF e PCF expõem serviços RESTful num barramento de serviço; o NRF registra e descobre as funções.
+    \item \textbf{Tecnologias-chave}: mmWave (24--60~GHz) com \emph{beamforming}, mMIMO (64T64R+), numerologia OFDM flexível, \emph{network slicing} e MEC.
+    \item \textbf{Casos de uso}: eMBB, URLLC e mMTC; 5G-Advanced (Rel.~18) adiciona IA/ML, RedCap, NR-U e NTN.
+    \item \textbf{6G}: bandas THz, ISAC, redes 3D (LEO/drones) e IA nativa.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Autoavaliação}
+  \begin{enumerate}
+    \item Na arquitetura 5G SA, o plano de controle:
+      \begin{itemize}
+        \item (a) ainda é executado pelo eNB 4G (LTE)
+        \item (b) usa exclusivamente a função UPF
+        \item (c) é executado pelo 5G NR sobre o 5GC (SBA)
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (c)
+    \item Na SBA, qual função de rede é responsável por registrar e descobrir os serviços das demais funções?
+      \begin{itemize}
+        \item (a) NRF
+        \item (b) SMF
+        \item (c) UPF
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (a)
+    \item A principal justificativa para o uso de \emph{beamforming} em mmWave é:
+      \begin{itemize}
+        \item (a) reduzir o consumo de energia do UE
+        \item (b) compensar a alta atenuação das ondas milimétricas
+        \item (c) eliminar a numerologia OFDM
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (b)
+    \item O \emph{network slicing} permite:
+      \begin{itemize}
+        \item (a) alocar recursos dedicados a eMBB, URLLC e mMTC sobre a mesma infraestrutura
+        \item (b) aumentar a potência de transmissão do gNB
+        \item (c) substituir o RAN por satélites LEO
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (a)
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Laboratório sugerido: 5G NR no ns-3}
+  \begin{block}{Opção 1 --- Simulação de 5G NR}
+    \begin{itemize}
+      \item Usar o módulo \texttt{mmwave} (NYU) ou \texttt{nr} (5G-LENA) do ns-3: célula gNB--UE com \emph{beamforming} em 28~GHz.
+      \item Medir \emph{throughput}, latência e SNR com UEs em mobilidade; comparar com um cenário sub-6~GHz.
+    \end{itemize}
+  \end{block}
+  \begin{block}{Opção 2 --- Medição em rede móvel real}
+    \begin{itemize}
+      \item Medir a latência da rede móvel com \texttt{adb} (\emph{ping} contínuo) e \texttt{iperf3} entre smartphone e servidor.
+      \item Estimar as parcelas de transmissão e propagação do RTT observado em 4G/5G.
+    \end{itemize}
+  \end{block}
 \end{frame}
 
 \section{Bibliografia}
@@ -234,6 +341,15 @@
     \item 3GPP TR 38.811, \emph{Ntn; Solutions for NR to support NTN}
     \item ITU-R M.2160, \emph{IMT-2030 Framework}
     \item M. Shafi et al., ``5G: A tutorial overview of standards, trials, challenges, deployment and practice'', \emph{IEEE JSAC}, 2017
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Leitura recomendada}
+  \begin{itemize}
+    \item 3GPP TR 38.300, \emph{NR; Overall description; Stage-2} --- arquitetura geral e protocolos do 5G NR.
+    \item 3GPP TS 23.501, \emph{System Architecture for the 5G System (5GS)} --- SBA, funções de rede e \emph{network slicing}.
+    \item ITU-R M.2160, \emph{IMT-2030 Framework} --- requisitos e casos de uso das redes pós-5G.
+    \item M. Shafi et al., ``5G: A tutorial overview of standards, trials, challenges, deployment and practice'', \emph{IEEE JSAC}, 2017.
   \end{itemize}
 \end{frame}
 

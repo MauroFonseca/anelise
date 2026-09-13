@@ -10,7 +10,7 @@ all: $(PDFS)
 %.pdf: %.tex preamble.tex
 	tectonic -X compile --keep-intermediates $*.tex
 
-informe_melloras.pdf: informe ../docs/informe_melloras.tex
+informe_melloras.pdf: ../docs/informe_melloras.tex
 	tectonic -X compile --keep-intermediates ../docs/informe_melloras.tex
 
 clean:

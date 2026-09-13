@@ -20,6 +20,20 @@
   \titlepage
 \end{frame}
 
+\begin{frame}{Objetivos de aprendizagem}
+  Ao final desta aula, você será capaz de:
+  \begin{itemize}
+    \item \textbf{descrever} o ciclo agente--ambiente do RL e \textbf{diferenciar} aprendizado centralizado de \emph{federated learning};
+    \item \textbf{distinguir} aprendizagem supervisionada, não-supervisionada, por reforço e profunda;
+    \item \textbf{aplicar} a equação de Bellman e a atualização Q-learning em alocação de recursos;
+    \item \textbf{explicar} o uso de LSTM na predição de mobilidade e \emph{handover};
+    \item \textbf{avaliar} desafios de dados, privacidade, confiabilidade e padronização de ML em redes (3GPP RM-NET, O-RAN).
+  \end{itemize}
+  \begin{alertblock}{Pré-requisitos}
+    Aulas 7 (5G e redes móveis) e 10 (drones, satélites e NTN).
+  \end{alertblock}
+\end{frame}
+
 \section{Motivação}
 
 \begin{frame}{Por que IA/ML em redes sem fio?}
@@ -80,11 +94,13 @@
       \draw[->,thick,aneliseVerde] (env.south) to[bend right=20] node[midway,below=1mm,font=\tiny]{$R_{t+1}$ (recompensa, ex.: throughput)} (agent.south);
       \draw[->,thick,aneliseGris] (env.north) to[bend left=20] node[midway,above=1mm,font=\tiny]{$S_{t+1}$ (novo estado)} (agent.north);
     \end{tikzpicture}
+    \\[1mm] {\scriptsize \textbf{Figura 1:} ciclo agente--ambiente do aprendizado por reforço aplicado à alocação de recursos.}
   \end{center}
   \begin{itemize}
     \item Exemplo: alocação de RBs em 5G usando Deep Q-Learning (DQN)
     \item Estado: filas CQI, buffer; Ação: RBs por usuário; Recompensa: throughput $\times$ justiça (Jain)
   \end{itemize}
+  \note{Enfatizar que o agente aprende por tentativa e erro maximizando a recompensa acumulada descontada ($G_t = \sum \gamma^k R_{t+k}$); a rede sem fio é o ambiente que transita de estado ao aplicar a ação de alocação.}
 \end{frame}
 
 \begin{frame}{Exemplo prático: predição de mobilidade}
@@ -98,6 +114,7 @@
   \begin{block}{Implementação}
     Python + TensorFlow/Keras, treino offline com dados de drive-test, inferência no MEC ou no próprio UE.
   \end{block}
+  \note{A LSTM processa janelas de 10 medições de RSSI/RSRP e prevê a célula-alvo do handover; destacar que o ganho real relatado na literatura é da ordem de 30--40\% de redução de falhas.}
 \end{frame}
 
 \section{Desafios}
@@ -133,6 +150,88 @@
       \end{itemize}
     \end{column}
   \end{columns}
+  \note{Federated learning resolve privacidade e escala: o modelo é treinado localmente em cada gNB/UE e apenas os gradientes são agregados; correlacionar com a padronização O-RAN (rApp/xApp com ML).}
+\end{frame}
+
+\begin{frame}{Exercício resolvido --- Bellman e atualização Q-learning}
+  \textbf{Problema:} um agente RL decide a alocação de um RB. A ação atual não gera recompensa imediata ($r = 0$), mas leva a um estado em que a melhor ação futura renderá $r = 10$ (estado terminal). Considere $\gamma = 0{,}9$ e partida com $Q(s,a) = 0$.
+  \begin{enumerate}
+    \item \textbf{Valor-alvo (Bellman):}
+      $$Q(s,a) = r + \gamma\,\max_{a'} Q(s',a') = 0 + 0{,}9 \times 10 = 9.$$
+    \item \textbf{Atualização Q-learning} com $\alpha = 0{,}1$:
+      $$Q(s,a) \leftarrow Q(s,a) + \alpha\left[ r + \gamma\,\max_{a'} Q(s',a') - Q(s,a) \right] = 0 + 0{,}1\,(9 - 0) = 0{,}9.$$
+    \item \textbf{Convergência:} repetindo a mesma experiência, $Q(s,a)$ se aproxima assintoticamente de $9$.
+  \end{enumerate}
+  \begin{alertblock}{Interpretação}
+    O fator $\gamma = 0{,}9$ desconta o valor futuro: uma recompensa de $10$ a um passo de distância vale $0{,}9 \times 10 = 9$ hoje.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Resumo da aula}
+  \begin{itemize}
+    \item \textbf{ML em redes}: predição de tráfego/mobilidade, alocação dinâmica de espectro/potência/beam, detecção de anomalias, \emph{zero-touch}.
+    \item \textbf{Paradigmas}: supervisionado (classificação), não-supervisionado (agrupamento), por reforço (alocação) e profundo (LSTM, CNN, autoencoders).
+    \item \textbf{RL/DQN}: agente aloca RBs com base em estado (CQI, buffer) e recompensa (throughput $\times$ justiça de Jain); DQN usa redes neurais como aproximador de $Q$.
+    \item \textbf{LSTM}: predição de \emph{handover} a partir de séries de RSSI/RSRP (redução de $\approx 40\%$ de falhas).
+    \item \textbf{Desafios}: dados rotulados, privacidade (GDPR), não-estacionariedade, latência de inferência e robustez.
+    \item \textbf{Padronização}: 3GPP Rel.~18 RM-NET, O-RAN (rApp/xApp) e ITU-T ML5G; \emph{federated learning} para escalar com privacidade.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Autoavaliação}
+  \begin{enumerate}
+    \item No aprendizado por reforço, o agente obtém do ambiente:
+      \begin{itemize}
+        \item (a) apenas o rótulo correto da ação
+        \item (b) apenas a ação executada
+        \item (c) o novo estado e a recompensa
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (c)
+
+    \item Uma LSTM é mais adequada para:
+      \begin{itemize}
+        \item (a) predição de séries temporais, como RSSI/RSRP
+        \item (b) ordenação de pacotes em filas
+        \item (c) compressão de imagens de beamforming
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (a)
+
+    \item A principal diferença do \emph{federated learning} para o treino centralizado é:
+      \begin{itemize}
+        \item (a) usar apenas redes neurais profundas
+        \item (b) treinar com dados locais e agregar apenas os modelos/gradientes
+        \item (c) dispensar a camada de rede física
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (b)
+
+    \item Com $\gamma = 0{,}9$, $r = 0$ e $\max Q(s',a') = 10$, a equação de Bellman resulta em $Q(s,a) =$
+      \begin{itemize}
+        \item (a) $9$
+        \item (b) $10$
+        \item (c) $0{,}9$
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (a)
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Laboratório sugerido}
+  \begin{block}{Q-learning em Python/gymnasium}
+    \begin{itemize}
+      \item Implementar Q-learning para alocação de canal/RB em um ambiente simplificado (ex.: \texttt{FrozenLake} ou um \texttt{env} customizado).
+      \item Variar $\alpha$ e $\gamma$ e observar a curva de recompensa acumulada e a convergência da tabela $Q$.
+      \item Extensão: substituir a tabela por uma rede neural (DQN) usando PyTorch/TensorFlow.
+    \end{itemize}
+  \end{block}
+  \begin{block}{Demonstração de \emph{federated learning}}
+    \begin{itemize}
+      \item Usar \texttt{tensorflow-federated} (TFF) para treinar um classificador com clientes simulados.
+      \item Comparar precisão e custo de comunicação entre treino centralizado e federado.
+    \end{itemize}
+  \end{block}
 \end{frame}
 
 \section{Bibliografia}
@@ -145,6 +244,19 @@
     \item O-RAN Alliance, \emph{O-RAN Working Group 2: AI/ML Workflow Description}
     \item ITU-T Y.3172, \emph{Architectural framework for ML in future networks}
   \end{itemize}
+\end{frame}
+
+\begin{frame}{Leitura recomendada}
+  \begin{itemize}
+    \item R. Sutton \& A. Barto, \emph{Reinforcement Learning: An Introduction}, MIT Press --- referência clássica para RL, Bellman e Q-learning.
+    \item C. Zhang et al., ``Deep learning in mobile and wireless networking: A survey'', \emph{IEEE Commun. Surv. Tut.}, 2019 --- panorama geral de DL aplicado a redes.
+    \item N. C. Luong et al., ``Applications of deep reinforcement learning in communications and networking'', \emph{IEEE Commun. Mag.}, 2019 --- DQN aplicado a alocação de recursos.
+    \item O-RAN Alliance, \emph{WG2: AI/ML Workflow Description} --- como o ML entra na RAN (rApp/xApp).
+    \item 3GPP TR 38.817 (RAN-CU) --- coleta e uso de dados centrados na RAN para ML.
+  \end{itemize}
+  \begin{alertblock}{Dica de estudo}
+    Reimplemente o exercício de Bellman em Python e depois generalize para DQN; isso consolida o ciclo agente--ambiente.
+  \end{alertblock}
 \end{frame}
 
 \end{document}

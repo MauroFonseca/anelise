@@ -20,6 +20,22 @@
   \titlepage
 \end{frame}
 
+\begin{frame}{Objetivos de aprendizagem}
+  Ao final desta aula, você será capaz de:
+  \begin{itemize}
+    \item \textbf{comparar} o IEEE 802.11p/ITS-G5 com o C-V2X (modo 4/PC5) em alcance, latência e arquitetura;
+    \item \textbf{descrever} os modos 1 e 2 do NR-V2X e os casos de uso Day-1 e Day-2;
+    \item \textbf{explicar} o funcionamento do \emph{platooning} e seus requisitos de latência e confiabilidade;
+    \item \textbf{calcular} a distância de segurança a partir da velocidade e do intervalo de transmissão;
+    \item \textbf{planejar} um experimento de simulação VANET (ns-3/SUMO ou Veins).
+  \end{itemize}
+  \begin{alertblock}{Pré-requisitos}
+    \begin{itemize}
+      \item Aula 4 (protocolos MAC e acesso ao meio) e Aula 7 (5G NR, \emph{sidelink} e latência URLLC).
+    \end{itemize}
+  \end{alertblock}
+\end{frame}
+
 \section{Introdução}
 
 \begin{frame}{Redes Veiculares: conceitos básicos}
@@ -71,6 +87,7 @@
   \begin{exampleblock}{Tendência 2026}
     C-V2X (NR-V2X) domina novos projetos; IEEE 802.11p em operação em frotas existentes. China/Europa/América do Norte adotam C-V2X.
   \end{exampleblock}
+  \note{802.11p é V2V/V2I direto sem infraestrutura; C-V2X oferece PC5 (sidelink) e Uu (via rede), com maior alcance e menor latência no NR-V2X.}
 \end{frame}
 
 \begin{frame}{NR-V2X (3GPP Rel.\ 16/17)}
@@ -91,6 +108,7 @@
       \item \textbf{Day-2}: percepção cooperativa, intenção de manobra, \emph{trajectory sharing}
     \end{itemize}
   \end{block}
+  \note{No modo 1 o gNB escala os recursos (cobre cenário com cobertura); no modo 2 o veículo seleciona recursos autonomamente com \emph{sensing}, essencial fora de cobertura.}
 \end{frame}
 
 \section{Platooning}
@@ -128,10 +146,12 @@
           \draw[thick,aneliseLaranja] (a.east) to[bend left=10] (b.west);
           \draw[thick,aneliseLaranja] (b.east) to[bend left=10] (c.west);
           \node[below=1mm of a,font=\tiny]{C-V2X sidelink};
-        \end{tikzpicture}
+        \end{tikzpicture}\\[1mm]
+        {\scriptsize \textbf{Figura 1:} comboio (\emph{platooning}) com comunicação V2V por C-V2X \emph{sidelink}; o líder define velocidade e os demais seguem.}
       \end{center}
     \end{column}
   \end{columns}
+  \note{O platooning exige latência menor que 10 ms e comunicação confiável; em falha de link, os veículos devem assumir controle individual com segurança.}
 \end{frame}
 
 \section{Simulação}
@@ -148,6 +168,92 @@
   \end{exampleblock}
 \end{frame}
 
+\begin{frame}{Exercício resolvido: CAM e distância de segurança no platooning}
+  \textbf{Problema:} os veículos transmitem mensagens CAM (Cooperative Awareness Message) a \textbf{10~Hz}. Um comboio mantém \textbf{50~m} de distância entre veículos a \textbf{100~km/h}. Verifique se o intervalo de transmissão permite reação segura.
+  \begin{block}{Resolução}
+    \begin{enumerate}
+      \item Intervalo entre mensagens CAM:
+        \[
+          \Delta t = \frac{1}{f} = \frac{1}{10~\text{Hz}} = 100~\text{ms}.
+        \]
+      \item Velocidade em m/s:
+        \[
+          v = \frac{100\,000~\text{m}}{3600~\text{s}} \approx 27,8~\text{m/s}.
+        \]
+      \item Distância percorrida em um intervalo de 0,5~s:
+        \[
+          d = v \cdot t = 27,8~\text{m/s} \times 0,5~\text{s} \approx 13,9~\text{m}.
+        \]
+      \item Como $13,9~\text{m} < 50~\text{m}$, resta uma folga de $\approx 36,1~\text{m}$ antes de se fechar o espaço de segurança.
+    \end{enumerate}
+  \end{block}
+  \begin{alertblock}{Leitura do resultado}
+    Com CAM a 10~Hz (100~ms), o veículo percorre apenas $\approx 2,8$~m por intervalo --- bem menos que a distância de reação exigida, o que habilita aplicações de segurança Day-1.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Resumo da aula}
+  \begin{itemize}
+    \item \textbf{VANET}: comunicações V2V, V2I, V2P e V2N para segurança, eficiência e conforto.
+    \item \textbf{IEEE 802.11p/ITS-G5}: OFDM em 5,9~GHz, V2V/V2I direto, latência $\sim$50~ms e alcance $\sim$300~m.
+    \item \textbf{C-V2X}: PC5 (\emph{sidelink}) e Uu; NR-V2X (Rel.~16/17) com modos 1 (gNB) e 2 (autônomo), latência 3--10~ms.
+    \item \textbf{Platooning}: comboios a 5--15~m, latência $<$ 10~ms e economia de até 20\%.
+    \item \textbf{Simulação}: SUMO + ns-3/OMNeT++ (Veins, Simu5G, ns-3-mmwave) para comparar 802.11p vs.\ C-V2X.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Autoavaliação}
+  \begin{enumerate}
+    \item No C-V2X, o \emph{sidelink} PC5 refere-se a:
+      \begin{itemize}
+        \item (a) comunicação direta entre veículos, sem passar pela estação base
+        \item (b) comunicação veículo-rede via gNB
+        \item (c) comunicação via satélite LEO
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (a)
+    \item No LTE-V2X, o modo 4 caracteriza-se por:
+      \begin{itemize}
+        \item (a) escalonamento de recursos gerenciado pela estação base
+        \item (b) seleção autônoma de recursos pelo veículo (\emph{sidelink} sem cobertura)
+        \item (c) uso exclusivo da banda não licenciada de 6~GHz
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (b)
+    \item Comparado ao IEEE 802.11p, o C-V2X tipicamente oferece:
+      \begin{itemize}
+        \item (a) menor alcance e maior latência
+        \item (b) maior alcance e menor latência, com \emph{sensing} cooperativo
+        \item (c) mesma latência, porém sem suporte a V2I
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (b)
+    \item No \emph{platooning}, o requisito crítico de comunicação é:
+      \begin{itemize}
+        \item (a) alta taxa de download de mídia
+        \item (b) baixa latência (ex.: $<$ 10~ms) e alta confiabilidade
+        \item (c) máxima cobertura em área rural
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (b)
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Laboratório sugerido: simulação de VANET}
+  \begin{block}{Opção 1 --- ns-3 + SUMO (C-V2X)}
+    \begin{itemize}
+      \item Gerar mobilidade urbana no SUMO (ex.: 50 veículos) e usar o módulo de LTE-V2X/802.11p do ns-3 para a camada de comunicação.
+      \item Medir latência e pacotes perdidos; comparar 802.11p vs.\ C-V2X no mesmo cenário.
+    \end{itemize}
+  \end{block}
+  \begin{block}{Opção 2 --- Veins (OMNeT++ + SUMO)}
+    \begin{itemize}
+      \item Usar o framework Veins para VANET 802.11p com \emph{beacons} BSM/CAM e cenário de semáforo inteligente V2I.
+      \item Avaliar a entrega de mensagens de emergência em diferentes densidades de tráfego.
+    \end{itemize}
+  \end{block}
+\end{frame}
+
 \section{Bibliografia}
 
 \begin{frame}{Bibliografia}
@@ -157,6 +263,15 @@
     \item IEEE Std 802.11p-2010
     \item ETSI EN 302 571, \emph{ITS-G5}
     \item Sommer, Dressler, \emph{Vehicular Networking}, Cambridge Univ. Press, 2018
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Leitura recomendada}
+  \begin{itemize}
+    \item 3GPP TS 23.287, \emph{Architecture enhancements for V2X services} --- arquitetura C-V2X e PC5/Uu.
+    \item IEEE Std 802.11p-2010 e IEEE 1609.x (WAVE) --- camada física/MAC e serviços V2X dedicados.
+    \item ETSI EN 302 571, \emph{ITS-G5} --- requisitos de rádio para ITS em 5,9~GHz.
+    \item Sommer, Dressler, \emph{Vehicular Networking}, Cambridge Univ. Press, 2018 --- fundamentos e simulação VANET.
   \end{itemize}
 \end{frame}
 

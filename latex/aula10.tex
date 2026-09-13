@@ -20,6 +20,20 @@
   \titlepage
 \end{frame}
 
+\begin{frame}{Objetivos de aprendizagem}
+  Ao final desta aula, você será capaz de:
+  \begin{itemize}
+    \item \textbf{explicar} o papel das constelações LEO e \textbf{diferenciar} FANET de MANET;
+    \item \textbf{identificar} as categorias de NTN (LEO, MEO, GEO, HAPS) e comparar suas latências;
+    \item \textbf{descrever} os desafios de Doppler, \emph{handover} e energia em drones e satélites;
+    \item \textbf{calcular} o período orbital e o tempo de visibilidade de um satélite LEO;
+    \item \textbf{analisar} a integração das NTN ao 5G (3GPP Rel.~17/18).
+  \end{itemize}
+  \begin{alertblock}{Pré-requisitos}
+    Aulas 3 (redes ad hoc) e 7 (5G e redes móveis).
+  \end{alertblock}
+\end{frame}
+
 \section{FANET}
 
 \begin{frame}{FANET --- Flying Ad-Hoc Network}
@@ -63,7 +77,9 @@
       \draw[thick,aneliseLaranja] (d2) -- (d4) -- (d5);
       \draw[dashed,thick,aneliseGris] (d3) to[bend left=20] (d4);
     \end{tikzpicture}
+    \\[1mm] {\scriptsize \textbf{Figura 1:} topologia FANET em 3D com enlaces drone a drone e topologia em mudança constante.}
   \end{center}
+  \note{FANET é um caso particular de MANET com mobilidade muito maior e topologia 3D; reforçar que a alta velocidade (até 100 km/h) e o link budget variável tornam o handover e o roteamento mais desafiadores que em redes veiculares.}
 \end{frame}
 
 \section{NTN}
@@ -113,7 +129,9 @@
       \draw[thick,aneliseVerde] (terra) -- (s1) -- (s2) -- (s3) -- (gw);
       \node[right=1mm of s2,font=\tiny]{enlace laser ISL};
     \end{tikzpicture}
+    \\[1mm] {\scriptsize \textbf{Figura 2:} enlace satelital LEO com ISL (Inter-Satellite Link) laser entre terminais terrestres.}
   \end{center}
+  \note{Starlink já ultrapassou 7000 satélites e usa ISL a laser para reduzir a dependência de gateways terrestres; comparar latência LEO (20--40 ms) com GEO (mais de 250 ms).}
 \end{frame}
 
 \section{Desafios}
@@ -148,6 +166,94 @@
       \end{itemize}
     \end{column}
   \end{columns}
+  \note{O efeito Doppler em LEO (satélite a ~7,6 km/s) pode ultrapassar dezenas de kHz em bandas altas; por isso o 3GPP define a pre-compensação de frequência no enlace de subida.}
+\end{frame}
+
+\begin{frame}{Exercício resolvido --- órbita e visibilidade de um satélite LEO}
+  \textbf{Problema:} satélite LEO a $h = 550$~km de altitude (faixa do Starlink). Calcule velocidade orbital, período e tempo de visibilidade (elevação mínima $0^\circ$).
+  \begin{enumerate}
+    \item \textbf{Raio orbital:} $r = R_{\oplus} + h = 6371 + 550 = 6921$~km $= 6{,}921 \times 10^6$~m.
+    \item \textbf{Velocidade orbital} ($\mu = 3{,}986 \times 10^{14}$~m$^3$/s$^2$):
+      $$v = \sqrt{\dfrac{\mu}{r}} = \sqrt{\dfrac{3{,}986 \times 10^{14}}{6{,}921 \times 10^6}} \approx 7{,}59 \times 10^3\ \text{m/s} \approx 7{,}6\ \text{km/s}.$$
+    \item \textbf{Período orbital:}
+      $$T = 2\pi\sqrt{\dfrac{r^3}{\mu}},\qquad r^3 = 3{,}315 \times 10^{20}\ \text{m}^3,\quad \dfrac{r^3}{\mu} \approx 831\,705\ \text{s}^2,$$
+      $$\sqrt{831\,705} \approx 912\ \text{s}\ \Rightarrow\ T = 2\pi \times 912 \approx 5730\ \text{s} \approx 95{,}5\ \text{min}.$$
+    \item \textbf{Tempo de visibilidade} (arco $\eta = \arccos(R_{\oplus}/r) = \arccos(6371/6921) \approx 23{,}0^\circ$):
+      $$t_{\text{vis}} = T \times \dfrac{2\eta}{360^\circ} = 5730 \times \dfrac{46}{360} \approx 732\ \text{s} \approx 12{,}2\ \text{min}.$$
+  \end{enumerate}
+  \begin{block}{Verificação}
+    Satélites Starlink (540--570~km) têm período de $\approx 95$--$96$~min, coerente com o resultado.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Resumo da aula}
+  \begin{itemize}
+    \item \textbf{FANET}: rede de VANTs com alta mobilidade, topologia 3D, enlaces drone a drone e energia limitada (bateria).
+    \item \textbf{NTN}: plataformas aéreas/espaciais; LEO (300--1500~km, 20--40~ms), MEO, GEO ($>$ 250~ms) e HAPS.
+    \item \textbf{Constelações LEO}: Starlink ($>$ 7000 sat), OneWeb, Kuiper; ISL a laser e latência competitiva.
+    \item \textbf{Integração 5G}: 3GPP Rel.~17 (suporte básico NTN) e Rel.~18 (NTN NR, IoT-NTN).
+    \item \textbf{Desafios}: Doppler elevado ($\approx 7{,}6$~km/s em LEO), \emph{handover} entre satélites, atenuação mmWave, energia e regulamentação.
+    \item \textbf{Física orbital}: $v = \sqrt{\mu/r}$, $T = 2\pi\sqrt{r^3/\mu}$; LEO a 550~km $\rightarrow T \approx 95{,}5$~min.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Autoavaliação}
+  \begin{enumerate}
+    \item Qual característica mais distingue uma FANET de uma MANET clássica?
+      \begin{itemize}
+        \item (a) nós estacionários e topologia fixa
+        \item (b) alta mobilidade e topologia 3D em mudança constante
+        \item (c) uso exclusivo de enlaces com fio
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (b)
+
+    \item Qual categoria de NTN oferece a menor latência fim-a-fim?
+      \begin{itemize}
+        \item (a) GEO (35~786~km)
+        \item (b) MEO (7000--25\,000~km)
+        \item (c) LEO (300--1500~km)
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (c)
+
+    \item O período orbital de um satélite depende apenas de:
+      \begin{itemize}
+        \item (a) da inclinação da órbita e da massa do satélite
+        \item (b) do raio orbital e da constante gravitacional $\mu$
+        \item (c) do tamanho da antena do terminal
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (b)
+
+    \item Por que o enlace com satélite LEO sofre Doppler elevado?
+      \begin{itemize}
+        \item (a) pela alta velocidade relativa do satélite ($\approx 7{,}6$~km/s)
+        \item (b) pela baixa altitude em relação ao horizonte
+        \item (c) pela banda Ku ser intrinsicamente instável
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (a)
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Laboratório sugerido}
+  \begin{block}{Visualização de constelações}
+    \begin{itemize}
+      \item Explorar \emph{Stuff in Space} (stuffin.space) para observar em tempo real a distribuição de Starlink/OneWeb em LEO e a densidade de satélites sobre o Brasil.
+      \item Comparar altitude, inclinação e período exibidos com o valor teórico ($T \approx 95$~min a 550~km).
+    \end{itemize}
+  \end{block}
+  \begin{block}{Simulação de FANET no ns-3}
+    \begin{itemize}
+      \item Configurar um cenário com $N$ UAVs, mobilidade 3D e roteamento ad hoc (ex.: AODV/OLSR).
+      \item Medir PDR (packet delivery ratio) e atraso fim-a-fim variando a velocidade dos nós.
+      \item Observar o impacto da mobilidade na frequência de trocas de rota e de \emph{handover}.
+    \end{itemize}
+  \end{block}
+  \begin{alertblock}{Atenção}
+    Simular em ambiente controlado; não interferir com redes reais sem autorização.
+  \end{alertblock}
 \end{frame}
 
 \section{Bibliografia}
@@ -160,6 +266,18 @@
     \item O. S. Oubbati et al., ``A survey on UAV-aided vehicular networks'', \emph{IEEE Commun. Surv. Tut.}, 2020
     \item M. Mozaffari et al., ``A tutorial on UAVs for wireless networks'', \emph{IEEE Commun. Surv. Tut.}, 2019
   \end{itemize}
+\end{frame}
+
+\begin{frame}{Leitura recomendada}
+  \begin{itemize}
+    \item 3GPP TR 38.811 e TR 38.821 --- estudo e soluções para NR-NTN (leitura oficial dos requisitos).
+    \item M. Mozaffari et al., ``A tutorial on UAVs for wireless networks'', \emph{IEEE Commun. Surv. Tut.}, 2019 --- taxonomia de usos de UAV como \emph{BS aéreas}, relés e rede de sensores.
+    \item O. S. Oubbati et al., ``A survey on UAV-aided vehicular networks'', \emph{IEEE Commun. Surv. Tut.}, 2020 --- integração UAV--VANET.
+    \item Especial 5G NTN do \emph{IEEE Commun. Mag.} (2022) --- artigos sobre LEO, MEO e handover satelital.
+  \end{itemize}
+  \begin{alertblock}{Dica de estudo}
+    Releia a Física orbital ($v = \sqrt{\mu/r}$, $T = 2\pi\sqrt{r^3/\mu}$) e confronte com os dados das constelações na \emph{Stuff in Space}.
+  \end{alertblock}
 \end{frame}
 
 \end{document}

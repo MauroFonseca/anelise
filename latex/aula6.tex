@@ -1,6 +1,6 @@
 % !TEX program = tectonic
 % =============================================================================
-%  AULA 6 — Redes sem Fio: Calidade de Servizo (QoS)
+%  AULA 6 — Redes sem Fio: Qualidade de Serviço (QoS)
 %  Curso: Redes sem Fio  |  Profa. Anelise Munaretto
 %  Intserv/Diffserv, RSVP, WFQ, token bucket, 802.11e, QoS ad hoc (QOLSR).
 %  Compilar: tectonic aula6.tex
@@ -8,10 +8,10 @@
 \documentclass[aspectratio=169,11pt]{beamer}
 \input{preamble.tex}
 
-\title[Redes sem Fio]{Redes sem Fio\\ Calidade de Servizo (QoS)}
+\title[Redes sem Fio]{Redes sem Fio\\ Qualidade de Serviço (QoS)}
 \subtitle{Aula 6}
 \author[Anelise Munaretto]{Profa. Anelise Munaretto}
-\institute[Curso]{Redes sem Fio --- Ciência da Computación}
+\institute[Curso]{Redes sem Fio --- Ciência da Computação}
 \date{2026}
 
 \begin{document}
@@ -19,78 +19,92 @@
 \begin{frame}[plain]
   \titlepage
   \begin{center}
-    \scriptsize Soporte QoS em redes IP: Intserv, Diffserv, RSVP; QoS em WiFi (802.11e) e ad hoc.
+    \scriptsize Suporte QoS em redes IP: Intserv, Diffserv, RSVP; QoS em WiFi (802.11e) e ad hoc.
   \end{center}
 \end{frame}
 
-\section{Multimedia e QoS}
+\begin{frame}{Objetivos de aprendizagem}
+  Ao final desta aula, você será capaz de:
+  \begin{itemize}
+    \item \textbf{Distinguir} os modelos Intserv e Diffserv quanto a escalabilidade e garantias;
+    \item \textbf{Calcular} o atraso máximo imposto por um \emph{token bucket} combinado com WFQ;
+    \item \textbf{Descrever} o funcionamento do RSVP (mensagens PATH/RESV) e o papel do controle de admissão;
+    \item \textbf{Explicar} como QOLSR e FTS adaptam QoS a redes ad hoc e a enlaces Wi-Fi;
+    \item \textbf{Relacionar} os mecanismos de QoS (marcação, \emph{shaping}, escalonamento) aos princípios apresentados.
+  \end{itemize}
+  \begin{alertblock}{Pré-requisitos}
+    Aula 4 --- MAC/QoS: acesso ao meio (CSMA/CA), filas, escalonamento e noções de 802.11e.
+  \end{alertblock}
+\end{frame}
 
-\begin{frame}{Multimídia e calidade de servizo}
+\section{Multimídia e QoS}
+
+\begin{frame}{Multimídia e qualidade de serviço}
   \begin{columns}
     \begin{column}{0.5\textwidth}
-      \textbf{Aplicacións de multimídia}
+      \textbf{Aplicações de multimídia}
       \begin{itemize}
-        \item audio e vídeo de rede (``mídia continua'')
+        \item áudio e vídeo de rede (``mídia contínua'')
         \item requerem atraso e perda controlados
       \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
       \textbf{QoS}
       \begin{itemize}
-        \item a rede ofrece à aplicación o \textbf{nivel de desempenho necesario} para que funcione
+        \item a rede oferece à aplicação o \textbf{nível de desempenho necessário} para que funcione
       \end{itemize}
     \end{column}
   \end{columns}
   \vspace{0.3cm}
   \begin{alertblock}{Problema}
-    TCP/UDP/IP: ``servizo de melhor esforzo'' --- \textbf{sem garantía sobre atraso e perda}.
+    TCP/UDP/IP: ``serviço de melhor esforço'' --- \textbf{sem garantia sobre atraso e perda}.
   \end{alertblock}
-  \begin{block}{Estratexias}
+  \begin{block}{Estratégias}
     \begin{itemize}
-      \item aplicacións usan técnicas de capa de aplicación para aliviar atraso/perda (buffering, adaptación de taxa, FEC)
-      \item a rede deve evolucionar para dar melhor soporte (clases de serviço)
+      \item aplicações usam técnicas de camada de aplicação para aliviar atraso/perda (buffering, adaptação de taxa, FEC)
+      \item a rede deve evoluir para dar melhor suporte (classes de serviço)
     \end{itemize}
   \end{block}
 \end{frame}
 
-\begin{frame}{Como deve evolucionar a Internet para multimedia?}
+\begin{frame}{Como deve evoluir a Internet para multimídia?}
   \begin{columns}
     \begin{column}{0.5\textwidth}
-      \textbf{Filosofía de servizos integrados (Intserv)}
+      \textbf{Filosofia de serviços integrados (Intserv)}
       \begin{itemize}
-        \item cambios fundamentais na Internet
-        \item as aplicacións \textbf{reservan largura de banda fim-a-fim}
+        \item mudanças fundamentais na Internet
+        \item as aplicações \textbf{reservam largura de banda fim-a-fim}
         \item requer software novo e complexo em hosts e roteadores
       \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
-      \textbf{Filosofía \emph{laissez-faire}}
+      \textbf{Filosofia \emph{laissez-faire}}
       \begin{itemize}
-        \item sem cambios importantes
-        \item mais largura de banda quando faga falta
-        \item distribución de contido, multicast na capa de aplicación
+        \item sem mudanças importantes
+        \item mais largura de banda quando for necessário
+        \item distribuição de conteúdo, multicast na camada de aplicação
       \end{itemize}
-      \textbf{Filosofía de servizos diferenciados (Diffserv)}
+      \textbf{Filosofia de serviços diferenciados (Diffserv)}
       \begin{itemize}
-        \item menos cambios na infraestructura
-        \item ofrece servizo de 1ª e 2ª clase
+        \item menos mudanças na infraestrutura
+        \item oferece serviço de 1ª e 2ª classe
       \end{itemize}
     \end{column}
   \end{columns}
 \end{frame}
 
-\section{Clases de servizo e principios}
+\section{Classes de serviço e princípios}
 
-\begin{frame}{Proporcionar múltiples clases de servizo}
+\begin{frame}{Proporcionar múltiplas classes de serviço}
   \begin{itemize}
-    \item ata agora: facer o melhor co servizo de ``melhor esforzo'' (uma única clase)
-    \item alternativa: \textbf{múltiples clases de servizo}
+    \item até agora: fazer o melhor com o serviço de ``melhor esforço'' (uma única classe)
+    \item alternativa: \textbf{múltiplas classes de serviço}
       \begin{itemize}
-        \item particionar o tráfico em clases
-        \item a rede trata diferentes clases de forma diferente (analoxía: servizo VIP vs.\ normal)
+        \item particionar o tráfego em classes
+        \item a rede trata classes diferentes de forma diferente (analogia: serviço VIP vs.\ normal)
       \end{itemize}
-    \item granularidade: servizo \textbf{diferencial entre clases}, não entre conexións individuais
-    \item historia: bits de \textbf{ToS} (IPv4) / \textbf{Flow Label} (IPv6)
+    \item granularidade: serviço \textbf{diferencial entre classes}, não entre conexões individuais
+    \item história: bits de \textbf{ToS} (IPv4) / \textbf{Flow Label} (IPv6)
   \end{itemize}
   \begin{center}
     \begin{tikzpicture}[font=\scriptsize]
@@ -105,32 +119,34 @@
       \draw[thick] (r1) -- (r2);
       \draw[thick] (r2) -- (h3);
       \draw[thick] (r2) -- (h4);
-      \node[below=1mm of r1,font=\tiny]{cola de saída R1: 1,5~Mbps};
-    \end{tikzpicture}
+      \node[below=1mm of r1,font=\tiny]{fila de saída R1: 1,5~Mbps};
+    \end{tikzpicture}\\[1mm]
+    {\scriptsize \textbf{Figura 1:} Roteadores com filas de saída atendendo múltiplos hosts e classes de serviço.}
   \end{center}
+  \note{Introduzir os quatro princípios de QoS (marcação, shaping, compartilhamento eficiente e admissão) que serão detalhados nos próximos slides.}
 \end{frame}
 
-\begin{frame}{Principio 1: marcado de pacote}
-  \begin{exampleblock}{Escenario}
-    Teléfono IP a 1~Mbps e FTP comparten enlace de 1,5~Mbps.
+\begin{frame}{Princípio 1: marcação de pacote}
+  \begin{exampleblock}{Cenário}
+    Telefone IP a 1~Mbps e FTP compartilham enlace de 1,5~Mbps.
     \begin{itemize}
-      \item as murmurios de FTP podem congestionar o roteador e causar perda de audio
-      \item desexase dar \textbf{prioridade ao audio} sobre o FTP
+      \item os surtos de FTP podem congestionar o roteador e causar perda de áudio
+      \item deseja-se dar \textbf{prioridade ao áudio} sobre o FTP
     \end{itemize}
   \end{exampleblock}
-  \begin{block}{Principio 1}
-    \textbf{Marcado de pacote} necesario para que o roteador distinga entre clases; e nova \textbf{política de encamiñamento} para tratar os pacotes.
+  \begin{block}{Princípio 1}
+    \textbf{Marcação de pacote} necessária para que o roteador distinga entre classes; e nova \textbf{política de encaminhamento} para tratar os pacotes.
   \end{block}
 \end{frame}
 
-\begin{frame}{Principio 2: marcado e shaping na borda}
+\begin{frame}{Princípio 2: marcação e shaping na borda}
   \begin{itemize}
-    \item e se as aplicacións se comportan mal (audio envía mais do declarado)?
-    \item \textbf{Shaping}: forzar a adhesión da origem às alocacións de largura de banda
+    \item e se as aplicações se comportam mal (áudio envia mais do que o declarado)?
+    \item \textbf{Shaping}: forçar a adesão da origem às alocações de largura de banda
   \end{itemize}
   \begin{center}
     \begin{tikzpicture}[font=\scriptsize]
-      \node[draw,fill=aneliseAzul!13,rounded corners=2mm](tel){Teléfono 1~Mbps};
+      \node[draw,fill=aneliseAzul!13,rounded corners=2mm](tel){Telefone 1~Mbps};
       \node[draw,fill=aneliseLaranja!25,rounded corners=1mm,right=2cm of tel](r1){R1};
       \node[draw,fill=aneliseLaranja!25,rounded corners=1mm,right=1.4cm of r1](r2){R2};
       \node[draw,fill=aneliseGris!15,rounded corners=2mm,below=1cm of r1](sh){shaper na borda};
@@ -138,38 +154,40 @@
       \draw[->,thick,aneliseLaranja] (r1) -- (r2);
       \draw[dashed,->,thick,aneliseVerde] (sh.north) -- (r1.south);
       \node[below=2mm of r2,font=\tiny]{enlace 1,5~Mbps};
-    \end{tikzpicture}
+    \end{tikzpicture}\\[1mm]
+    {\scriptsize \textbf{Figura 2:} Shaping na borda limita o fluxo antes do enlace compartilhado.}
   \end{center}
-  \begin{block}{Principio 2}
-    Marcado e shaping de pacote: \textbf{fornecer protección (illamento)} de uma clase fronte a outras.
+  \begin{block}{Princípio 2}
+    Marcação e shaping de pacote: \textbf{fornecer proteção (isolamento)} de uma classe frente a outras.
   \end{block}
 \end{frame}
 
-\begin{frame}{Principio 3: uso eficiente dos recursos}
+\begin{frame}{Princípio 3: uso eficiente dos recursos}
   \begin{itemize}
-    \item alocar largura de banda fixo (não compartible) a un fluxo: uso ineficaz se o fluxo não usa a súa alocación
+    \item alocar largura de banda fixa (não compartilhável) a um fluxo: uso ineficaz se o fluxo não usa a sua alocação
   \end{itemize}
   \begin{center}
     \begin{tikzpicture}[font=\scriptsize]
-      \node[draw,fill=aneliseAzul!13,rounded corners=2mm](tel){Teléfono 1~Mbps};
+      \node[draw,fill=aneliseAzul!13,rounded corners=2mm](tel){Telefone 1~Mbps};
       \node[draw,fill=aneliseLaranja!25,rounded corners=1mm,right=2cm of tel](r1){R1};
       \node[draw,fill=aneliseLaranja!25,rounded corners=1mm,right=1.4cm of r1](r2){R2};
-      \draw[thick,aneliseVerde] (r1.north) -- node[midway,above=1mm,font=\tiny]{enlace lóxico 1~Mbps} ([yshift=1cm]r1.north);
-      \node[draw,fill=aneliseGris!15,rounded corners=1mm,below=2mm of r1](q1){enlace lóxico 0,5~Mbps};
+      \draw[thick,aneliseVerde] (r1.north) -- node[midway,above=1mm,font=\tiny]{enlace lógico 1~Mbps} ([yshift=1cm]r1.north);
+      \node[draw,fill=aneliseGris!15,rounded corners=1mm,below=2mm of r1](q1){enlace lógico 0,5~Mbps};
       \draw[thick,aneliseLaranja] (tel) -- (r1);
       \draw[thick,aneliseLaranja] (r1) -- (r2);
       \node[below=2mm of r2,font=\tiny]{enlace 1,5~Mbps};
-    \end{tikzpicture}
+    \end{tikzpicture}\\[1mm]
+    {\scriptsize \textbf{Figura 3:} Enlaces lógicos com largura de banda alocada e compartilhamento eficiente dos recursos.}
   \end{center}
-  \begin{block}{Principio 3}
-    Ao proporcionar illamento, é desexable usar os recursos da forma mais eficiente posible.
+  \begin{block}{Princípio 3}
+    Ao proporcionar isolamento, é desejável usar os recursos da forma mais eficiente possível.
   \end{block}
 \end{frame}
 
-\begin{frame}{Principio 4: admisión de chamadas}
+\begin{frame}{Princípio 4: admissão de chamadas}
   \begin{columns}
     \begin{column}{0.55\textwidth}
-      \textbf{Feito básico}: não se podem admitir demandas de tráfico mais alá da capacidade do enlace.
+      \textbf{Fato básico}: não se podem admitir demandas de tráfego além da capacidade do enlace.
       \begin{center}
         \begin{tikzpicture}[font=\scriptsize]
           \node[draw,fill=aneliseAzul!13,rounded corners=2mm](t1){Tel 1~Mbps};
@@ -180,269 +198,275 @@
           \draw[thick,aneliseLaranja] (t2) -- (r1);
           \draw[thick,aneliseLaranja] (r1) -- (r2);
           \node[below=2mm of r2,font=\tiny]{enlace 1,5~Mbps};
-        \end{tikzpicture}
+        \end{tikzpicture}\\[1mm]
+        {\scriptsize \textbf{Figura 4:} Admissão de chamadas bloqueia demanda além da capacidade do enlace.}
       \end{center}
     \end{column}
     \begin{column}{0.45\textwidth}
-      \textbf{Admisión de chamada}
+      \textbf{Admissão de chamada}
       \begin{itemize}
-        \item o fluxo declara as súas necesidades
-        \item a rede pode bloquear a chamada (sinal de ocupado) se não pode atendela
+        \item o fluxo declara as suas necessidades
+        \item a rede pode bloquear a chamada (sinal de ocupado) se não pode atendê-la
       \end{itemize}
       \begin{alertblock}{Importante}
-        A admisión de chamadas é a base da garantía de QoS fim-a-fim.
+        A admissão de chamadas é a base da garantia de QoS fim-a-fim.
       \end{alertblock}
     \end{column}
   \end{columns}
 \end{frame}
 
-\section{Mecanismos de escalonamento e regulación}
+\section{Mecanismos de escalonamento e regulação}
 
-\begin{frame}{Escalonamento: como se escolle o próximo pacote}
+\begin{frame}{Escalonamento: como se escolhe o próximo pacote}
   \begin{columns}
     \begin{column}{0.5\textwidth}
       \textbf{FIFO (First In First Out)}
       \begin{itemize}
-        \item enviar na orde de chegada à cola
-        \item política de descarte: \emph{drop-tail}, prioridade, aleatorio
+        \item enviar na ordem de chegada à fila
+        \item política de descarte: \emph{drop-tail}, prioridade, aleatória
       \end{itemize}
-      \textbf{Escalonamento prioritario}
+      \textbf{Escalonamento prioritário}
       \begin{itemize}
-        \item transmite da cola com maior prioridade
-        \item múltiples clases com prioridades distintas
-        \item a clase pode depender da marcación ou origem/destino IP, portas\ldots
+        \item transmite da fila com maior prioridade
+        \item múltiplas classes com prioridades distintas
+        \item a classe pode depender da marcação ou origem/destino IP, portas\ldots
       \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
       \textbf{Varredura cíclica (round robin)}
       \begin{itemize}
-        \item varre as colas das clases, atendendo uma de cada clase (se dispoñible)
+        \item varre as filas das classes, atendendo uma de cada classe (se disponível)
       \end{itemize}
       \textbf{WFQ --- Weighted Fair Queueing}
       \begin{itemize}
-        \item varredura cíclica xeneralizada
-        \item cada clase recibe uma cantidade \textbf{ponderada} de servizo em cada ciclo
+        \item varredura cíclica generalizada
+        \item cada classe recebe uma quantidade \textbf{ponderada} de serviço em cada ciclo
       \end{itemize}
       \begin{center}
         \begin{tikzpicture}[font=\scriptsize]
-          \node[draw,fill=aneliseGris!15,rounded corners=1mm](cola){cola (espera)};
+          \node[draw,fill=aneliseGris!15,rounded corners=1mm](cola){fila (espera)};
           \node[draw,fill=aneliseVerde!20,rounded corners=1mm,right=1.4cm of cola](link){enlace (servidor)};
           \node[draw,ellipse,fill=aneliseLaranja!25,above=0.6cm of link](s){escalonador};
           \draw[->,thick,aneliseLaranja] (s.south) -- (link.north);
           \node[above=0.5mm of cola,font=\tiny]{chegadas};
           \node[below=0.5mm of link,font=\tiny]{saídas};
-        \end{tikzpicture}
+        \end{tikzpicture}\\[1mm]
+        {\scriptsize \textbf{Figura 5:} Escalonador seleciona o próximo pacote entre as filas de espera.}
       \end{center}
     \end{column}
   \end{columns}
 \end{frame}
 
-\begin{frame}{Mecanismos de regulación (shaping)}
-  \begin{block}{Obxectivo}
-    Limitar o tráfico para não exceder os parámetros declarados.
+\begin{frame}{Mecanismos de regulação (shaping)}
+  \begin{block}{Objetivo}
+    Limitar o tráfego para não exceder os parâmetros declarados.
   \end{block}
-  \textbf{Tres criterios comúns:}
+  \textbf{Três critérios comuns:}
   \begin{itemize}
-    \item \textbf{taxa media} (longo prazo): cantos pacotes por unidade de tempo
+    \item \textbf{taxa média} (longo prazo): quantos pacotes por unidade de tempo
       \begin{itemize}
-        \item pregunta crucial: cal é o tamaño do intervalo? (100~pkt/s vs.\ 6000~pkt/min)
+        \item pergunta crucial: qual é o tamanho do intervalo? (100~pkt/s vs.\ 6000~pkt/min)
       \end{itemize}
-    \item \textbf{taxa de pico}: ex.\ 6000~ppm media, 1500~ppm pico
-    \item \textbf{tamaño da murmurio (máximo)}: nº máximo de pacotes consecutivos
+    \item \textbf{taxa de pico}: ex.\ 6000~pkt/min média, 1500~pkt/min pico
+    \item \textbf{tamanho do surto (máximo)}: n.º máximo de pacotes consecutivos
   \end{itemize}
   \begin{block}{Balde de fichas (token bucket)}
     \begin{itemize}
-      \item limita tamaño de murmurio e taxa media
-      \item o balde mantén fichas; xéranse a taxa $r$ fichas/s (se o balde não está cheo)
-      \item sobre intervalo $t$: pacotes admitidos $\leq r\cdot t + b$
+      \item limita tamanho de surto e taxa média
+      \item o balde mantém fichas; geram-se fichas à taxa $r$ fichas/s (se o balde não está cheio)
+      \item sobre o intervalo $t$: pacotes admitidos $\leq r\cdot t + b$
     \end{itemize}
   \end{block}
 \end{frame}
 
-\begin{frame}{Token bucket + WFQ $\Rightarrow$ atraso acoutado}
+\begin{frame}{Token bucket + WFQ $\Rightarrow$ atraso limitado}
   \begin{center}
     \begin{tikzpicture}[font=\scriptsize,
         c/.style={draw,rounded corners=2mm,fill=aneliseAzul!13,inner sep=1.2mm,text width=3cm,align=center},
       ]
-      \node[c](tb){token bucket\\(taxa $r$, tamaño $b$)};
+      \node[c](tb){token bucket\\(taxa $r$, tamanho $b$)};
       \node[c,right=2.4cm of tb](wfq){WFQ\\(taxa por fluxo $R$)};
-      \draw[->,thick,aneliseLaranja] (tb) -- node[midway,above=1mm,font=\tiny]{tráfico modelado} (wfq);
+      \draw[->,thick,aneliseLaranja] (tb) -- node[midway,above=1mm,font=\tiny]{tráfego modelado} (wfq);
       \node[draw,fill=aneliseVerde!15,rounded corners=2mm,below=6mm of wfq](d){Atraso máx.\ $D_{\max}=b/R$};
       \draw[->,thick,aneliseVerde] (wfq.south) -- (d.north);
-      \node[draw,fill=aneliseGris!12,rounded corners=2mm,below=6mm of tb](gar){Garantía de QoS};
+      \node[draw,fill=aneliseGris!12,rounded corners=2mm,below=6mm of tb](gar){Garantia de QoS};
       \draw[dashed,->] (tb.south) -- (gar.north);
-    \end{tikzpicture}
+    \end{tikzpicture}\\[1mm]
+    {\scriptsize \textbf{Figura 6:} Token bucket + WFQ garante atraso máximo $D_{\max}=b/R$.}
   \end{center}
   \begin{itemize}
-    \item o balde de fichas e WFQ combínanse para fornecer \textbf{límite superior garantido no atraso}
-    \item isto é a base dos servizos garantidos de Intserv
+    \item o balde de fichas e WFQ combinam-se para fornecer \textbf{limite superior garantido no atraso}
+    \item isto é a base dos serviços garantidos de Intserv
   \end{itemize}
+  \note{Se $R \geq r$, a fila nunca excede $b$ bits; logo o atraso máximo de fila é $b/R$, independentemente da taxa média do fluxo. Este é o resultado-chave para o exercício resolvido.}
 \end{frame}
 
 \section{Diffserv e Intserv}
 
-\begin{frame}{Servizos diferenciados da IETF (Diffserv)}
+\begin{frame}{Serviços diferenciados da IETF (Diffserv)}
   \begin{itemize}
-    \item queren clases de servizo ``cualitativas'': ``compórtase como un fio''
-    \item distinción de servizo relativa: \textbf{Platinum, Gold, Silver}
-    \item escalabilidade: \textbf{funcións simples no núcleo}, funcións complexas na borda
+    \item querem classes de serviço ``qualitativas'': ``comporta-se como um fio''
+    \item distinção de serviço relativa: \textbf{Platinum, Gold, Silver}
+    \item escalabilidade: \textbf{funções simples no núcleo}, funções complexas na borda
   \end{itemize}
   \begin{center}
     \begin{tikzpicture}[font=\scriptsize,
         c/.style={draw,rounded corners=2mm,fill=aneliseAzul!10,inner sep=1mm,text width=3cm,align=center},
       ]
-      \node[c](borda){Roteador de borda\\marcado por fluxo\\(�perfil/fora de perfil)};
-      \node[c,right=2.6cm of borda](nucleo1){Roteador de núcleo\\tráfico por clase\\buffering e escalonamento};
+      \node[c](borda){Roteador de borda\\marcado por fluxo\\(perfil/fora de perfil)};
+      \node[c,right=2.6cm of borda](nucleo1){Roteador de núcleo\\tráfego por classe\\buffering e escalonamento};
       \node[c,right=2.6cm of nucleo1](nucleo2){Roteador de núcleo\\(igual)};
-      \draw[->,thick,aneliseLaranja] (borda) -- node[midway,above=1mm,font=\tiny]{preferencia a pacotes no perfil} (nucleo1);
+      \draw[->,thick,aneliseLaranja] (borda) -- node[midway,above=1mm,font=\tiny]{preferência a pacotes no perfil} (nucleo1);
       \draw[->,thick,aneliseLaranja] (nucleo1) -- (nucleo2);
-    \end{tikzpicture}
+    \end{tikzpicture}\\[1mm]
+    {\scriptsize \textbf{Figura 7:} Diferenciação e marcação na borda; tratamento por classe no núcleo.}
   \end{center}
   \begin{itemize}
     \item 6 bits de \textbf{DSCP} (Differentiated Services Code Point) no campo ToS/Traffic Class
-    \item determinan o \textbf{PHB} (Per-Hop Behavior) no roteador
+    \item determinam o \textbf{PHB} (Per-Hop Behavior) no roteador
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Clasificación e condicionamento (Diffserv)}
+\begin{frame}{Classificação e condicionamento (Diffserv)}
   \begin{itemize}
     \item pacote marcado no campo \textbf{ToS} (IPv4) / \textbf{Traffic Class} (IPv6)
     \item 6 bits \textbf{DSCP} + 2 bits não usados (ECN)
-    \item pode ser desexable limitar a taxa de inxección de tráfico dunha clase:
+    \item pode ser desejável limitar a taxa de injeção de tráfego de uma classe:
       \begin{itemize}
-        \item o usuário declara \textbf{perfil de tráfico} (taxa, tamaño de murmurio)
-        \item o tráfico mídese; móldase (shaping) se não está em conformidade
+        \item o usuário declara \textbf{perfil de tráfego} (taxa, tamanho de surto)
+        \item o tráfego mede-se; molda-se (shaping) se não está em conformidade
       \end{itemize}
   \end{itemize}
   \begin{block}{PHB (Per Hop Behavior)}
     \begin{itemize}
-      \item PHB resulta em comportamento de repaso diferente nos roteadores
-      \item não especifica cales mecanismos usar
-      \item exemplos: \textbf{EF} (Expedited Forwarding), \textbf{AF} (Assured Forwarding, 4 clases $\times$ 3 particións de descarte)
+      \item PHB resulta em comportamento de encaminhamento diferente nos roteadores
+      \item não especifica quais mecanismos usar
+      \item exemplos: \textbf{EF} (Expedited Forwarding), \textbf{AF} (Assured Forwarding, 4 classes $\times$ 3 partições de descarte)
     \end{itemize}
   \end{block}
 \end{frame}
 
-\begin{frame}{Servizos integrados da IETF (Intserv)}
+\begin{frame}{Serviços integrados da IETF (Intserv)}
   \begin{itemize}
-    \item arquitectura para garantir QoS em redes IP para \textbf{sesións de aplicación individuais}
-    \item \textbf{reserva de recursos}: os roteadores manteñen estado (tipo VC) de recursos alocados
-    \item \textbf{admitir/negar} novas requirimentos de chamada
+    \item arquitetura para garantir QoS em redes IP para \textbf{sessões de aplicação individuais}
+    \item \textbf{reserva de recursos}: os roteadores mantêm estado (tipo VC) de recursos alocados
+    \item \textbf{admitir/negar} novos requerimentos de chamada
   \end{itemize}
-  \begin{block}{Admisión de chamada}
-    A sesión que chega deve:
+  \begin{block}{Admissão de chamada}
+    A sessão que chega deve:
     \begin{enumerate}
-      \item declarar o seu requirimento QoS: \textbf{Rspec}
-      \item caracterizar o tráfico: \textbf{Tspec}
-      \item executar o protocolo de sinalización: \textbf{RSVP}
+      \item declarar o seu requerimento de QoS: \textbf{Rspec}
+      \item caracterizar o tráfego: \textbf{Tspec}
+      \item executar o protocolo de sinalização: \textbf{RSVP}
     \end{enumerate}
   \end{block}
-  \begin{exampleblock}{Modelos de servizo}
-    \textbf{Servizo garantido} (RFC 2212): chegada regulada por leaky bucket; atraso limitado matematicamente.
-    \textbf{Carga controlada} (RFC 2211): ``QoS próxima à dunha rede não cargada''.
+  \begin{exampleblock}{Modelos de serviço}
+    \textbf{Serviço garantido} (RFC 2212): chegada regulada por leaky bucket; atraso limitado matematicamente.
+    \textbf{Carga controlada} (RFC 2211): ``QoS próxima à de uma rede não carregada''.
   \end{exampleblock}
 \end{frame}
 
 \begin{frame}{RSVP --- Resource Reservation Protocol}
-  \begin{block}{Motivación}
-    Encamiñamento sem conexión + melhor esforzo = sem sinalización no deseño inicial do IP.
-    Novo requirimento: reservar recursos fim-a-fim para QoS em multimedia.
+  \begin{block}{Motivação}
+    Encaminhamento sem conexão + melhor esforço = sem sinalização no projeto inicial do IP.
+    Novo requerimento: reservar recursos fim-a-fim para QoS em multimídia.
   \end{block}
   \begin{itemize}
-    \item \textbf{RSVP} [RFC 2205]: ``permitir que os usuários comuniquen requirimentos à rede de modo robusto e eficaz''
-    \item antigo protocolo de sinalización: \textbf{ST-II} [RFC 1819]
+    \item \textbf{RSVP} [RFC 2205]: ``permitir que os usuários comuniquem requerimentos à rede de modo robusto e eficaz''
+    \item antigo protocolo de sinalização: \textbf{ST-II} [RFC 1819]
   \end{itemize}
   \begin{block}{RSVP não\ldots}
     \begin{itemize}
-      \item não especifica como reservar recursos (é un mecanismo de comunicação de necesidades)
-      \item não determina as rotas (tarefa do roteamento); sinalización desacoplada do roteamento
-      \item não interactúa co repaso de pacotes; separación de planos de control e datos
+      \item não especifica como reservar recursos (é um mecanismo de comunicação de necessidades)
+      \item não determina as rotas (tarefa do roteamento); sinalização desacoplada do roteamento
+      \item não interage com o encaminhamento de pacotes; separação dos planos de controle e dados
     \end{itemize}
   \end{block}
 \end{frame}
 
-\begin{frame}{RSVP: visión xeral da operación}
+\begin{frame}{RSVP: visão geral da operação}
   \begin{columns}
     \begin{column}{0.55\textwidth}
       \begin{itemize}
-        \item remitentes e receptores únense a un grupo multicast (fóra do RSVP)
-        \item \textbf{sinalización do remitente à rede}:
+        \item remetentes e receptores unem-se a um grupo multicast (fora do RSVP)
+        \item \textbf{sinalização do remetente à rede}:
           \begin{itemize}
-            \item mensagem \texttt{PATH}: fai coñecida a presenza do remitente
+            \item mensagem \texttt{PATH}: faz conhecida a presença do remetente
             \item \texttt{PATH teardown}: elimina o estado do caminho
           \end{itemize}
-        \item \textbf{sinalización do receptor à rede}:
+        \item \textbf{sinalização do receptor à rede}:
           \begin{itemize}
-            \item mensagem \texttt{RESV}: reserva recursos do(s) remitente(s)
+            \item mensagem \texttt{RESV}: reserva recursos do(s) remetente(s)
             \item \texttt{RESV teardown}: elimina reservas
           \end{itemize}
-        \item \textbf{sinalización da rede aos sistemas finais}:
+        \item \textbf{sinalização da rede aos sistemas finais}:
           \begin{itemize}
             \item erro de caminho, erro de reserva
           \end{itemize}
       \end{itemize}
     \end{column}
     \begin{column}{0.45\textwidth}
-      \textbf{Obxectivos de deseño}:
+      \textbf{Objetivos de projeto}:
       \begin{enumerate}
-        \item acomodar receptores heteroxéneos
-        \item acomodar aplicacións com distintos requirimentos
-        \item multicast como servizo de primeira clase
+        \item acomodar receptores heterogêneos
+        \item acomodar aplicações com distintos requerimentos
+        \item multicast como serviço de primeira classe
         \item aproveitar roteamento multicast/unicast
-        \item overhead de protocolo lineal no nº de receptores
-        \item deseño modular
+        \item overhead de protocolo linear no n.º de receptores
+        \item projeto modular
       \end{enumerate}
     \end{column}
   \end{columns}
+  \note{Enfatizar que o RSVP é orientado ao receptor (receiver-initiated): cada receptor envia RESV e o estado é mantido por fluxo, o que limita a escalabilidade em redes grandes.}
 \end{frame}
 
 \section{QoS em redes sem fio}
 
 \begin{frame}{QoS em redes sem fio}
   \begin{itemize}
-    \item idea: prover QoS em redes móbiles e ad hoc co \textbf{mínimo overhead posible}
-    \item podem-se usar os modelos de QoS das redes cableadas?
-    \item dúas frontes: \textbf{QoS routing} e \textbf{QoS em Wi-Fi}
+    \item ideia: prover QoS em redes móveis e ad hoc com o \textbf{mínimo overhead possível}
+    \item podem-se usar os modelos de QoS das redes cabeadas?
+    \item duas frentes: \textbf{QoS routing} e \textbf{QoS em Wi-Fi}
   \end{itemize}
   \begin{block}{QoS Routing}
     \begin{itemize}
-      \item o roteamento é compoñente esencial: informa à fonte da banda e QoS dispoñible cara ao destino
-      \item múltiples rotas podem ofrecerse com diferentes requirimentos de QoS
+      \item o roteamento é componente essencial: informa à fonte a banda e a QoS disponível rumo ao destino
+      \item múltiplas rotas podem oferecer-se com diferentes requerimentos de QoS
     \end{itemize}
   \end{block}
 \end{frame}
 
 \begin{frame}{QOLSR --- QoS para OLSR}
   \begin{itemize}
-    \item OLSR é proactivo, estandarizado pela IETF (RFC 3626)
+    \item OLSR é proativo, padronizado pela IETF (RFC 3626)
     \item QoS para OLSR proposto em 2003
-    \item idea principal: usar \textbf{métricas de QoS na seleção dos MPRs}
-    \item as medidas de QoS obtéñense coas propias mensagens \texttt{HELLO} --- \textbf{sem novas mensagens de control}
+    \item ideia principal: usar \textbf{métricas de QoS na seleção dos MPRs}
+    \item as medidas de QoS obtêm-se com as próprias mensagens \texttt{HELLO} --- \textbf{sem novas mensagens de controle}
   \end{itemize}
   \begin{block}{Heurísticas QOLSR}
     \begin{itemize}
-      \item QOLSR1: selecciona o veciño de 1 salto com menor atraso como MPR
-      \item QOLSR2: anticipa ademais o 2º salto (mínimo atraso 2-hop)
-      \item QOLSR3: escolle MPR que alcance o maior número de nós descubertos
-      \item não há garantía de caminho óptimo respecto à métrica
+      \item QOLSR1: seleciona o vizinho de 1 salto com menor atraso como MPR
+      \item QOLSR2: antecipa além disso o 2.º salto (mínimo atraso 2-hop)
+      \item QOLSR3: escolhe MPR que alcance o maior número de nós descobertos
+      \item não há garantia de caminho ótimo em relação à métrica
     \end{itemize}
   \end{block}
-  \begin{exampleblock}{Referencia}
+  \begin{exampleblock}{Referência}
     A.\ Munaretto, M.\ Fonseca, ``Routing and quality of service support for mobile ad hoc networks'', \emph{Computer Networks} 51:3142--3156, 2007.
   \end{exampleblock}
 \end{frame}
 
-\begin{frame}{QoS em Wi-Fi: anomalía de desempenho}
+\begin{frame}{QoS em Wi-Fi: anomalia de desempenho}
   \begin{block}{Performance Anomaly (802.11b)}
     \begin{itemize}
-      \item nunha rede 802.11b, un único nodo lento (baixa SNR) reduce o throughput de todos os demais
-      \item causa: CSMA/CA dá \textbf{igual oportunidade} de acceso independentemente da taxa
-      \item o tempo do canal consúmese co nodo lento
+      \item numa rede 802.11b, um único nó lento (baixa SNR) reduz o throughput de todos os demais
+      \item causa: CSMA/CA dá \textbf{igual oportunidade} de acesso independentemente da taxa
+      \item o tempo do canal consome-se com o nó lento
     \end{itemize}
   \end{block}
-  \begin{exampleblock}{Solución: Fair Time Sharing (FTS)}
+  \begin{exampleblock}{Solução: Fair Time Sharing (FTS)}
     \begin{itemize}
-      \item asignar \textbf{tempo de canal} proporcional à taxa do nodo (não slots iguais)
+      \item atribuir \textbf{tempo de canal} proporcional à taxa do nó (não slots iguais)
       \item A.\ Munaretto, M.\ Fonseca, ``Self-adapting algorithm to fair time sharing in wireless access networks'', \emph{Computers \& Electrical Engineering} 34:406--415, 2008
     \end{itemize}
   \end{exampleblock}
@@ -454,9 +478,9 @@
       \textbf{EDCF / EDCA}
       \begin{itemize}
         \item 4 \textbf{Access Categories} (AC): Voice, Video, Best-Effort, Background
-        \item cada AC ten seu \textbf{AIFS} e o seu \textbf{Backoff Counter}
-        \item colisión virtual: a maior prioridade gaña, as outras incrementan CW
-        \item \textbf{TXOP}: intervalo de transmissão sem contención
+        \item cada AC tem o seu \textbf{AIFS} e o seu \textbf{Backoff Counter}
+        \item colisão virtual: a maior prioridade ganha, as outras incrementam CW
+        \item \textbf{TXOP}: intervalo de transmissão sem contenção
       \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
@@ -470,39 +494,112 @@
           \node[c,below=3mm of ac2](ac3){AC3 Background};
           \node[draw,fill=aneliseLaranja!20,rounded corners=2mm,right=4mm of ac0,text width=2.6cm,align=center](vh){Virtual Collision Handler};
           \draw[->,thick,aneliseVerde] (ac0.east) to[bend left=10] (vh.west);
-        \end{tikzpicture}
+        \end{tikzpicture}\\[1mm]
+        {\scriptsize \textbf{Figura 8:} Quatro Access Categories do EDCA com gerenciador de colisão virtual.}
       \end{center}
-      {\scriptsize Acceso inmediato se o medio idle $\geq$ AIFS[AC]$+$SlotTime.}
+      {\scriptsize Acesso imediato se o meio idle $\geq$ AIFS[AC]$+$SlotTime.}
     \end{column}
   \end{columns}
   \begin{exampleblock}{Nota}
-    IEEE 802.11e foi a base das garantías de QoS em Wi-Fi: sin ela, VoIP/vídeo sobre WLAN sofren.
+    IEEE 802.11e foi a base das garantias de QoS em Wi-Fi: sem ela, VoIP/vídeo sobre WLAN sofrem.
   \end{exampleblock}
 \end{frame}
 
-\section{Conclusións}
+\section{Conclusões}
 
-\begin{frame}{Conclusións}
-  \begin{alertblock}{Idea central}
-    Prover garantías de QoS em redes sem fio é uma tarefa \textbf{complexa}!
+\begin{frame}{Conclusões}
+  \begin{alertblock}{Ideia central}
+    Prover garantias de QoS em redes sem fio é uma tarefa \textbf{complexa}!
   \end{alertblock}
-  \begin{block}{Unha solución completa de QoS requer}
+  \begin{block}{Uma solução completa de QoS requer}
     \begin{enumerate}
-      \item un modelo apropiado de QoS
-      \item un protocolo de sinalización de QoS
-      \item un protocolo de roteamento com QoS
-      \item un protocolo de acceso ao medio com QoS
-      \item mecanismos adicionais: CAC, xestor de políticas, colas para control de conxestión\ldots
+      \item um modelo apropriado de QoS
+      \item um protocolo de sinalização de QoS
+      \item um protocolo de roteamento com QoS
+      \item um protocolo de acesso ao meio com QoS
+      \item mecanismos adicionais: CAC, gestor de políticas, filas para controle de congestionamento\ldots
     \end{enumerate}
   \end{block}
-  \begin{exampleblock}{Actualización 2026}
-    As leccións de Intserv/Diffserv/RSVP viven em 5G \emph{network slicing} e em \emph{differentiation} Wi-Fi 6 (OFDMA + QoS).
+  \begin{exampleblock}{Atualização 2026}
+    As lições de Intserv/Diffserv/RSVP vivem em 5G \emph{network slicing} e no Wi-Fi 6 (OFDMA + QoS).
   \end{exampleblock}
 \end{frame}
 
-\section{Bibliografía}
+\begin{frame}{Exercício resolvido: token bucket + WFQ --- atraso de fila}
+  \textbf{Dados}: \emph{token bucket} com taxa média $r=1$~Mbps e balde $b=1$~Mb; WFQ com taxa garantida $R=1{,}5$~Mbps ao fluxo; pacotes de $1500$ bytes ($=12\,000$ bits).
+  \begin{block}{Parte A --- Atraso máximo de fila}
+    Como $R\geq r$, a fila nunca excede $b$ bits: $D_{\max}=b/R=10^6/(1{,}5\times 10^6)=2/3\approx \mathbf{667}$~\textbf{ms}
+  \end{block}
+  \begin{block}{Parte B --- Capacidade do surto}
+    \begin{itemize}
+      \item pacotes no surto máximo: $N=b/(1500\times 8)=10^6/12\,000\approx 83$ pacotes
+      \item tempo de transmissão de 1 pacote: $t_p=12\,000/(1{,}5\times 10^6)=8$~ms
+      \item verificação: $83\times 8=664$~ms $\approx D_{\max}$ \checkmark
+    \end{itemize}
+  \end{block}
+  \begin{alertblock}{Interpretação}
+    O atraso de fila é \textbf{limitado pelo surto} $b$, não pela taxa média: é a base das garantias do \emph{serviço garantido} do Intserv (RFC 2212).
+  \end{alertblock}
+\end{frame}
 
-\begin{frame}{Bibliografía}
+\begin{frame}{Resumo da aula}
+  \begin{itemize}
+    \item \textbf{Princípios de QoS}: marcação, \emph{shaping}, compartilhamento eficiente e admissão de chamadas;
+    \item \textbf{Intserv + RSVP}: reserva fim-a-fim por fluxo (PATH/RESV, Tspec/Rspec); \textbf{Diffserv}: classes com DSCP/PHB, funções complexas na borda;
+    \item \textbf{Token bucket + WFQ}: garantia de atraso máximo $D_{\max}=b/R$, base do serviço garantido;
+    \item \textbf{Redes sem fio}: QOLSR usa métricas de QoS na seleção de MPRs; FTS aloca tempo de canal proporcional à taxa; 802.11e/EDCA prioriza classes (ACs);
+    \item \textbf{Visão 2026}: os conceitos persistem em \emph{network slicing} 5G e na diferenciação do Wi-Fi 6 (OFDMA + QoS).
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Autoavaliação}
+  \small
+  \begin{enumerate}
+    \item No Diffserv, as funções complexas (marcação, classificação, \emph{shaping}) são executadas:
+      \begin{itemize}
+        \item (a) no núcleo da rede
+        \item (b) na borda da rede
+        \item (c) em todos os roteadores indistintamente
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (b)
+    \item No RSVP, qual mensagem o receptor envia para reservar recursos?
+      \begin{itemize}
+        \item (a) PATH
+        \item (b) RESV
+        \item (c) DSCP
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (b)
+    \item No QOLSR, a métrica de QoS é usada principalmente para:
+      \begin{itemize}
+        \item (a) escolher os MPRs
+        \item (b) dimensionar o balde de fichas
+        \item (c) marcar o campo DSCP
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (a)
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Laboratório sugerido: experimento de QoS com iperf3}
+  \begin{block}{Cenário}
+    Dois hosts Linux ligados por um roteador com filas controláveis (\texttt{tc}/HTB ou \texttt{pfifo}); um fluxo prioritário (VoIP/Vídeo) e um fluxo de congestionamento (download contínuo).
+  \end{block}
+  \begin{itemize}
+    \item medir latência, jitter e vazão com \texttt{iperf3} (modos TCP e UDP) \textbf{com e sem} marcação DSCP (\texttt{iptables}/\texttt{tc}, ex.: EF/AF41);
+    \item gerar congestionamento e observar o impacto nas filas (\texttt{tc -s qdisc}) e nos atrasos;
+    \item analisar no \textbf{Wireshark} os intervalos de chegada (arrival time) e a vazão efetiva; comparar com o limite $D_{\max}=b/R$ calculado em aula;
+    \item variação: aplicar \emph{token bucket} no fluxo (\texttt{tc qdisc tbf}) e repetir as medições.
+  \end{itemize}
+  \begin{alertblock}{Conceitos exercitados}
+    Marcação (DSCP), \emph{shaping}, escalonamento (prioridade/WFQ), admissão e medição fim-a-fim.
+  \end{alertblock}
+\end{frame}
+
+\section{Bibliografia}
+
+\begin{frame}{Bibliografia}
   \begin{itemize}
     \item \textbf{\kurose{}} --- Capítulo 7
   \end{itemize}
@@ -515,6 +612,19 @@
       \item RFC 2205 (RSVP), RFC 2212 (Guaranteed QoS), RFC 2211 (Controlled Load)
     \end{itemize}
   \end{block}
+\end{frame}
+
+\begin{frame}{Leitura recomendada}
+  \begin{itemize}
+    \item \textbf{\kurose{}} --- Capítulo 7 (QoS: Intserv, Diffserv, escalonamento e redesenho da Internet)
+    \item \textbf{RFC 2205} (RSVP), \textbf{RFC 2211} (Controlled Load) e \textbf{RFC 2212} (Guaranteed QoS)
+    \item \textbf{IEEE Std 802.11e-2005} --- QoS no MAC (EDCA/HCCA)
+    \item \textbf{Munaretto \& Fonseca}, \emph{Computer Networks} 51 (2007) --- QOLSR; \emph{Computers \& Electrical Engineering} 34 (2008) --- FTS
+    \item \textbf{RFC 3626} (OLSR) para a base do QOLSR
+  \end{itemize}
+  \begin{alertblock}{Dica de estudo}
+    Refazer o exercício para $r=2$~Mbps e $b=0{,}5$~Mb com $R=3$~Mbps: verifique que $D_{\max}$ cai para $\approx 167$~ms, confirmando que reduzir o surto $b$ diminui o atraso garantido.
+  \end{alertblock}
 \end{frame}
 
 \end{document}

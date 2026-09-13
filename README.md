@@ -48,6 +48,20 @@ tectonic aula1.tex   # … até aula12.tex
 | 11 | **IA e ML nas redes** | RL, DQN, LSTM para alocação, handover, beamforming |
 | 12 | **Segurança em redes sem fio** | WPA2/WPA3, KRACK, LoRaWAN security, 5G AKA |
 
+## Recursos pedagógicos (todas as 12 aulas)
+
+- **Objetivos de aprendizagem** mensuráveis no início de cada aula + pré-requisitos.
+- **Exercício resolvido** numérico (latência, orçamento de enlace, eficiência ALOHA,
+  tempo no ar LoRaWAN, token bucket/WFQ, latência URLLC, órbita LEO, Q-learning,
+  força bruta WPA2 etc.) com solução passo a passo.
+- **Resumo da aula** com os principais take-aways.
+- **Autoavaliação** (quiz de 3–4 questões objetivas) com gabarito revelado via `\pause`.
+- **Laboratório sugerido** com ferramentas reais: Wireshark, ns-3, SUMO/Veins,
+  The Things Network, gymnasium, TensorFlow.
+- **Leitura recomendada** por aula (livros clássicos e RFCs/especificações 3GPP).
+- **Legendas** nas figuras TikZ e **notas do apresentador** (`\note`) nos pontos-chave.
+- Revisão linguística completa: pt-BR sem resíduos de galego/espanhol.
+
 ## Notas
 
 - Idioma: português brasileiro (pt-BR).

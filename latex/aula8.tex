@@ -20,6 +20,22 @@
   \titlepage
 \end{frame}
 
+\begin{frame}{Objetivos de aprendizagem}
+  Ao final desta aula, você será capaz de:
+  \begin{itemize}
+    \item \textbf{calcular} o tempo no ar (\emph{time-on-air}) de um pacote LoRaWAN a partir do SF e da largura de banda;
+    \item \textbf{distinguir} as classes A, B e C do LoRaWAN e explicar o papel do ADR no consumo de bateria;
+    \item \textbf{comparar} LoRaWAN/Sigfox (não-celular) com NB-IoT/LTE-M (celular) em alcance, taxa e QoS;
+    \item \textbf{explicar} o funcionamento de MQTT (publish/subscribe via broker) e CoAP (REST sobre UDP);
+    \item \textbf{selecionar} a tecnologia LPWAN adequada a cenários com requisitos distintos de alcance e latência.
+  \end{itemize}
+  \begin{alertblock}{Pré-requisitos}
+    \begin{itemize}
+      \item Aula 4 --- protocolos MAC (acesso múltiplo, ALOHA, CSMA/CA) e Aula 5 (LPWAN: LoRa/Sigfox).
+    \end{itemize}
+  \end{alertblock}
+\end{frame}
+
 \section{Introdução}
 
 \begin{frame}{IoT --- Internet das Coisas}
@@ -89,10 +105,12 @@
           \draw[thick,aneliseLaranja] (gw1) -- (gw2);
           \draw[thick,aneliseLaranja] (gw2) -- (ns);
           \node[below=1mm of s1,font=\tiny]{\emph{end-device}};
-        \end{tikzpicture}
+        \end{tikzpicture}\\[1mm]
+        {\scriptsize \textbf{Figura 1:} topologia \emph{star-of-stars} do LoRaWAN: \emph{end-devices} falam com vários gateways, que encaminham ao servidor de rede.}
       \end{center}
     \end{column}
   \end{columns}
+  \note{Um end-device não é associado a um gateway específico: qualquer gateway pode receber o uplink e encaminhar ao servidor de rede, que descarta duplicatas.}
 \end{frame}
 
 \begin{frame}{LoRaWAN: classes e ADR}
@@ -109,6 +127,7 @@
       \item Economia de bateria (até 10 anos com 2 pilhas AA)
     \end{itemize}
   \end{block}
+  \note{Enfatizar o trade-off SF: dobrar SF praticamente dobra o ToA; o ADR seleciona o menor SF que garante o link, poupando bateria e ar no canal.}
 \end{frame}
 
 \section{Sigfox}
@@ -201,6 +220,89 @@
       \end{itemize}
     \end{column}
   \end{columns}
+  \note{MQTT usa TCP com broker (publish/subscribe); CoAP é UDP/REST com multicast. LwM2M adiciona gerenciamento de ciclo de vida sobre esses protocolos.}
+\end{frame}
+
+\begin{frame}{Exercício resolvido: tempo no ar de um pacote LoRaWAN}
+  \textbf{Problema:} um \emph{end-device} LoRaWAN transmite com \textbf{SF$=12$} e \textbf{BW$=125$~kHz}. O payload tem aproximadamente \textbf{20 símbolos} e o preâmbulo usa 8 símbolos. Estime o tempo no ar (ToA).
+  \begin{block}{Resolução}
+    \begin{enumerate}
+      \item Duração do símbolo:
+        \[
+          T_s = \frac{2^{SF}}{BW} = \frac{2^{12}}{125\,000} = \frac{4096}{125\,000} \approx 32,8~\text{ms}.
+        \]
+      \item Número total de símbolos: $n_{\text{preamble}} + n_{\text{payload}} = 8 + 20 = 28$.
+      \item Tempo no ar:
+        \[
+          \text{ToA} = (n_{\text{preamble}} + n_{\text{payload}}) \cdot T_s = 28 \times 32,8~\text{ms} \approx \mathbf{918~\text{ms}}.
+        \]
+    \end{enumerate}
+  \end{block}
+  \begin{alertblock}{Leitura do resultado}
+    $\approx 0,92$~s por pacote: com o \emph{duty-cycle} de 1\% da banda 868~MHz, o dispositivo deve ficar em silêncio por $\approx 91$~s entre transmissões --- por isso SF12 é reservado a mensagens curtas e raras.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Resumo da aula}
+  \begin{itemize}
+    \item \textbf{LPWAN}: baixa taxa, alto alcance e longa duração de bateria para IoT massivo.
+    \item \textbf{LoRaWAN}: CSS (868/915~MHz), \emph{star-of-stars}, classes A/B/C e ADR (SF7--SF12).
+    \item \textbf{Sigfox}: UNB de 100~Hz, modelo de operadora, limite de 140 uplinks/dia.
+    \item \textbf{NB-IoT/LTE-M}: celular, QoS garantida e segurança SIM/AKA; NB-IoT em 200~kHz, LTE-M em 1,4~MHz.
+    \item \textbf{Aplicação}: MQTT (broker), CoAP (UDP/REST), LwM2M e gRPC para agregação.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Autoavaliação}
+  \begin{enumerate}
+    \item Na classe A do LoRaWAN, o downlink é recebido:
+      \begin{itemize}
+        \item (a) continuamente, com o receptor sempre ligado
+        \item (b) em duas janelas abertas logo após o uplink
+        \item (c) apenas em janelas periódicas sincronizadas por \emph{beacon}
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (b)
+    \item Com relação ao ADR, um SF maior (ex.: SF12):
+      \begin{itemize}
+        \item (a) aumenta a taxa de dados e o alcance
+        \item (b) aumenta o alcance, mas reduz a taxa e aumenta o ToA
+        \item (c) reduz o consumo de energia sem afetar o alcance
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (b)
+    \item Comparando LoRaWAN com NB-IoT, uma vantagem do NB-IoT é:
+      \begin{itemize}
+        \item (a) operar em espectro ISM não licenciado
+        \item (b) QoS garantida e segurança nativa (SIM/AKA)
+        \item (c) não depender de operadora celular
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (b)
+    \item MQTT e CoAP se diferenciam principalmente porque:
+      \begin{itemize}
+        \item (a) MQTT usa \emph{publish/subscribe} via broker e CoAP é REST sobre UDP
+        \item (b) ambos exigem TCP obrigatoriamente
+        \item (c) CoAP não oferece multicast
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (a)
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Laboratório sugerido: nó LoRaWAN}
+  \begin{block}{Opção 1 --- Nó real no The Things Network (TTN)}
+    \begin{itemize}
+      \item Montar um nó com módulo LoRa (ex.: SX1276) + microcontrolador e registrar o dispositivo no TTN.
+      \item Enviar uplinks em SF7 e SF12 e medir o \emph{time-on-air} e o consumo observado.
+    \end{itemize}
+  \end{block}
+  \begin{block}{Opção 2 --- Simulação LoRaWAN no ns-3}
+    \begin{itemize}
+      \item Usar o módulo \texttt{lorawan} do ns-3: rede \emph{star-of-stars} com \emph{end-devices}, gateways e servidor de rede.
+      \item Variar SF/BW e medir taxa de entrega, atraso e energia por pacote.
+    \end{itemize}
+  \end{block}
 \end{frame}
 
 \section{Bibliografia}
@@ -212,6 +314,15 @@
     \item 3GPP TR 45.820, \emph{Cellular system support for ultra-low complexity and low throughput Internet of Things (CIoT)}
     \item J. de Carvalho Silva et al., ``LoRaWAN --- A low power WAN protocol for IoT: A review and opportunities'', \emph{Computer Networks}, 2017
     \item MQTT v5.0 OASIS Standard, 2019
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Leitura recomendada}
+  \begin{itemize}
+    \item LoRa Alliance, \emph{LoRaWAN Link Layer Specification v1.0.4}, 2020 --- classes, ADR e segurança.
+    \item 3GPP TS 23.501, \emph{System Architecture for the 5G System (5GS)} --- integração de NB-IoT como acesso ao núcleo 5G (mMTC).
+    \item 3GPP TR 45.820, \emph{Cellular system support for ultra-low complexity and low throughput IoT (CIoT)} --- requisitos de NB-IoT/eMTC.
+    \item MQTT v5.0 OASIS Standard, 2019 --- QoS e \emph{persistent session}.
   \end{itemize}
 \end{frame}
 

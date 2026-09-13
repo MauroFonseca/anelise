@@ -20,6 +20,20 @@
   \titlepage
 \end{frame}
 
+\begin{frame}{Objetivos de aprendizagem}
+  Ao final desta aula, você será capaz de:
+  \begin{itemize}
+    \item \textbf{explicar} o ataque KRACK e \textbf{comparar} WPA2-PSK com WPA3-SAE;
+    \item \textbf{descrever} a evolução WEP $\rightarrow$ WPA $\rightarrow$ WPA2 $\rightarrow$ WPA3 (criptografia e autenticação);
+    \item \textbf{analisar} a segurança de LoRaWAN (OTAA vs.\ ABP) e do 5G AKA (SUCI, home control);
+    \item \textbf{estimar} o tempo de ataque por força bruta a um PSK;
+    \item \textbf{identificar} ameaças (\emph{evil twin}, dicionário offline, \emph{deauth}) e as mitigações correspondentes.
+  \end{itemize}
+  \begin{alertblock}{Pré-requisitos}
+    Aulas 2 (fundamentos de redes sem fio) e 8 (IoT e redes LPWAN).
+  \end{alertblock}
+\end{frame}
+
 \section{Protocolos de Segurança Wi-Fi}
 
 \begin{frame}{Evolução da segurança em Wi-Fi}
@@ -45,6 +59,7 @@
       \item \textbf{Wi-Fi Easy Connect} (DPP): onboarding seguro
     \end{itemize}
   \end{block}
+  \note{WPA3-SAE (Dragonfly) elimina o ataque de dicionário offline porque o segredo é usado num protocolo de troca de chaves baseado em curva elíptica; PMF obrigatório bloqueia deauth forjado.}
 \end{frame}
 
 \begin{frame}{Ataques conhecidos}
@@ -79,6 +94,7 @@
       \end{itemize}
     \end{column}
   \end{columns}
+  \note{KRACK explora a reinstalação da chave de sessão no 4-way handshake, forçando reuso de nonce; no WPA2-PSK o atacante captura o handshake (via deauth falso) e testa senhas offline com aircrack-ng/hashcat.}
 \end{frame}
 
 \section{Segurança IoT/LPWAN}
@@ -126,6 +142,7 @@
       \end{itemize}
     \end{column}
   \end{columns}
+  \note{Diferente do 4G, o 5G protege a identidade: o SUPI nunca é enviado em claro e aparece como SUCI cifrado; o AKA garante home control com a rede doméstica sempre no loop de autenticação.}
 \end{frame}
 
 \section{Desafios}
@@ -140,6 +157,86 @@
   \end{itemize}
 \end{frame}
 
+\begin{frame}{Exercício resolvido --- força bruta sobre um PSK}
+  \textbf{Problema:} estimar o tempo para quebrar por força bruta um PSK de 8 caracteres com alfabeto de 62 símbolos (A--Z, a--z, 0--9).
+  \begin{enumerate}
+    \item \textbf{Espaço de chaves:}
+      $$62^8 = 218\,340\,105\,584\,896 \approx 2{,}18 \times 10^{14}.$$
+    \item \textbf{Tempo a $10^5$ tentativas/s:}
+      $$\frac{2{,}18 \times 10^{14}}{10^5} = 2{,}18 \times 10^9\ \text{s} \approx 69{,}2\ \text{anos}.$$
+    \item \textbf{Comparação com dicionário:} com $10^8$ senhas comuns a $10^5$/s, o ataque leva apenas $10^3$ s $\approx 17$ min --- por isso senhas fracas são o ponto fraco do WPA2-PSK.
+  \end{enumerate}
+  \begin{alertblock}{Por que o WPA3-SAE (Dragonfly) muda o jogo?}
+    No SAE o segredo não é comparável offline: cada tentativa exige um \emph{round-trip} com o AP (sujeito a \emph{rate-limiting}), inviabilizando o ataque de dicionário offline.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Resumo da aula}
+  \begin{itemize}
+    \item \textbf{Wi-Fi}: WEP (RC4) $\rightarrow$ WPA (TKIP) $\rightarrow$ WPA2 (AES-CCMP) $\rightarrow$ WPA3 (AES-GCMP, SAE).
+    \item \textbf{WPA3-SAE}: resistente a dicionário offline, PFS e PMF obrigatório.
+    \item \textbf{KRACK (2017)}: reinstalação de chave no 4-way handshake do WPA2; corrigido por patches (CVE-2017-13077--13084).
+    \item \textbf{Ameaças}: \emph{evil twin}/Rogue AP, dicionário offline, \emph{deauth} falso.
+    \item \textbf{LoRaWAN}: AES-128 com NwkSKey/AppSKey; OTAA renova chaves a cada \emph{join} (mais seguro que ABP).
+    \item \textbf{5G AKA}: SUPI cifrado como SUCI, \emph{home control}, chaves derivadas (K, CK, IK, K$_{\text{AMF}}$); SEPP protege o signaling entre operadoras.
+    \item \textbf{Quantitativo}: $62^8 \approx 2{,}18 \times 10^{14}$; a $10^5$ tentativas/s $\rightarrow \approx 69$ anos.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Autoavaliação}
+  \begin{enumerate}
+    \item O ataque KRACK explora:
+      \begin{itemize}
+        \item (a) a reinstalação da chave de sessão no 4-way handshake do WPA2
+        \item (b) a ausência de criptografia no WEP
+        \item (c) o roubo da senha no servidor RADIUS
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (a)
+
+    \item No WPA3, o PSK é substituído pelo protocolo:
+      \begin{itemize}
+        \item (a) EAP-TLS
+        \item (b) SAE (Simultaneous Authentication of Equals)
+        \item (c) TKIP/RC4
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (b)
+
+    \item Em LoRaWAN, o modo OTAA é mais seguro que o ABP porque:
+      \begin{itemize}
+        \item (a) usa AES-64 em vez de AES-128
+        \item (b) dispensa o servidor de rede
+        \item (c) renova as chaves de sessão a cada \emph{join}
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (c)
+
+    \item No 5G AKA, a identidade permanente do usuário (SUPI) é transmitida:
+      \begin{itemize}
+        \item (a) em texto claro no rádio
+        \item (b) cifrada como SUCI
+        \item (c) apenas em redes LTE
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (b)
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Laboratório sugerido}
+  \begin{block}{Auditoria Wi-Fi controlada e legal}
+    \begin{itemize}
+      \item Montar um AP de laboratório próprio (sem acesso à rede de produção) e capturar o tráfego com Wireshark em modo monitor.
+      \item Demonstrar o \textbf{4-way handshake}: identificar as mensagens EAPOL 1--4 na captura.
+      \item Com aircrack-ng/hashcat, testar a PSK em \emph{wordlist} pequena para observar o ataque de dicionário offline ao WPA2-PSK.
+      \item Repetir com WPA3 (se o AP suportar) e verificar que a captura offline não permite o mesmo ataque (SAE).
+    \end{itemize}
+  \end{block}
+  \begin{alertblock}{Ética e legalidade}
+    Executar apenas em equipamentos próprios e com autorização; interferir em redes alheias viola a lei (Lei 12.737/2012 -- Lei Carolina Dieckmann).
+  \end{alertblock}
+\end{frame}
+
 \section{Bibliografia}
 
 \begin{frame}{Bibliografia}
@@ -150,6 +247,19 @@
     \item LoRa Alliance, \emph{LoRaWAN 1.1 Specification: Security}
     \item NIST SP 800-38B, \emph{Recommendation for Block Cipher Modes of Operation}
   \end{itemize}
+\end{frame}
+
+\begin{frame}{Leitura recomendada}
+  \begin{itemize}
+    \item IEEE 802.11i-2004 (WPA2) e Wi-Fi Alliance, \emph{WPA3 Specification v3.0} --- os dois padrões que definem o que vimos em sala.
+    \item M. Vanhoef, F. Piessens, ``Key Reinstallation Attacks: Forcing Nonce Reuse in WPA2'', \emph{ACM CCS 2017} --- o artigo original do KRACK.
+    \item 3GPP TS 33.501, \emph{Security architecture and procedures for 5G system} --- especificação oficial do 5G AKA e do SUPI/SUCI.
+    \item LoRa Alliance, \emph{LoRaWAN 1.1 Specification: Security} --- OTAA/ABP e derivação de chaves.
+    \item NIST SP 800-38B --- modos de operação de cifras de bloco (contexto do AES-GCM do WPA3).
+  \end{itemize}
+  \begin{alertblock}{Dica de estudo}
+    Refaça o cálculo do exercício com senhas de 10 e 12 caracteres para ver como o espaço de chaves cresce exponencialmente.
+  \end{alertblock}
 \end{frame}
 
 \end{document}
