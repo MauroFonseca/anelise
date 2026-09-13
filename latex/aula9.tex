@@ -57,6 +57,101 @@
   \end{itemize}
 \end{frame}
 
+\section{Contexto e padronização}
+
+\begin{frame}{Histórico: DSRC, ITS-G5 e C-ITS}
+  \begin{itemize}
+    \item \textbf{DSRC} (EUA) --- \emph{Dedicated Short-Range Communications}: nasceu do pedágio eletrônico (anos 1990) e foi estendido à segurança viária
+      \begin{itemize}
+        \item FCC reservou 75~MHz em 5,850--5,925~GHz (banda dedicada) para V2X
+        \item padronizado como \textbf{IEEE 802.11p} + família \textbf{IEEE 1609.x} (WAVE)
+      \end{itemize}
+    \item \textbf{ITS-G5} (Europa) --- perfil europeu do 802.11p
+      \begin{itemize}
+        \item \textbf{ETSI EN 302 571} (requisitos de rádio) e EN 302 663 (uso da banda)
+        \item integra a estratégia \textbf{C-ITS} (Cooperative ITS) da Comissão Europeia
+      \end{itemize}
+    \item \textbf{C-ITS}: ecossistema de serviços cooperativos (alertas de obra, GLOSA, veículo de emergência) que também embasa o \textbf{C-V2X} celular (3GPP)
+  \end{itemize}
+  \pause
+  \begin{exampleblock}{Ideia central}
+    Todos os padrões nascem da mesma necessidade: \emph{comunicação direta, de baixa latência, entre entes próximos}, independente de cobertura celular.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Arquitetura ETSI ITS (EN 302 665)}
+  \begin{columns}
+    \begin{column}{0.48\textwidth}
+      Pilha de protocolos em camadas, com \textbf{segurança} e \textbf{gestão} transversais:
+      \begin{itemize}
+        \item \textbf{Applications}: segurança, eficiência, infotainment
+        \item \textbf{Facilities}: mensagens CAM/DENM, SPAT/MAP, SDN
+        \item \textbf{Networking \& Transport}: GeoNetworking, BTP, TCP/UDP/IPv6
+        \item \textbf{Access}: IEEE 802.11p (ITS-G5), LTE-V2X PC5, Ethernet
+      \end{itemize}
+      \begin{exampleblock}{Papel de cada camada}
+        \emph{Access} cuida do rádio; \emph{Networking} roteia geograficamente (GeoNetworking); \emph{Facilities} gera as mensagens de aplicação; \emph{Applications} é o serviço final.
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize,
+            lay/.style={draw,rounded corners=1mm,fill=aneliseAzul!15,text width=4.2cm,align=center,inner sep=1.2mm},
+          ]
+          \node[lay](app){Aplicações (segurança, eficiência, conforto)};
+          \node[lay,below=2mm of app](fac){Facilities --- CAM, DENM, SPAT/MAP};
+          \node[lay,below=2mm of fac](net){Networking \& Transport --- GeoNetworking/BTP, IPv6};
+          \node[lay,below=2mm of net](acc){Access --- IEEE 802.11p ITS-G5, LTE-V2X PC5};
+          \node[left=2mm of app,draw,rounded corners=1mm,fill=aneliseLaranja!25,text width=1.1cm,align=center,inner sep=1mm,minimum height=1.0cm](s){Segurança};
+          \node[left=2mm of acc,draw,rounded corners=1mm,fill=aneliseLaranja!25,text width=1.1cm,align=center,inner sep=1mm,minimum height=1.0cm](s2){Segurança};
+          \draw[thick,aneliseLaranja] (s.south) -- (s2.north);
+          \node[right=2mm of app,draw,rounded corners=1mm,fill=aneliseVerde!25,text width=1.1cm,align=center,inner sep=1mm,minimum height=1.0cm](m){Gestão};
+          \node[right=2mm of acc,draw,rounded corners=1mm,fill=aneliseVerde!25,text width=1.1cm,align=center,inner sep=1mm,minimum height=1.0cm](m2){Gestão};
+          \draw[thick,aneliseVerde] (m.south) -- (m2.north);
+        \end{tikzpicture}
+        \\[1mm] {\scriptsize \textbf{Figura:} pilha ITS-G5 (ETSI EN 302 665); segurança e gestão atravessam todas as camadas.}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{ITS-S: estações e modos de comunicação}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{ITS Station (ITS-S)} --- unidade que roda a pilha ETSI:
+      \begin{itemize}
+        \item \textbf{veicular}: OBU (\emph{on-board unit}) no carro
+        \item \textbf{de infraestrutura}: RSU (\emph{road-side unit}), semáforos, sinais
+        \item \textbf{central}: centro de gestão de tráfego / nuvem
+        \item \textbf{pessoal}: smartphone do pedestre (VRU)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Comunicação V2X:}
+      \begin{itemize}
+        \item \textbf{V2V}: veículo $\leftrightarrow$ veículo (PC5 / 802.11p)
+        \item \textbf{V2I}: veículo $\leftrightarrow$ infraestrutura (RSU)
+        \item \textbf{V2N}: veículo $\leftrightarrow$ rede celular (Uu, nuvem)
+        \item \textbf{V2P}: veículo $\leftrightarrow$ pedestre/VRU
+        \item \textbf{V2X}: termo guarda-chuva para todos os elos
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \begin{center}
+    \begin{tikzpicture}[font=\scriptsize,
+        v/.style={draw,circle,minimum size=5mm,fill=aneliseAzul!15,inner sep=0.2mm},
+      ]
+      \node[v](v1){V};
+      \node[v,right=1.3cm of v1](v2){V};
+      \node[draw,rounded corners=1mm,fill=aneliseLaranja!25,inner sep=1mm](rsu) at (0,-1.2){RSU};
+      \node[draw,rounded corners=1mm,fill=aneliseVerde!25,inner sep=1mm](nuvem) at (1.3,-1.2){Nuvem};
+      \draw[thick,aneliseLaranja] (v1) -- (v2) node[midway,above,font=\tiny]{V2V};
+      \draw[thick,aneliseVerde] (v1) -- (rsu) node[midway,left,font=\tiny]{V2I};
+      \draw[thick,aneliseVerde,dashed] (v2) -- (nuvem) node[midway,right,font=\tiny]{V2N};
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
 \section{PADRÕES}
 
 \begin{frame}{Padrões: IEEE 802.11p vs.\ C-V2X}
@@ -111,6 +206,337 @@
   \note{No modo 1 o gNB escala os recursos (cobre cenário com cobertura); no modo 2 o veículo seleciona recursos autonomamente com \emph{sensing}, essencial fora de cobertura.}
 \end{frame}
 
+\section{Mensagens e serviços}
+
+\begin{frame}{CAM --- Cooperative Awareness Message}
+  \begin{columns}
+    \begin{column}{0.52\textwidth}
+      Mensagem periódica de \textbf{consciência situacional} (ETSI EN 302 637-2):
+      \begin{itemize}
+        \item conteúdo: \textbf{posição} (GNSS), \textbf{velocidade}, \textbf{heading} (direção), aceleração, dimensões e estado do veículo
+        \item frequência: \textbf{1--10~Hz} (tipicamente 10~Hz)
+        \item tamanho típico: $\sim$300~bytes
+        \item alcance: vizinhança imediata (1 salto)
+        \item \textbf{EUA}: equivalente é o \textbf{BSM} (\emph{Basic Safety Message}, SAE J2735) a 10~Hz
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Atraso de propagação é desprezível}
+        A $100$~m de distância:
+        \[ t = \frac{d}{c} = \frac{100}{3\times10^8} \approx 0{,}33~\mu\text{s}. \]
+        \begin{itemize}
+          \item o que domina é o \textbf{atraso de acesso} ao canal (contenção EDCA, filas): ordem de \textbf{ms}
+          \item CAM a 10~Hz $\Rightarrow$ intervalos de 100~ms entre transmissões
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{DENM --- Decentralized Environmental Notification}
+  Mensagem \textbf{orientada a evento} (ETSI EN 302 637-3): avisa sobre condições na via.
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Eventos típicos:}
+      \begin{itemize}
+        \item acidente / veículo parado
+        \item obras (\emph{road works})
+        \item condição climática adversa (gelo, neblina)
+        \item veículo de emergência se aproximando
+        \item obstáculo na pista
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Disseminação por área:}
+      \begin{itemize}
+        \item gerada quando o evento ocorre (não é periódica)
+        \item propagada a \textbf{N saltos} dentro de uma \textbf{área de relevância} (via, segmento)
+        \item campos: \emph{validity duration}, \emph{event type}, localização
+        \item re-transmitida enquanto o evento persiste
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \begin{exampleblock}{CAM vs.\ DENM}
+    CAM = ``estou aqui, indo a 60~km/h'' (periódica). DENM = ``há um acidente à frente'' (evento, espalha-se pela região).
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{SPAT/MAP: sinalização de interseções}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{SPAT} (Signal Phase and Timing) --- SAE J2735 / ETSI:
+      \begin{itemize}
+        \item estado atual do semáforo (verde/amarelo/vermelho)
+        \item tempo restante de cada fase
+        \item enviado pela RSU a cada $\sim$100~ms
+      \end{itemize}
+      \textbf{MAP}:
+      \begin{itemize}
+        \item \textbf{mapa geométrico} da interseção
+        \item faixas e conectividade entre elas
+        \item pontos de referência (reference points)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Aplicações habilitadas}
+        \begin{itemize}
+          \item \textbf{GLOSA}: velocidade recomendada para ``pegar o verde''
+          \item \textbf{IMA}: \emph{Intersection Movement Assist} (alerta de veículo cruzando)
+          \item sinalização dentro do veículo (IVS)
+        \end{itemize}
+      \end{block}
+      \begin{alertblock}{Observação}
+        SPAT/MAP dependem de \textbf{mapas precisos} e de sincronização de tempo; erros de georreferência podem gerar alarmes falsos.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Serviços Day-1 e Day-2 do C-ITS}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Day-1} (implantação inicial, Europa/C-ROADS):
+      \begin{itemize}
+        \item \textbf{RWW}: \emph{road works warning} (aviso de obras)
+        \item \textbf{RHW}: \emph{road hazard warning} (perigo na via)
+        \item \textbf{CLW}: \emph{collision warning} (freio de emergência)
+        \item \textbf{IMA}: \emph{intersection movement assist}
+        \item \textbf{GLOSA} e \textbf{IVS} (sinalização in-vehicle)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Day-1.5 e Day-2} (cooperação ativa):
+      \begin{itemize}
+        \item \textbf{manobra cooperativa}: mudança de faixa/ultrapassagem negociada
+        \item \textbf{platooning} de caminhões
+        \item \textbf{trajectory sharing} / percepção cooperativa (sensores compartilhados)
+        \item \textbf{advanced driving} (NR-V2X): cede passagem, evita manobra
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \begin{exampleblock}{Evolução}
+    Day-1 = \emph{informar} o motorista. Day-2 = \emph{agir} cooperativamente --- exige latência menor e confiabilidade maior (NR-V2X).
+  \end{exampleblock}
+\end{frame}
+
+\section{IEEE 802.11p}
+
+\begin{frame}{IEEE 802.11p: camada física (OFDM em 10~MHz)}
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \begin{itemize}
+        \item OFDM herdado do \textbf{802.11a}, com parâmetros \textbf{duplicados}
+        \item canal de \textbf{10~MHz} (metade dos 20~MHz do 802.11a)
+        \item \textbf{52 subportadoras}: 48 de dados + 4 piloto
+        \item espaçamento 156,25~kHz; símbolo OFDM de \textbf{8~$\mu$s} (6,4~$\mu$s + guarda 1,6~$\mu$s)
+        \item modulações \textbf{BPSK $\rightarrow$ 64-QAM}
+        \item taxas: \textbf{3 a 27~Mbps} (8 combinações)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize]
+          \draw[very thick,aneliseAzul] (0,0) -- (6.2,0);
+          \foreach \x in {0,0.62,...,6.2} \draw[aneliseLaranja] (\x,0.2) -- (\x,-0.2);
+          \draw[<->,>=Stealth] (0,0.5) -- (6.2,0.5) node[midway,above]{10~MHz};
+          \node[below=2mm,align=center]{52 subportadoras (48 dados + 4 piloto)\\símbolo de 8~$\mu$s};
+        \end{tikzpicture}
+      \end{center}
+      \begin{block}{Por que 10~MHz?}
+        Dobrar a duração do símbolo (8~$\mu$s) protege contra \textbf{multipercurso} em ambiente veicular (atrasos até $\sim$1,6~$\mu$s).
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Canais em 5,9~GHz: CCH e SCH}
+  \begin{itemize}
+    \item banda 5,855--5,925~GHz dividida em canais de \textbf{10~MHz}
+    \item \textbf{CCH} (control channel) = \textbf{canal 178} (5,890~GHz): segurança, beacons CAM e WSA (IEEE 1609.4 / ETSI G5CC)
+    \item \textbf{SCH} (service channels) = 172, 174, 176, 180, 182, 184: aplicações não críticas
+  \end{itemize}
+  \begin{center}
+    \begin{tikzpicture}[font=\scriptsize]
+      \node[draw,rounded corners=0.5mm,fill=aneliseAzul!12,text width=1.25cm,align=center,minimum height=0.9cm](a) at (0,0){CH 172\\5,860};
+      \node[draw,rounded corners=0.5mm,fill=aneliseAzul!12,text width=1.25cm,align=center,minimum height=0.9cm](b) at (1.5,0){CH 174\\5,870};
+      \node[draw,rounded corners=0.5mm,fill=aneliseAzul!12,text width=1.25cm,align=center,minimum height=0.9cm](c) at (3,0){CH 176\\5,880};
+      \node[draw,rounded corners=0.5mm,fill=aneliseLaranja!35,text width=1.25cm,align=center,minimum height=0.9cm](d) at (4.5,0){CH 178\\5,890};
+      \node[draw,rounded corners=0.5mm,fill=aneliseAzul!12,text width=1.25cm,align=center,minimum height=0.9cm](e) at (6,0){CH 180\\5,900};
+      \node[draw,rounded corners=0.5mm,fill=aneliseAzul!12,text width=1.25cm,align=center,minimum height=0.9cm](f) at (7.5,0){CH 182\\5,910};
+      \node[draw,rounded corners=0.5mm,fill=aneliseAzul!12,text width=1.25cm,align=center,minimum height=0.9cm](g) at (9,0){CH 184\\5,920};
+      \draw[thick,aneliseLaranja] (4.5,0.5) -- (4.5,1.05);
+      \node[font=\scriptsize,text=aneliseLaranja] at (4.5,1.2){CCH};
+      \node[font=\scriptsize,text=aneliseGris] at (2.25,-1.0){G5A (5,855--5,875)};
+      \node[font=\scriptsize,text=aneliseGris] at (5.25,-1.0){G5B (5,875--5,905)};
+      \node[font=\scriptsize,text=aneliseGris] at (8.25,-1.0){G5C (5,905--5,925)};
+    \end{tikzpicture}
+  \end{center}
+  \begin{exampleblock}{Multi-canal (IEEE 1609.4)}
+    Rádio único alterna entre \textbf{CCH e SCH}: intervalos de 50~ms (CCHI) + 50~ms (SCHI), com guarda de 4~ms para troca de canal.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Acesso ao meio: EDCA e limitações do 802.11p}
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \textbf{EDCA com prioridades} (4 filas):
+      \begin{itemize}
+        \item \textbf{AC\_VO}: voz / mensagens críticas --- menor AIFS
+        \item \textbf{AC\_VI}: vídeo
+        \item \textbf{AC\_BE}: melhor esforço
+        \item \textbf{AC\_BK}: fundo (\emph{background})
+      \end{itemize}
+      \begin{itemize}
+        \item \textbf{AIFS} ajustado (menor que o 802.11a) para acesso mais rápido
+        \item sem RTS/CTS obrigatório; \emph{broadcast} sem ACK
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{alertblock}{Limitações}
+        \begin{itemize}
+          \item \textbf{sem ACK} em broadcast $\Rightarrow$ sem retransmissão de CAM
+          \item \textbf{contenção}: colisões crescem com a densidade de veículos
+          \item \textbf{sem QoS fim-a-fim}: prioridade só no acesso, sem reserva
+          \item sincronização de canal (1609.4) frágil fora de cobertura GNSS
+        \end{itemize}
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{C-V2X (LTE-V2X)}
+
+\begin{frame}{C-V2X: interfaces PC5 e Uu}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{PC5 (sidelink):}
+      \begin{itemize}
+        \item comunicação \textbf{direta} veículo--veículo
+        \item não depende de cobertura da rede
+        \item banda ITS dedicada (5,9~GHz)
+        \item 3GPP Rel.~14: LTE-V2X sidelink
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Uu (uplink/downlink):}
+      \begin{itemize}
+        \item comunicação \textbf{via eNB} (rede celular)
+        \item V2N: nuvem, informação de tráfego
+        \item banda licenciada da operadora
+        \item cobertura maior, mas depende de infraestrutura
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \begin{center}
+    \begin{tikzpicture}[font=\scriptsize,
+        v/.style={draw,circle,minimum size=5mm,fill=aneliseAzul!15,inner sep=0.2mm},
+      ]
+      \node[v](v1){V};
+      \node[v,right=1.2cm of v1](v2){V};
+      \node[draw,rounded corners=1mm,fill=aneliseLaranja!25,inner sep=1mm,above=0.9cm of v2](enb){eNB};
+      \draw[thick,aneliseLaranja] (v1) -- (v2) node[midway,below,font=\tiny]{PC5};
+      \draw[thick,aneliseVerde] (v2) -- (enb) node[midway,right,font=\tiny]{Uu};
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Modos 3 e 4 (LTE-V2X) e o mecanismo SPS}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Modo 3} (com cobertura):
+      \begin{itemize}
+        \item recursos \textbf{escalonados pelo eNB}
+        \item eNB sinaliza quais subcanais usar
+        \item evita colisão entre veículos vizinhos
+      \end{itemize}
+      \textbf{Modo 4} (sem cobertura):
+      \begin{itemize}
+        \item veículo \textbf{seleciona os próprios recursos}
+        \item baseado em \emph{sensing} + reserva periódica
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{SPS --- semi-persistent scheduling}
+        \begin{enumerate}
+          \item \textbf{sensing}: mede energia dos subcanais na janela passada (ex.: 1000~ms)
+          \item identifica recursos com menor interferência
+          \item \textbf{seleção aleatória} em uma janela de candidatos
+          \item \textbf{reserva periódica}: reutiliza o recurso a cada RRI (20--100~ms)
+          \item reavaliação probabilística para evitar colisões prolongadas
+        \end{enumerate}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{802.11p vs.\ C-V2X modo 4: comparação}
+  \begin{center}
+    \begin{tabular}{@{}lcc@{}}
+      \toprule
+      Critério & 802.11p (ITS-G5) & C-V2X modo 4\\
+      \midrule
+      Sincronização & sem GNSS obrigatório & \textbf{GNSS} (base temporal) \\
+      Acesso ao meio & CSMA/CA (contendido) & \textbf{SPS} (reserva) \\
+      Retransmissão & sem ACK no broadcast & HARQ parcial + reserva \\
+      QoS & prioridade local apenas & melhor controle de recursos \\
+      Alcance relativo & $\sim$300~m típico & $>$ 500~m (subcanal dedicado) \\
+      Congestionamento & degrada com a densidade & mitigado por \emph{sensing} \\
+      Padronização & IEEE / ETSI & 3GPP Rel.~14+ \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  \begin{exampleblock}{Visão equilibrada}
+    Nenhum é ``absolutamente melhor'': o 802.11p é mais maduro e simples; o C-V2X modo 4 tende a ser mais eficiente em alta densidade, mas exige GNSS confiável e banda própria.
+  \end{exampleblock}
+\end{frame}
+
+\section{NR-V2X (5G)}
+
+\begin{frame}{NR-V2X: modos de operação e QoS}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Modo 1} (com cobertura):
+      \begin{itemize}
+        \item \textbf{gNB} escala os recursos do \emph{sidelink} (dinâmico/configurado)
+        \item cenários urbanos com rede
+      \end{itemize}
+      \textbf{Modo 2} (autônomo):
+      \begin{itemize}
+        \item \textbf{sensing} + reserva, como no modo 4 do LTE-V2X
+        \item essencial fora de cobertura (rural, rodovia)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{QoS no sidelink (PQoS)}
+        \begin{itemize}
+          \item \textbf{PQI} (PC5 QoS Indicator): mapeia prioridade, atraso e taxa
+          \item fluxos PC5 com requisitos \textbf{per-aplicação}
+          \item latência alvo \textbf{3--10~ms} (URLLC-V2X)
+          \item confiabilidade $\geq$ 99,99\%
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{NR-V2X: unicast, groupcast e broadcast}
+  \begin{itemize}
+    \item \textbf{unicast}: par único --- handshake PC5-RRC, retransmissão HARQ, feedback de qualidade
+    \item \textbf{groupcast}: grupo fechado (ex.: \emph{platoon}) --- um emissor, vários receptores, feedback parcial (NACK)
+    \item \textbf{broadcast}: todos os vizinhos --- como o CAM clássico
+  \end{itemize}
+  \begin{block}{Por que isso importa}
+    \begin{itemize}
+      \item \textbf{Platooning} usa \emph{groupcast}: líder $\rightarrow$ seguidores com confiabilidade e baixa latência
+      \item \textbf{Manobras cooperativas} (troca de faixa) usam \emph{unicast} para negociação ponto-a-ponto
+      \item \emph{Broadcast} mantém o alerta de segurança geral
+    \end{itemize}
+  \end{block}
+  \begin{exampleblock}{Evolução: 5G-V2X / advanced driving}
+    Rel.~16/17 ampliam para \emph{cooperative driving}: percepção conjunta, trajetórias compartilhadas e \emph{remote driving} (teleoperação).
+  \end{exampleblock}
+\end{frame}
+
 \section{Platooning}
 
 \begin{frame}{Platooning: comboio de veículos}
@@ -154,6 +580,157 @@
   \note{O platooning exige latência menor que 10 ms e comunicação confiável; em falha de link, os veículos devem assumir controle individual com segurança.}
 \end{frame}
 
+\begin{frame}{CACC --- Cooperative Adaptive Cruise Control}
+  \begin{itemize}
+    \item estende o ACC (que usa apenas radar/lidar) com \textbf{informação V2V}
+    \item o veículo recebe \textbf{posição, velocidade e aceleração} do líder e dos vizinhos
+    \item controle \textbf{longitudinal}: mantém o intervalo (tempo ou distância) de forma suave
+  \end{itemize}
+  \begin{block}{String stability}
+    \begin{itemize}
+      \item a \textbf{perturbação não amplifica} ao longo do comboio
+      \item sem comunicação: o último veículo oscila muito (efeito ``sanfona'')
+      \item com CACC: frenagens suaves propagadas com atraso mínimo
+      \item teoricamente permite \emph{shorter headway} com segurança
+    \end{itemize}
+  \end{block}
+  \begin{alertblock}{Requisito-chave}
+    Para \emph{string stability}: \textbf{latência $<$ 10~ms} e mensagens \textbf{a 10--30~Hz} com alta confiabilidade.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Arquitetura do platoon e protocolo de comunicação}
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \begin{itemize}
+        \item \textbf{Líder}: define velocidade e trajetória
+        \item \textbf{Seguidores}: repetem automaticamente (CACC)
+        \item \textbf{Formação / entrada / saída}: manobras negociadas via mensagens
+        \item distância típica: \textbf{0,5~s} de \emph{headway} a 100~km/h:
+          \[ 27{,}8~\text{m/s} \times 0{,}5~\text{s} \approx 14~\text{m} \]
+      \end{itemize}
+      \begin{block}{Protocolo de comunicação}
+        \begin{itemize}
+          \item mensagens periódicas \textbf{10--30~Hz} com posição/aceleração
+          \item latência alvo $<$ 10~ms; confiabilidade alta (groupcast)
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize,
+            v/.style={draw,rounded corners=1mm,fill=aneliseAzul!15,inner sep=1mm,text width=1.0cm,align=center},
+          ]
+          \node[v](l){Líder};
+          \node[v,right=1.5cm of l](s1){Seg.1};
+          \node[v,right=1.5cm of s1](s2){Seg.2};
+          \node[v,right=1.5cm of s2](s3){Seg.3};
+          \draw[thick,aneliseLaranja,-Stealth] (l.east) to[bend left=15] (s1.west);
+          \draw[thick,aneliseLaranja,-Stealth] (s1.east) to[bend left=15] (s2.west);
+          \draw[thick,aneliseLaranja,-Stealth] (s2.east) to[bend left=15] (s3.west);
+          \draw[thick,aneliseVerde,dashed,-Stealth] (s3.west) to[bend right=15] (l.east);
+          \node[below=1mm of s1,font=\tiny,align=center]{groupcast 10--30~Hz\\lat. $<$10~ms};
+        \end{tikzpicture}
+        \\[1mm] {\scriptsize \textbf{Figura:} comboio com comunicação V2V; o líder transmite para os seguidores (groupcast).}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Platooning: benefícios e desafios}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Benefícios:}
+      \begin{itemize}
+        \item menor arrasto aerodinâmico $\rightarrow$ economia de \textbf{10--20\%} de combustível/energia
+        \item menor espaço ocupado na via $\rightarrow$ mais veículos por km
+        \item frenagem coordenada $\rightarrow$ mais segurança
+        \item motoristas podem relaxar / realizar outras tarefas
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{alertblock}{Desafios}
+        \begin{itemize}
+          \item \textbf{interferência} e colisões de rádio na via
+          \item \textbf{segurança cibernética}: mensagens forjadas (injeção de frenagem)
+          \item falha de link $\rightarrow$ retomada segura do controle humano
+          \item regulamentação e responsabilidade legal
+          \item interoperabilidade entre fabricantes (SOTIF)
+        \end{itemize}
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Aplicações e implantação}
+
+\begin{frame}{Interseção inteligente: RSU + SPAT/MAP + IMA}
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \begin{itemize}
+        \item \textbf{RSU} no semáforo transmite \textbf{SPAT/MAP} periodicamente
+        \item veículo recebe e prevê o estado do sinal
+        \item \textbf{IMA}: detecta colisão iminente no cruzamento e \textbf{alerta o motorista}
+        \item \textbf{GLOSA}: recomenda velocidade para evitar parar
+      \end{itemize}
+      \begin{exampleblock}{Benefício}
+        Reduz colisões em interseções (cenário de alta sinistralidade) e melhora o fluxo de tráfego.
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize]
+          \draw[fill=aneliseGris!25] (0,0) rectangle (5.4,2.8);
+          \draw[very thick,aneliseGris] (2.7,0) -- (2.7,2.8);
+          \draw[very thick,aneliseGris] (0,1.4) -- (5.4,1.4);
+          \fill[aneliseLaranja] (2.7,1.4) circle (0.14);
+          \node[draw,rounded corners=1mm,fill=aneliseAzul!20,inner sep=1mm,text width=1.0cm,align=center](v) at (1.2,0.6){Veículo};
+          \node[draw,rounded corners=1mm,fill=aneliseVerde!25,inner sep=1mm,text width=1.0cm,align=center](rsu) at (4.2,2.2){RSU};
+          \draw[thick,aneliseVerde,-Stealth,dashed] (rsu) -- (v) node[midway,right,font=\tiny]{SPAT/MAP};
+          \node[font=\tiny,below=1mm of rsu]{no semáforo};
+        \end{tikzpicture}
+        \\[1mm] {\scriptsize \textbf{Figura:} interseção com RSU no semáforo enviando SPAT/MAP ao veículo.}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{V2P/V2N, implantação, segurança e privacidade}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{V2P / VRU:}
+      \begin{itemize}
+        \item proteção de pedestres e ciclistas (smartphone, ITS-S pessoal)
+        \item alerta de aproximação de veículo e permissões de travessia
+      \end{itemize}
+      \textbf{V2N:}
+      \begin{itemize}
+        \item informação em nuvem (tráfego, mapas)
+        \item \textbf{teleoperação / remote driving} (NR-V2X)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Implantação:}
+      \begin{itemize}
+        \item Europa: \textbf{C-ROADS} (corredores C-ITS) e projetos nacionais
+        \item EUA: piloto \emph{CV Pilot Sites} (NYC, Tampa, Wyoming)
+        \item China: implantação agressiva de \textbf{C-V2X} (cidades-piloto)
+      \end{itemize}
+      \begin{alertblock}{Desafios}
+        \begin{itemize}
+          \item cobertura e \textbf{custo das RSUs} nas vias
+          \item interoperabilidade de padrões e ``roaming'' entre países
+          \item manutenção e energia da infraestrutura
+        \end{itemize}
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+  \pause
+  \begin{block}{Segurança e privacidade}
+    Certificados de \textbf{pseudônimos} (CPL) para CAM/DENM: a identidade real nunca é exposta; \textbf{revogação} de certificados de veículos maliciosos via PKI/SCMS --- protege contra rastreio e injeção de mensagens.
+  \end{block}
+\end{frame}
+
 \section{Simulação}
 
 \begin{frame}{Simulação de redes veiculares}
@@ -189,6 +766,25 @@
   \end{block}
   \begin{alertblock}{Leitura do resultado}
     Com CAM a 10~Hz (100~ms), o veículo percorre apenas $\approx 2,8$~m por intervalo --- bem menos que a distância de reação exigida, o que habilita aplicações de segurança Day-1.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Exercício de ordem de grandeza: saturação do CCH}
+  \textbf{Problema:} quantos veículos saturariam o canal de controle (CCH) transmitindo CAM a 10~Hz?
+  \begin{enumerate}
+    \item Taxa por veículo:
+      \[ 10~\text{Hz} \times 300~\text{bytes} \times 8~\text{bits} = 24~\text{kbps}. \]
+    \item Capacidade útil do canal de 10~MHz: $\approx 6~\text{Mbps}$ (ordem de grandeza, incluindo overhead PHY/MAC).
+    \item Número de veículos:
+      \[ N = \frac{6~\text{Mbps}}{24~\text{kbps}} = \frac{6\times 10^6}{24\times 10^3} = 250\ \text{veículos}. \]
+  \end{enumerate}
+  \pause
+  \begin{alertblock}{Interpretação}
+    \begin{itemize}
+      \item é um \textbf{limite teórico grosseiro}: na prática é bem menor (overhead, colisões, interferência, CAMs maiores, guarda)
+      \item por isso existem \textbf{controle de taxa/potência} e o \textbf{SPS} do C-V2X, que reservam recursos em vez de competir
+      \item mensagem-chave: \emph{o CCH é um recurso escasso} --- segurança cooperativa exige engenharia de tráfego
+    \end{itemize}
   \end{alertblock}
 \end{frame}
 

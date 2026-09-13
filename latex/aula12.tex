@@ -34,6 +34,61 @@
   \end{alertblock}
 \end{frame}
 
+\section{Fundamentos criptográficos}
+
+\begin{frame}{Criptografia simétrica, assimétrica e funções hash}
+  \begin{center}
+    \scriptsize
+    \begin{tabularx}{\textwidth}{@{}lXXX@{}}
+      \toprule
+      \textbf{Família} & \textbf{Algoritmos} & \textbf{Propriedade} & \textbf{Uso em redes sem fio}\\
+      \midrule
+      Simétrica & AES-128/256, RC4, ChaCha20 & mesma chave para cifrar e decifrar & confidencialidade do tráfego (CCMP, GCMP)\\
+      Assimétrica & RSA, ECC (ECDH/ECDSA) & par de chaves (pública/privada) & troca de chaves, autenticação, SAE/Dragonfly\\
+      Hash & SHA-2, SHA-3 & resumo de comprimento fixo & integridade e derivação de chaves (PBKDF2)\\
+      MAC/HMAC & HMAC-SHA256 & resumo com chave secreta & autenticação de mensagens (MIC, 4-way handshake)\\
+      \bottomrule
+    \end{tabularx}
+  \end{center}
+  \pause
+  \begin{block}{Três serviços, três ferramentas}
+    \begin{itemize}
+      \item \textbf{Confidencialidade}: AES --- ninguém lê o tráfego;
+      \item \textbf{Integridade}: hash/MAC --- ninguém altera sem ser detectado;
+      \item \textbf{Autenticação}: assinatura/EAP/802.1X --- quem fala é quem diz ser.
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Modelo de ameaças: CIA, STRIDE e superfícies de ataque}
+  \begin{columns}
+    \begin{column}{0.48\textwidth}
+      \textbf{Tríade CIA}
+      \begin{itemize}
+        \item \textbf{C}onfidencialidade: só quem deve lê;
+        \item \textbf{I}ntegridade: dados não são alterados;
+        \item \textbf{A}disponibilidade: serviço permanece acessível.
+      \end{itemize}
+      \textbf{STRIDE} (categorias de ameaças)
+      \begin{itemize}
+        \item Spoofing, Tampering, Repudiation;
+        \item Information disclosure, Denial of service, Elevation of privilege.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \textbf{Superfícies de ataque do Wi-Fi}
+      \begin{itemize}
+        \item \textbf{Ar (RF)}: sniffing passivo, injeção de frames, jamming --- não há como impedir a escuta;
+        \item \textbf{Equipamento}: firmware/backdoor, supply chain, configuração padrão;
+        \item \textbf{Usuário}: senhas fracas, credenciais roubadas, \emph{phishing}.
+      \end{itemize}
+      \begin{alertblock}{Consequência prática}
+        O meio físico é aberto $\Rightarrow$ a confidencialidade do Wi-Fi depende \emph{integralmente} da criptografia, não do sigilo do canal.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
 \section{Protocolos de Segurança Wi-Fi}
 
 \begin{frame}{Evolução da segurança em Wi-Fi}
@@ -97,6 +152,266 @@
   \note{KRACK explora a reinstalação da chave de sessão no 4-way handshake, forçando reuso de nonce; no WPA2-PSK o atacante captura o handshake (via deauth falso) e testa senhas offline com aircrack-ng/hashcat.}
 \end{frame}
 
+\section{Wi-Fi (aprofundar)}
+
+\begin{frame}{WEP em detalhe: por que foi quebrado}
+  \begin{block}{Mecanismo}
+    \begin{itemize}
+      \item Cifra de fluxo \textbf{RC4} + chave compartilhada (40 ou 104 bits);
+      \item IV de \textbf{24 bits} transmitido em claro --- apenas $2^{24}\approx 16{,}7$ milhões de IVs;
+      \item integridade por \textbf{CRC-32} (ICV), que \emph{não é autenticada}.
+    \end{itemize}
+  \end{block}
+  \begin{enumerate}
+    \item \textbf{Reuso de IV}: em tráfego alto, o mesmo IV reaparece em minutos $\Rightarrow$ \emph{keystream} reutilizado; combinando pacotes, o atacante revela os dados.
+    \item \textbf{CRC-32 frágil}: altera-se bits do pacote e recalcula-se o CRC (sem a chave) --- \emph{bit-flipping}.
+    \item \textbf{Ataque FMS (2001)}: a correlação entre IV e os primeiros bytes da chave de RC4 permite recuperá-la com poucos pacotes capturados.
+  \end{enumerate}
+  \pause
+  \begin{alertblock}{Veredito}
+    WEP é quebrado em \textbf{minutos} com ferramentas públicas (ex.: aircrack-ng) --- motivo do banimento a partir do WPA (2003).
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{WPA: TKIP, os remendos do WEP}
+  \begin{itemize}
+    \item \textbf{TKIP} (Temporal Key Integrity Protocol): ainda usa RC4, mas com correções:
+      \begin{itemize}
+        \item \textbf{contador de IV} por pacote e \emph{per-packet key mixing} $\Rightarrow$ chave efetiva diferente a cada pacote;
+        \item \textbf{MIC ``Michael''} autentica a integridade (64 bits) --- mais forte que o CRC-32;
+        \item \emph{rekeying} periódico das chaves de sessão.
+      \end{itemize}
+    \item \textbf{Michael é fraco} $\Rightarrow$ contramedida: se houver 2 falhas de MIC em 60\,s, a rede se reautentica (chaves redesenhadas).
+  \end{itemize}
+  \begin{block}{Modos}
+    \textbf{WPA-PSK} (senha compartilhada) ou \textbf{WPA-Enterprise} (802.1X). Problema: PSK humano fraco ainda permite \textbf{dicionário offline}.
+  \end{block}
+  \begin{alertblock}{Vulnerabilidades residuais}
+    Ataques ao Michael (Beck--Tews, 2008) e força bruta offline sobre o PSK --- TKIP é um paliativo, não uma solução definitiva.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{WPA2: CCMP/AES e o 4-way handshake}
+  \begin{columns}
+    \begin{column}{0.52\textwidth}
+      \textbf{Chaves}
+      \begin{itemize}\small
+        \item \textbf{PMK} (Pairwise Master Key): no PSK,
+          $$\text{PMK} = \text{PBKDF2}(\text{senha}, \text{SSID}, 4096, 256);$$
+        \item \textbf{PTK} (Pairwise Transient Key): derivada por PRF de
+          $$\text{PMK} + \text{ANonce} + \text{SNonce} + \text{MAC}_{\text{AP}} + \text{MAC}_{\text{STA}}.$$
+      \end{itemize}
+      \begin{block}{Papel de cada mensagem}
+        \begin{enumerate}\footnotesize
+          \item AP $\to$ STA: \textbf{ANonce} (STA deriva o PTK);
+          \item STA $\to$ AP: \textbf{SNonce + MIC} (prova posse do PMK);
+          \item AP $\to$ STA: \textbf{GTK + MIC} (prova posse do PMK; instala chaves);
+          \item STA $\to$ AP: \textbf{ACK + MIC} (confirma a instalação).
+        \end{enumerate}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{center}
+        \resizebox{0.96\linewidth}{!}{%
+        \begin{tikzpicture}[font=\scriptsize,>=Stealth,
+            n/.style={draw,rounded corners=2mm,fill=aneliseAzul!13,inner sep=1.5mm,text width=1.8cm,align=center}]
+          \node[n](sta){STA\\ (cliente)};
+          \node[n,right=4.2cm of sta](ap){AP\\ (ponto de acesso)};
+          \draw[->,aneliseLaranja] (ap) -- node[above,font=\tiny]{1. ANonce} (sta);
+          \draw[->,aneliseVerde] (sta) to[bend left=25] node[below,font=\tiny]{2. SNonce + MIC} (ap);
+          \draw[->,aneliseLaranja] (ap) to[bend left=25] node[above,font=\tiny]{3. GTK + MIC} (sta);
+          \draw[->,aneliseVerde] (sta) -- node[below,font=\tiny]{4. ACK + MIC} (ap);
+        \end{tikzpicture}}
+      \end{center}
+      \vspace{1mm}
+      {\scriptsize \textbf{Figura:} cada mensagem autentica a posse da PMK e deriva a PTK de sessão.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{KRACK (2017): reinstalação de chave no WPA2}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Como funciona}
+      \begin{enumerate}
+        \item o atacante bloqueia/replaya a \textbf{3ª mensagem} do handshake;
+        \item o cliente \textbf{reinstala} a mesma PTK já instalada;
+        \item reinicia os contadores (nonce) $\Rightarrow$ \textbf{reuso de nonce};
+        \item o \emph{keystream} é reutilizado $\Rightarrow$ tráfego decriptado e quadros forjados.
+      \end{enumerate}
+      \begin{alertblock}{Impacto}
+        Atinge WPA2 (clientes e APs), inclusive combinações com \emph{group key} e \emph{fast BSS transition}. Descoberta: \textbf{M. Vanhoef e F. Piessens}, ACM CCS 2017.
+      \end{alertblock}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Contramedidas}
+      \begin{itemize}
+        \item patches de todos os fornecedores (CVE-2017-13077 a 13084);
+        \item \textbf{não reinstalar} a chave em mensagem repetida;
+        \item zerar/validar nonces no processo;
+        \item migrar para \textbf{WPA3} (SAE + PMF), imune a essa classe;
+        \item o caso mostrou o valor da análise formal de protocolos.
+      \end{itemize}
+      \begin{exampleblock}{Lições}
+        Criptografia forte (AES) é inútil se o \emph{protocolo} reusa a chave; segurança de protocolo importa tanto quanto a cifra.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{WPA3: SAE/Dragonfly, PMF e OWE}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{SAE (Simultaneous Authentication of Equals)}
+      \begin{itemize}
+        \item troca baseada em \textbf{curvas elípticas} (P-256) ou grupos DH;
+        \item ambas as partes provam conhecer o segredo sem enviá-lo;
+        \item \textbf{forward secrecy} (chaves efêmeras);
+        \item cada tentativa exige \emph{round-trip} com o AP $\Rightarrow$ \textbf{inviabiliza o dicionário offline}.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{PMF obrigatório}
+      \begin{itemize}
+        \item \emph{Protected Management Frames} --- bloqueia \emph{deauth} falso e MITM de frames de gestão.
+      \end{itemize}
+      \textbf{OWE (RFC 8110)}
+      \begin{itemize}
+        \item \emph{Opportunistic Wireless Encryption} para redes abertas;
+        \item DH efêmero sem autenticação $\Rightarrow$ confidencialidade contra escuta passiva (``Enhanced Open'').
+      \end{itemize}
+      \begin{alertblock}{Nota}
+        WPA3 não é imune a tudo (ex.: \emph{downgrade} para WPA2, ``dragonblood''); evite compatibilidade legada na configuração.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{WPA3-Enterprise, 802.1X e EAP}
+  \begin{columns}
+    \begin{column}{0.52\textwidth}
+      \textbf{Modo 192-bit}
+      \begin{itemize}
+        \item AES-GCMP-256 para dados;
+        \item EAP-TLS com \emph{Suite B} 192-bit e curvas P-384;
+        \item para organizações com requisito alto (governo, defesa).
+      \end{itemize}
+      \textbf{802.1X / EAP}
+      \begin{itemize}
+        \item \textbf{EAP-TLS}: certificados \emph{mútuos} (servidor e cliente) --- mais seguro, exige PKI;
+        \item \textbf{PEAP}/EAP-MSCHAPv2: túnel TLS + senha --- vulnerável a \emph{evil twin} sem validação do certificado do servidor;
+        \item o AP é \emph{autenticador}; o RADIUS valida as credenciais.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{center}
+        \resizebox{0.96\linewidth}{!}{%
+        \begin{tikzpicture}[font=\scriptsize,>=Stealth,
+            n/.style={draw,rounded corners=2mm,fill=aneliseAzul!13,inner sep=1.5mm,text width=1.9cm,align=center}]
+          \node[n](sta){STA};
+          \node[n,right=2.8cm of sta](ap){AP\\ (autenticador)};
+          \node[n,right=2.8cm of ap](rad){RADIUS\\ (servidor AAA)};
+          \draw[<->,aneliseLaranja] (sta) -- node[above,font=\tiny]{EAPOL} (ap);
+          \draw[<->,aneliseVerde] (ap) -- node[above,font=\tiny]{RADIUS/EAP} (rad);
+        \end{tikzpicture}}
+      \end{center}
+      \vspace{1mm}
+      {\scriptsize \textbf{Figura:} o AP apenas \emph{autentica} (802.1X); quem decide é o RADIUS --- a porta do cliente só abre após o EAP-Success.}
+      \begin{alertblock}{Boas práticas}
+        Prefira EAP-TLS (certificados) a PEAP com senha; valide o certificado do servidor para evitar \emph{evil twin} corporativo.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Ataques em camada 2}
+
+\begin{frame}{Ataques clássicos de camada 2}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Evil Twin}
+      \begin{itemize}
+        \item AP falso com o \textbf{mesmo SSID};
+        \item usuário conecta sem perceber $\Rightarrow$ captura de credenciais, MITM.
+      \end{itemize}
+      \textbf{Rogue AP}
+      \begin{itemize}
+        \item AP não autorizado plugado na rede corporativa;
+        \item burla firewall/802.1X e expõe a rede interna.
+      \end{itemize}
+      \textbf{Deauth Attack}
+      \begin{itemize}
+        \item quadros de desautenticação \emph{spoofados} (MAC do AP);
+        \item derruba clientes $\Rightarrow$ DoS ou força reconexão para capturar handshake.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Jamming}
+      \begin{itemize}
+        \item interferência intencional no espectro;
+        \item atinge a disponibilidade; difícil de diferenciar de ruído.
+      \end{itemize}
+      \textbf{MAC spoofing}
+      \begin{itemize}
+        \item falsificação do endereço MAC para contornar filtros de MAC;
+        \item base para ataques de identidade.
+      \end{itemize}
+      \begin{alertblock}{Recado}
+        Boa parte desses ataques é de camada 2; as defesas estão na autenticação forte (WPA3, 802.1X) e no monitoramento.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Redes abertas: sniffing e MITM}
+  \begin{itemize}
+    \item \textbf{Sniffing}: em rede sem criptografia (\emph{open}), qualquer pacote pode ser lido no ar --- HTTP, DNS, credenciais em formulários.
+    \item \textbf{MITM via ARP spoofing}: conectado à rede aberta, o atacante envia ARP falsos $\Rightarrow$ o tráfego das vítimas passa por ele (interceptação e modificação).
+    \item \textbf{HTTPS ajuda, mas}: não protege contra \emph{downgrade}, certificados inválidos ignorados, nem vazamentos por DNS em claro.
+  \end{itemize}
+  \begin{block}{Mitigações}
+    \begin{itemize}
+      \item \textbf{OWE} (WPA3): cifra redes abertas contra escuta passiva;
+      \item VPN, HTTPS + HSTS;
+      \item não confiar em redes públicas para dados sensíveis;
+      \item validação de certificados.
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Contramedidas: WIDS/WIPS e monitoramento}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{WIDS (detecção)}
+      \begin{itemize}
+        \item sensores escutam o ar em todos os canais;
+        \item detectam \emph{rogue AP}, \emph{evil twin}, \emph{deauth}, varredura de canais;
+        \item alertam o administrador.
+      \end{itemize}
+      \textbf{WIPS (prevenção)}
+      \begin{itemize}
+        \item além de detectar, \textbf{atua}: desconecta clientes e bloqueia o AP malicioso.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Monitoramento de canais}
+      \begin{itemize}
+        \item cobertura de espectro: detectar interferência/jamming;
+        \item análise de sinalização 802.11;
+        \item correlacionar com logs do controlador/AAA.
+      \end{itemize}
+      \begin{alertblock}{Defesa em profundidade}
+        \begin{itemize}
+          \item WPA3 + PMF obrigatório;
+          \item 802.1X/EAP-TLS;
+          \item segmentação por VLAN/SSID;
+          \item inventário e atualização de firmware.
+        \end{itemize}
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
 \section{Segurança IoT/LPWAN}
 
 \begin{frame}{Segurança em LoRaWAN e LPWAN}
@@ -117,6 +432,101 @@
   \begin{alertblock}{Desafio IoT}
     Dispositivos com recursos limitados (CPU, memória) dificultam atualizações de segurança e rotação de chaves.
   \end{alertblock}
+\end{frame}
+
+\section{Segurança em outras tecnologias}
+
+\begin{frame}{Bluetooth: pairing e ataques}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Evolução do pairing}
+      \begin{itemize}
+        \item \textbf{Legado}: PIN de 4 dígitos --- fraco, sujeito a brute-force e MITM;
+        \item \textbf{Secure Simple Pairing (SSP)}: modos \emph{Just Works}, \emph{numeric comparison}, \emph{passkey entry}, \emph{out-of-band};
+        \item \textbf{LE Secure Connections} (Bluetooth 4.2+): ECC P-256, resistente a escuta passiva.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Ataques notórios}
+      \begin{itemize}
+        \item \textbf{BlueBorne} (2017): execução remota de código pelo rádio --- bilhões de dispositivos;
+        \item \textbf{BlueSmack}: DoS com pacotes L2CAP malformados;
+        \item \textbf{KNOB} (2019): redução da entropia da chave de sessão;
+        \item \textbf{BIAS} (2020): impersonação por falha na verificação de \emph{link key}.
+      \end{itemize}
+      \begin{exampleblock}{Boas práticas}
+        Bluetooth desligado quando não usado; não ficar \emph{discoverable}; usar \emph{Secure Connections}; atualizar firmware (patches de BlueBorne).
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Zigbee e Thread: chaves e ameaças}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Chaves (IEEE 802.15.4 / Zigbee)}
+      \begin{itemize}
+        \item \textbf{Network key}: compartilhada por toda a rede --- cifra os frames;
+        \item \textbf{Link key}: entre dois nós (par a par);
+        \item \emph{trust center} distribui/roda as chaves.
+      \end{itemize}
+      \textbf{Thread}
+      \begin{itemize}
+        \item comissionamento com chave \emph{joiner} (PSKc);
+        \item criptografia AES-128 (CCM*);
+        \item rede mesh com foco em automação residencial.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Ameaças}
+      \begin{itemize}
+        \item \textbf{sniffing}: frames capturados --- se a network key vazar, tudo é lido;
+        \item \textbf{replay}: retransmissão de comandos capturados (anti-replay depende de contadores bem implementados);
+        \item \textbf{jamming} na faixa de 2,4\,GHz.
+      \end{itemize}
+      \begin{alertblock}{Atualização segura}
+        Muitos dispositivos têm firmware fechado e sem OTA assinado $\Rightarrow$ vulnerabilidades persistem por anos. Exigir OTA assinado e rotação de chaves.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{LoRaWAN em detalhe: chaves e fluxo de segurança}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Duas chaves de sessão (AES-128)}
+      \begin{itemize}\small
+        \item \textbf{NwkSKey}: integridade/autenticação dos frames de rede (MIC) --- \emph{network server};
+        \item \textbf{AppSKey}: criptografia do payload de aplicação --- \emph{application server}.
+      \end{itemize}
+      \textbf{Join OTAA}
+      \begin{itemize}\small
+        \item a \textbf{AppKey} (raiz do dispositivo) deriva as chaves de sessão;
+        \item \emph{join-request} + \emph{join-accept} $\Rightarrow$ chaves renovadas a cada \emph{join};
+        \item contadores de frame (anti-replay) descartam frames fora de ordem.
+      \end{itemize}
+      \begin{alertblock}{Limitações}
+        Chaves de 128 bits (sem PQC), provisionamento físico e dificuldade de rotação remota.
+      \end{alertblock}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{center}
+        \resizebox{0.96\linewidth}{!}{%
+        \begin{tikzpicture}[font=\scriptsize,>=Stealth,
+            n/.style={draw,rounded corners=2mm,fill=aneliseAzul!13,inner sep=1.2mm,text width=1.6cm,align=center}]
+          \node[n](ed){End device};
+          \node[n,right=1.8cm of ed](gw){Gateway};
+          \node[n,right=1.8cm of gw](ns){Network server\\ NwkSKey (MIC)};
+          \node[n,below=0.9cm of ns](as){Application server\\ AppSKey (payload)};
+          \draw[->,aneliseLaranja] (ed) -- node[above,font=\tiny]{rádio (cripto)} (gw);
+          \draw[->,aneliseLaranja] (gw) -- node[above,font=\tiny]{payload cifrado} (ns);
+          \draw[->,aneliseGris] (ns) -- (as);
+        \end{tikzpicture}}
+      \end{center}
+      \vspace{1mm}
+      {\scriptsize \textbf{Figura:} o gateway apenas encaminha; quem valida o MIC (NwkSKey) é o NS e quem decifra o payload (AppSKey) é o AS.}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \section{Segurança 5G}
@@ -145,6 +555,76 @@
   \note{Diferente do 4G, o 5G protege a identidade: o SUPI nunca é enviado em claro e aparece como SUCI cifrado; o AKA garante home control com a rede doméstica sempre no loop de autenticação.}
 \end{frame}
 
+\section{5G (aprofundar)}
+
+\begin{frame}{5G AKA: SUPI vs.\ SUCI e o papel da rede doméstica}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Identidade protegida}
+      \begin{itemize}\small
+        \item \textbf{SUPI}: identidade permanente do assinante;
+        \item \textbf{SUCI}: SUPI cifrado com a \textbf{chave pública da rede doméstica} $\Rightarrow$ \textbf{protege contra IMSI catcher};
+        \item o SUPI nunca trafega em claro no rádio.
+      \end{itemize}
+      \textbf{Home control}
+      \begin{itemize}\small
+        \item a \textbf{rede doméstica (HN)} gera os vetores de autenticação e decide;
+        \item a rede visitada (SEAF) apenas \emph{media} o AKA;
+        \item derivação: $K \to K_{\text{AUSF}} \to K_{\text{SEAF}} \to K_{\text{AMF}} \to K_{\text{gNB}}$.
+      \end{itemize}
+      \pause
+      \begin{alertblock}{Comparação}
+        No 4G o IMSI podia trafegar em claro; no 5G o SUCI é usado por padrão.
+      \end{alertblock}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{center}
+        \resizebox{0.96\linewidth}{!}{%
+        \begin{tikzpicture}[font=\scriptsize,>=Stealth,
+            n/.style={draw,rounded corners=2mm,fill=aneliseAzul!13,inner sep=1.2mm,text width=1.7cm,align=center}]
+          \node[n](ue){UE};
+          \node[n,right=2.2cm of ue](seaf){Rede visitada\\ SEAF};
+          \node[n,right=2.2cm of seaf](hn){Rede doméstica\\ AUSF/UDM};
+          \draw[->,aneliseLaranja] (ue) -- node[above,font=\tiny]{SUCI + AKA} (seaf);
+          \draw[->,aneliseLaranja] (seaf) -- node[above,font=\tiny]{avalia HN} (hn);
+          \draw[->,aneliseVerde] (hn) to[bend left=25] node[below,font=\tiny]{vetores (RAND, AUTN)} (seaf);
+          \draw[->,aneliseVerde] (seaf) to[bend left=25] node[below,font=\tiny]{autenticação} (ue);
+        \end{tikzpicture}}
+      \end{center}
+      \vspace{1mm}
+      {\scriptsize \textbf{Figura:} no 5G AKA (TS 33.501), a rede doméstica permanece no controle (home control); o SUCI esconde a identidade.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Proteção de sinalização e ameaças ao 5G}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{SEPP (interconexão de redes)}
+      \begin{itemize}
+        \item proxy na borda de cada operadora;
+        \item protege a interface \textbf{N32} (roaming) contra espionagem/alteração do signaling HTTP/2;
+        \item criptografia e assinatura das mensagens.
+      \end{itemize}
+      \textbf{Tráfego de usuário}
+      \begin{itemize}
+        \item confidencialidade e integridade no PDCP (AES-128/256, SNOW 3G, ZUC);
+        \item integridade \textbf{obrigatória} no controle (RRC), \emph{opcional} no plano de usuário.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Ameaças 5G}
+      \begin{itemize}
+        \item \textbf{jamming} de pilotos/controle (DoS físico);
+        \item \textbf{false base station}: mitigado por autenticação mútua + SUCI;
+        \item ataques ao \textbf{core}: interface SBI (HTTP/2/API) --- exige OAuth2 e \emph{hardening};
+        \item legado SS7/Diameter em \emph{fallback} (\emph{downgrade});
+        \item \textbf{supply chain}: firmware/backdoors em gNB/core.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
 \section{Desafios}
 
 \begin{frame}{Desafios de segurança em redes sem fio}
@@ -168,6 +648,19 @@
   \end{enumerate}
   \begin{alertblock}{Por que o WPA3-SAE (Dragonfly) muda o jogo?}
     No SAE o segredo não é comparável offline: cada tentativa exige um \emph{round-trip} com o AP (sujeito a \emph{rate-limiting}), inviabilizando o ataque de dicionário offline.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Exercício: força bruta de 128 bits vs.\ PSK humano}
+  \begin{enumerate}
+    \item \textbf{Chave de 128 bits}: $2^{128} \approx 3{,}4\times10^{38}$ combinações. A $10^{12}$ tentativas/s:
+      $$\frac{3{,}4\times10^{38}}{10^{12}} = 3{,}4\times10^{26}\ \text{s} \approx 10^{19}\ \text{anos} \;\Rightarrow\; \text{inviável.}$$
+    \item \textbf{PSK de 8 caracteres} (62 símbolos): $62^8 \approx 2{,}2\times10^{14}$; a $10^5$/s $\Rightarrow \approx 69$ anos (o dicionário quebra em minutos).
+    \item \textbf{PSK de 12 caracteres}: $62^{12} \approx 3{,}2\times10^{21}$; a $10^5$/s $\Rightarrow \approx 10^9$ anos.
+  \end{enumerate}
+  \pause
+  \begin{alertblock}{Conclusão}
+    A \textbf{chave criptográfica} não é o ponto fraco (128 bits são imbatíveis); a fraqueza está no \textbf{PSK humano} de baixa entropia e previsível --- por isso o WPA3/SAE proíbe o teste offline.
   \end{alertblock}
 \end{frame}
 
@@ -223,6 +716,28 @@
   \end{enumerate}
 \end{frame}
 
+\begin{frame}{Autoavaliação (continuação)}
+  \begin{enumerate}
+    \item No ataque KRACK, quando o AP \textbf{retransmite} a 3ª mensagem do 4-way handshake, o cliente:
+      \begin{itemize}
+        \item (a) reinstala a mesma chave e reutiliza o nonce
+        \item (b) perde a senha do PSK em claro
+        \item (c) se desconecta permanentemente da rede
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (a)
+
+    \item Em LoRaWAN, a \textbf{NwkSKey} é responsável por:
+      \begin{itemize}
+        \item (a) cifrar o payload de aplicação
+        \item (b) proteger a integridade/autenticação dos frames de rede (MIC)
+        \item (c) autenticar o dispositivo no gateway
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (b)
+  \end{enumerate}
+\end{frame}
+
 \begin{frame}{Laboratório sugerido}
   \begin{block}{Auditoria Wi-Fi controlada e legal}
     \begin{itemize}
@@ -234,6 +749,64 @@
   \end{block}
   \begin{alertblock}{Ética e legalidade}
     Executar apenas em equipamentos próprios e com autorização; interferir em redes alheias viola a lei (Lei 12.737/2012 -- Lei Carolina Dieckmann).
+  \end{alertblock}
+\end{frame}
+
+\section{Futuro e boas práticas}
+
+\begin{frame}{Criptografia pós-quântica: o padrão NIST 2024}
+  \begin{block}{Padrões publicados pelo NIST em 2024}
+    \begin{itemize}
+      \item \textbf{FIPS 203 --- ML-KEM} (baseado em \emph{Kyber}): \emph{key encapsulation mechanism} para troca de chaves;
+      \item \textbf{FIPS 204 --- ML-DSA} (baseado em \emph{Dilithium}): assinaturas digitais;
+      \item \textbf{FIPS 205 --- SLH-DSA} (baseado em \emph{SPHINCS+}): assinaturas \emph{hash-based} (opção cautelosa).
+    \end{itemize}
+  \end{block}
+  \pause
+  \begin{itemize}
+    \item \textbf{Por que importa para Wi-Fi/IoT}: o risco \emph{collect now, decrypt later} --- um computador quântico futuro decifra RSA/ECC de hoje;
+    \item dispositivos IoT têm vida de 10+ anos $\Rightarrow$ precisam de cripto resiliente a quantum;
+    \item prática atual: \textbf{troca de chaves híbrida} (ex.: X25519 + ML-KEM) --- defesa imediata sem quebrar interoperabilidade.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Boas práticas de segurança Wi-Fi/IoT}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{No Wi-Fi}
+      \begin{itemize}
+        \item senha \textbf{forte e longa} + \textbf{WPA3} (PMF habilitado);
+        \item \textbf{desativar WPS} (PIN de 8 dígitos --- ataque online e ``Pixie Dust'');
+        \item SSID próprio e \textbf{segmentado} para IoT (VLAN/SSID separado);
+        \item manter o firmware do AP atualizado.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{No geral}
+      \begin{itemize}
+        \item atualizar firmware de todos os dispositivos;
+        \item monitorar com WIDS/WIPS e logs de autenticação;
+        \item usar 802.1X/EAP-TLS em redes corporativas;
+        \item planejar rotação de chaves e certificados;
+        \item princípio do \emph{least privilege} e zero-trust.
+      \end{itemize}
+      \begin{exampleblock}{Custo-benefício}
+        As maiores vitórias vêm de ações simples: senha forte, WPS desligado e atualizações --- mais eficazes que ferramentas sofisticadas.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Gestão de identidade: PKI e certificados para IoT}
+  \begin{itemize}
+    \item \textbf{PKI}: autoridade certificadora (CA), certificados e gerenciamento de confiança --- base do EAP-TLS e do mTLS;
+    \item \textbf{Certificados para IoT}: identidade única por dispositivo (\emph{enrollment}, RA, renovação);
+    \item \textbf{mTLS}: cliente e servidor se autenticam mutuamente --- evita que um sensor falso se passe por legítimo;
+    \item \textbf{Rotação de chaves}: chaves e certificados com validade curta e renovação automática;
+    \item \textbf{Revogação}: CRL/OCSP para invalidar dispositivos comprometidos.
+  \end{itemize}
+  \begin{alertblock}{Na prática}
+    Em redes sem fio, a PKI integra o 802.1X (EAP-TLS), protege o SUPI (chave pública da HN) e habilita OTA assinado nos dispositivos.
   \end{alertblock}
 \end{frame}
 

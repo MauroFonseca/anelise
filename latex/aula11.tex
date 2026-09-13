@@ -49,6 +49,164 @@
   \end{itemize}
 \end{frame}
 
+\section{Fundamentos de ML}
+
+\begin{frame}{Tipos de aprendizado de máquina}
+  \begin{center}
+    \scriptsize
+    \begin{tabularx}{\textwidth}{@{}lXXX@{}}
+      \toprule
+      \textbf{Paradigma} & \textbf{Dados} & \textbf{Objetivo} & \textbf{Exemplos em redes sem fio}\\
+      \midrule
+      Supervisionado & Rótulos (entrada $\to$ saída) & Mapear entrada $\to$ saída & classificação de tráfego, predição de RSSI, detecção de interferência\\
+      Não-supervisionado & Sem rótulos & Descobrir estrutura oculta & \emph{clustering} de usuários por mobilidade, compressão de CSI, anomalias\\
+      Por reforço & Recompensas (atrasadas) & Maximizar retorno acumulado & \emph{handover}, alocação de RB, escalonamento, potência\\
+      \bottomrule
+    \end{tabularx}
+  \end{center}
+  \pause
+  \begin{alertblock}{Ideia-chave}
+    A escolha do paradigma depende do dado disponível: rótulos são caros e escassos em redes (CSI, tráfego); recompensas naturais (throughput, atraso) favorecem o RL.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Aprendizado supervisionado: regressão vs.\ classificação}
+  \begin{columns}
+    \begin{column}{0.46\textwidth}
+      \textbf{Classificação} (saída discreta)
+      \begin{itemize}
+        \item tipo de tráfego (vídeo/voz/dados)
+        \item detecção de intrusão e \emph{jamming}
+        \item reconhecimento de atividade (Wi-Fi sensing)
+      \end{itemize}
+      \textbf{Regressão} (saída contínua)
+      \begin{itemize}
+        \item predição de throughput e SINR
+        \item estimativa de canal (CSI) e de posição
+        \item tempo até o \emph{handover}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \textbf{Métricas de classificação}
+      \small
+      \begin{align*}
+        \text{Acurácia} &= \frac{TP+TN}{TP+TN+FP+FN},\\[0.5mm]
+        \text{Precisão} &= \frac{TP}{TP+FP},\quad \text{Recall} = \frac{TP}{TP+FN},\\[0.5mm]
+        F_1 &= \frac{2\,P\,R}{P+R}.
+      \end{align*}
+      \textbf{Métrica de regressão}
+      $$\text{RMSE} = \sqrt{\tfrac{1}{n}\textstyle\sum_{i=1}^{n}(y_i - \hat{y}_i)^2}.$$
+      \begin{alertblock}{Atenção}
+        Anomalias em redes são raras $\Rightarrow$ a acurácia engana; priorize \emph{recall} e $F_1$.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Overfitting e validação de modelos}
+  \begin{block}{Overfitting}
+    O modelo memoriza o treino e falha ao generalizar: excelente no treino, ruim em dados novos --- típico com redes profundas e poucos exemplos rotulados.
+  \end{block}
+  \begin{center}
+    \scriptsize
+    \begin{tabular}{@{}lll@{}}
+      \toprule
+      \textbf{Conjunto} & \textbf{Uso} & \textbf{Armadilha}\\
+      \midrule
+      Treino & ajustar pesos & usar validação no treino vaza informação\\
+      Validação & escolher hiperparâmetros & reusar a mesma validação muitas vezes\\
+      Teste & avaliar a generalização (uma vez!) & nunca treinar com o teste\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  \begin{itemize}
+    \item Em redes, a distribuição dos dados muda no tempo/espaço (mobilidade, hora do dia) $\Rightarrow$ use \textbf{validação temporal} e re-treino periódico.
+    \item Ferramentas: $k$-fold cross-validation, \emph{early stopping}, regularização L1/L2 e \emph{dropout}.
+  \end{itemize}
+\end{frame}
+
+\section{Redes neurais}
+
+\begin{frame}{Neurônio artificial e funções de ativação}
+  \begin{columns}
+    \begin{column}{0.46\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize,>=Stealth,
+            n/.style={draw,circle,fill=aneliseAzul!15,inner sep=1mm},
+            w/.style={draw,rounded corners=1mm,fill=aneliseGris!15,inner sep=0.8mm}]
+          \node[n](x1){$x_1$};
+          \node[n,below=4mm of x1](x2){$x_2$};
+          \node[n,below=4mm of x2](x3){$x_n$};
+          \node[w,right=10mm of x2](sum){$\sum w_ix_i+b$};
+          \node[w,right=8mm of sum](act){$f(\cdot)$};
+          \node[right=4mm of act](y){$y$};
+          \draw[->] (x1.east) -- node[midway,above,font=\tiny]{$w_1$} (sum.north west);
+          \draw[->] (x2.east) -- node[midway,above,font=\tiny]{$w_2$} (sum.west);
+          \draw[->] (x3.east) -- node[midway,above,font=\tiny]{$w_n$} (sum.south west);
+          \draw[->] (sum) -- (act);
+          \draw[->] (act) -- (y);
+        \end{tikzpicture}
+      \end{center}
+      $$z=\textstyle\sum_{i} w_ix_i+b,\quad y=f(z).$$
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \begin{block}{Funções de ativação}
+        \begin{itemize}
+          \item \textbf{Sigmoid}: $\sigma(z)=\frac{1}{1+e^{-z}}\in(0,1)$ --- clássica para classificação binária; satura e desvanece o gradiente.
+          \item \textbf{ReLU}: $\mathrm{ReLU}(z)=\max(0,z)$ --- a mais usada em redes profundas; não satura para $z>0$.
+          \item \textbf{Perceptron}: neurônio com ativação degrau (saída binária) --- base histórica.
+        \end{itemize}
+      \end{block}
+      \begin{alertblock}{No contexto de RF}
+        Entradas típicas: medições de potência (RSRP), CQI, espectrogramas; o neurônio computa uma combinação linear e a ativação introduz a não-linearidade.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{MLP e \emph{backpropagation}}
+  \begin{columns}
+    \begin{column}{0.44\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize,
+            n/.style={draw,circle,fill=aneliseAzul!15,inner sep=1mm}]
+          \foreach \i in {1,...,3}{\node[n](a\i) at (0,-0.9*\i) {$a_\i$};}
+          \foreach \i in {1,...,4}{\node[n](h\i) at (2.4,-0.35-0.7*\i) {$h_\i$};}
+          \foreach \i in {1,...,2}{\node[n](o\i) at (4.8,-1.25-0.7*\i) {$o_\i$};}
+          \foreach \i in {1,...,3}{ \foreach \j in {1,...,4}{\draw[->,gray] (a\i) -- (h\j);}}
+          \foreach \i in {1,...,4}{ \foreach \j in {1,...,2}{\draw[->,gray] (h\i) -- (o\j);}}
+          \node at (0,-3.3){entrada};
+          \node at (2.4,-3.6){oculta};
+          \node at (4.8,-3.1){saída};
+        \end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.56\textwidth}
+      \begin{itemize}
+        \item \textbf{MLP}: camadas de neurônios com não-linearidades empilhadas $\Rightarrow$ \emph{aproximador universal} de funções.
+        \item \textbf{Backpropagation}: o erro da saída é propagado para trás (regra da cadeia) e calcula o gradiente de cada peso; o SGD atualiza $w \leftarrow w - \eta\,\nabla_w \mathcal{L}$.
+        \item As camadas \textbf{ocultas} extraem \emph{features} intermediárias automaticamente.
+      \end{itemize}
+      \begin{exampleblock}{Em redes sem fio}
+        Classificação de CSI, mapeamento sinal $\to$ localização, estimativa de CQI a partir de séries de RSSI.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Por que \emph{deep learning} funciona bem para RF?}
+  \begin{itemize}
+    \item \textbf{Padrões ricos}: o canal sem fio tem correlações espaço-temporais (multipath, \emph{fading}, interferência) que redes profundas capturam hierarquicamente.
+    \item \textbf{Convoluções} (CNN): capturam correlações locais em espectrogramas e grades de CSI.
+    \item \textbf{Recorrência} (LSTM/GRU): modelam a evolução temporal do canal e do tráfego.
+    \item \textbf{Autoencoders}: comprimem o CSI para \emph{feedback} eficiente (reduz overhead de sinalização).
+    \item \textbf{Aprendizado de \emph{features}}: dispensa a engenharia manual de características, que exigia profundo conhecimento de RF.
+  \end{itemize}
+  \begin{block}{Mas...}
+    DL exige volume de dados, é caro computacionalmente e difícil de interpretar --- por isso modelos híbridos e \emph{physics-informed} estão em alta.
+  \end{block}
+\end{frame}
+
 \section{Técnicas}
 
 \begin{frame}{Técnicas de ML aplicadas}
@@ -117,6 +275,334 @@
   \note{A LSTM processa janelas de 10 medições de RSSI/RSRP e prevê a célula-alvo do handover; destacar que o ganho real relatado na literatura é da ordem de 30--40\% de redução de falhas.}
 \end{frame}
 
+\section{Aprendizado por reforço (aprofundar)}
+
+\begin{frame}{MDP formal: o modelo matemático do RL}
+  Um MDP é a 5-tupla $(S, A, P, R, \gamma)$:
+  \begin{itemize}\footnotesize
+    \item $S$: \textbf{estados} (CQI, filas, SINR);
+    \item $A$: \textbf{ações} (RBs, célula-alvo, potência);
+    \item $P(s'|s,a)$: probabilidade de \textbf{transição};
+    \item $R(s,a)$: \textbf{recompensa} imediata;
+    \item $\gamma\in[0,1)$: fator de \textbf{desconto}.
+  \end{itemize}
+  \small Uma \textbf{política} $\pi(a|s)$ mapeia estados em ações; objetivo: retorno $G_t = \sum_{k\ge 0}\gamma^k R_{t+k+1}$.
+  \begin{center}
+    \begin{tikzpicture}[font=\tiny,>=Stealth,
+        c/.style={draw,rounded corners=2mm,fill=aneliseAzul!13,inner sep=1mm,text width=2.0cm,align=center}]
+      \node[c](s){Estado $S_t$\\ (CQI, fila, SINR)};
+      \node[c,below right=8mm and 4mm of s](a){Ação $A_t$\\ (alocação de RB)};
+      \node[c,below left=8mm and 4mm of s](r){Recompensa $R_{t+1}$\\ (throughput, justiça)};
+      \draw[->,aneliseLaranja] (s.south) -- node[right,font=\tiny]{$\pi$} (a.north);
+      \draw[->,aneliseLaranja] (a.west) -- node[below,font=\tiny]{rede} (r.east);
+      \draw[->,aneliseVerde] (r.north) -- node[left,font=\tiny]{$S_{t+1}$} (s.south);
+    \end{tikzpicture}
+  \end{center}
+  \pause
+  \begin{block}{Equação de Bellman (forma $Q$)}
+    $$Q(s,a) = r + \gamma\,\max_{a'} Q(s',a')$$
+    \small onde $r$ é a recompensa imediata; $\max_{a'} Q(s',a')$ é o melhor valor futuro a partir de $s'$.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Exploração vs.\ exploração e a política $\varepsilon$-greedy}
+  \begin{itemize}
+    \item \textbf{Exploitation}: escolher a ação com maior $Q$ estimado --- bom agora, mas pode ser um ótimo local.
+    \item \textbf{Exploration}: tentar ações ainda mal avaliadas --- descobre recompensas melhores no futuro.
+  \end{itemize}
+  \begin{block}{Política $\varepsilon$-greedy}
+    Com probabilidade $\varepsilon$ escolhe ação \textbf{aleatória} (explora); com $1-\varepsilon$ escolhe a melhor ação:
+    $$
+    \pi(a|s) = \begin{cases} 1-\varepsilon + \tfrac{\varepsilon}{|A|} & \text{se } a = \arg\max_{a'} Q(s,a'),\\[2mm] \tfrac{\varepsilon}{|A|} & \text{caso contrário.} \end{cases}
+    $$
+  \end{block}
+  \begin{itemize}
+    \item \textbf{Decay de $\varepsilon$}: começa alto (ex.: $\varepsilon = 1{,}0$) e decai (ex.: $\times 0{,}99$ por episódio) $\Rightarrow$ explora muito no início e converge para o \emph{greedy} no fim.
+    \item Em redes reais, explorar demais degrada a QoS do usuário; sistemas vivos usam $\varepsilon$ pequeno ou exploram no simulador.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{DQN: experiência replay e target network}
+  \begin{columns}
+    \begin{column}{0.52\textwidth}
+      \begin{itemize}
+        \item \textbf{Problema da tabela $Q$}: estados contínuos (CSI, filas) tornam a tabela inviável.
+        \item \textbf{DQN}: a rede neural $Q(s,a;\theta)$ aproxima o valor de cada ação.
+        \item \textbf{Experiência replay}: guarda $(s,a,r,s')$ num buffer e amostra minibatchs $\Rightarrow$ quebra correlação temporal.
+        \item \textbf{Target network}: rede $Q^-$ congelada, atualizada periodicamente $\Rightarrow$ o alvo não oscila a cada passo, \textbf{estabilizando o treino}.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize,>=Stealth,
+            c/.style={draw,rounded corners=1.5mm,fill=aneliseAzul!13,inner sep=1mm,text width=1.5cm,align=center}]
+          \node[c](env){Ambiente\\ (rede)};
+          \node[c,right=1.0cm of env](buf){Replay\\ buffer};
+          \node[c,right=1.0cm of buf](q){Rede $Q$\\ $\theta$};
+          \node[c,below=8mm of q](tgt){Rede $Q^-$\\ (target)};
+          \draw[->,aneliseVerde] (env) -- node[above,font=\tiny]{$(s,r)$} (buf);
+          \draw[->,aneliseLaranja] (buf) -- node[above,font=\tiny]{minibatch} (q);
+          \draw[->,aneliseGris] (q.south) -- node[right,font=\tiny]{cópia} (tgt.north);
+          \draw[->,aneliseLaranja] (tgt.south) to[out=-90,in=-90] node[midway,below,font=\tiny]{ação $a$} (env.south);
+        \end{tikzpicture}
+      \end{center}
+      \begin{alertblock}{Alvo do DQN}
+        $y = r + \gamma \max_{a'} Q^-(s',a')$
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Aprendizado por reforço profundo multiagente (MARL)}
+  \begin{block}{Cenário}
+    Vários agentes (células, gNBs, usuários) otimizam juntos: cada um aprende sua política, mas o ambiente depende das ações de \emph{todos}.
+  \end{block}
+  \begin{itemize}
+    \item \textbf{Não-estacionariedade}: quando outro agente muda a política, as transições observadas mudam $\Rightarrow$ o problema de otimização se desloca.
+    \item \textbf{Desafios}: convergência (os alvos se movem), coordenação entre agentes, escalabilidade e custo de comunicação.
+  \end{itemize}
+  \begin{exampleblock}{Técnicas e exemplo}
+    \begin{itemize}
+      \item \emph{Centralized training / decentralized execution} (CTDE): treina com informação global, executa só com observação local.
+      \item Exemplo: \textbf{handover coordenado} entre células vizinhas --- cada gNB decide a transferência considerando a carga das vizinhas.
+    \end{itemize}
+  \end{exampleblock}
+\end{frame}
+
+\section{ML para séries temporais e tráfego}
+
+\begin{frame}{LSTM: memória de longo prazo}
+  \begin{columns}
+    \begin{column}{0.54\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\tiny,>=Stealth,
+            cell/.style={draw,rounded corners=1.5mm,fill=aneliseAzul!15,inner sep=1mm,text width=1.5cm,align=center},
+            g/.style={draw,rounded corners=1mm,fill=aneliseGris!18,inner sep=0.7mm,text width=1.3cm,align=center}]
+          \node (cm){$C_{t-1}$};
+          \node[cell,right=1cm of cm](cell){célula\\ LSTM};
+          \node[right=1cm of cell](cp){$C_t$};
+          \node[g,below left=9mm and 2mm of cell](i){entrada\\ $i_t$};
+          \node[g,below=9mm of cell](f){esquecimento\\ $f_t$};
+          \node[g,below right=9mm and 2mm of cell](o){saída\\ $o_t$};
+          \node[below=6mm of f](inp){$[h_{t-1}, x_t]$};
+          \node[above=7mm of cp](ht){$h_t$};
+          \draw[->,aneliseLaranja,thick] (cm) -- (cell);
+          \draw[->,aneliseLaranja,thick] (cell) -- (cp);
+          \draw[->] (inp) -- (i.south);
+          \draw[->] (inp) -- (f.south);
+          \draw[->] (inp) -- (o.south);
+          \draw[->] (i.north) -- (cell.south west);
+          \draw[->] (f.north) -- (cell.south);
+          \draw[->] (o.north) -- (cell.south east);
+          \draw[->,aneliseVerde] (cell.north) -- (ht);
+        \end{tikzpicture}
+      \end{center}
+      \vspace{1mm}
+      \small $$C_t = f_t\odot C_{t-1} + i_t\odot\tilde{C}_t,\quad h_t = o_t\odot\tanh C_t.$$
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}
+        \item O estado de célula $C_t$ carrega a \textbf{memória de longo prazo}; os portões controlam o fluxo de informação.
+        \item Portão de \textbf{esquecimento} ($f_t$): o que descartar do passado.
+        \item Portão de \textbf{entrada} ($i_t$): o que gravar do novo dado.
+        \item Portão de \textbf{saída} ($o_t$): o que expor como estado oculto $h_t$.
+      \end{itemize}
+      \begin{alertblock}{Em redes}
+        Ideal para sequências de RSSI/RSRP, contagem de pacotes e CSI ao longo do tempo.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Previsão de tráfego e mobilidade: ARIMA, LSTM e Transformers}
+  \begin{center}
+    \scriptsize
+    \begin{tabularx}{\textwidth}{@{}lXXX@{}}
+      \toprule
+      \textbf{Modelo} & \textbf{Tipo} & \textbf{Vantagens} & \textbf{Limitações}\\
+      \midrule
+      ARIMA & estatístico linear & simples, interpretável, rápido & assume estacionariedade; ignora não-linearidades\\
+      LSTM & DL recorrente & não-linear; memória longa & treino sequencial; exige mais dados\\
+      Transformer & DL com atenção & paralelismo; dependências longas & caro; exige muitos dados (popular pós-2020)\\
+      \bottomrule
+    \end{tabularx}
+  \end{center}
+  \begin{block}{Aplicações}
+    \begin{itemize}
+      \item \textbf{Dimensionamento}: prever picos de tráfego por célula e alocar capacidade.
+      \item \textbf{QoS preditivo}: antecipar degradação de SINR/atraso e reagir proativamente.
+      \item \textbf{Mobilidade}: prever célula-alvo e instante do \emph{handover} (ex.: LSTM sobre RSRP) e reduzir falhas de handover.
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Detecção de anomalias: jamming, intrusão e falhas}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Anomalias típicas em RF}
+      \begin{itemize}
+        \item \textbf{Jamming}: elevação súbita da potência / erro de decodificação;
+        \item \textbf{Intrusão}: padrões de tráfego atípicos (varredura, botnet);
+        \item \textbf{Falhas}: queda de desempenho, rádio com mau funcionamento.
+      \end{itemize}
+      \textbf{Técnicas}
+      \begin{itemize}
+        \item \textbf{Autoencoder}: reconstrói o dado ``normal''; erro alto $\Rightarrow$ anomalia.
+        \item \textbf{One-class SVM}: aprende a fronteira dos dados normais; ponto fora $\Rightarrow$ anomalia.
+        \item \textbf{LSTM preditivo}: erro de predição grande sinaliza evento anômalo.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{center}
+        \resizebox{0.96\linewidth}{!}{%
+        \begin{tikzpicture}[font=\tiny,>=Stealth,
+            c/.style={draw,rounded corners=1.5mm,fill=aneliseGris!15,inner sep=1mm,text width=1.2cm,align=center}]
+          \node[c](x){entrada $x$};
+          \node[c,right=0.8cm of x](enc){codificador};
+          \node[c,right=0.8cm of enc](dec){decodificador};
+          \node[c,right=0.8cm of dec](err){erro\\ $\|x-\hat{x}\|$};
+          \node[c,below=6mm of err,text width=2.3cm](th){$>$ limiar $\Rightarrow$ anomalia};
+          \draw[->] (x) -- (enc);
+          \draw[->] (enc) -- (dec);
+          \draw[->] (dec) -- (err);
+          \draw[->] (err) -- (th);
+        \end{tikzpicture}}
+      \end{center}
+      \vspace{1mm}
+      {\scriptsize \textbf{Figura:} autoencoder treinado só com dados normais; desvios são detectados pela reconstrução.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{ML na RAN e na borda}
+
+\begin{frame}{O-RAN: RAN aberta e inteligente}
+  \begin{columns}
+    \begin{column}{0.46\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize,>=Stealth,
+            c/.style={draw,rounded corners=1.5mm,fill=aneliseAzul!13,inner sep=1mm,text width=1.9cm,align=center}]
+          \node[c](ran){RAN\\ (O-RU/O-DU/O-CU)};
+          \node[c,right=2.2cm of ran](ric){RIC near-RT\\ \texttt{xApps}};
+          \node[c,below=1.2cm of ric](nrt){RIC Non-RT\\ \texttt{rApps}};
+          \draw[<->,aneliseLaranja] (ran) -- node[above,font=\tiny]{E2} (ric);
+          \draw[<->,aneliseGris] (ric) -- node[right,font=\tiny]{A1} (nrt);
+        \end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \begin{itemize}
+        \item \textbf{RIC near-real-time}: loop de $10$\,ms a $1$\,s; hospeda \textbf{xApps} para controle fino (beam, \emph{handover}, escalonamento).
+        \item \textbf{RIC non-real-time}: loop $>1$\,s; hospeda \textbf{rApps} para otimização, treino de modelos e políticas.
+        \item \textbf{Interfaces}: A1 (política), E2 (controle/telemetria da RAN) e O1 (gestão); o O-RAN define um AI/ML workflow.
+      \end{itemize}
+      \begin{exampleblock}{Casos de ML}
+        Beam management, seleção de \emph{handover}, alocação de recursos e detecção de falhas --- implementados como xApp/rApp com dados da RAN.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Federated learning: FedAvg}
+  \begin{columns}
+    \begin{column}{0.42\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize,>=Stealth,
+            c/.style={draw,rounded corners=1.5mm,fill=aneliseAzul!13,inner sep=1mm,text width=1.6cm,align=center}]
+          \node[c](srv){Servidor\\ (agrega)};
+          \node[c,below left=1.3cm and 0.2cm of srv](c1){Cliente 1};
+          \node[c,below=1.3cm of srv](c2){Cliente 2};
+          \node[c,below right=1.3cm and 0.2cm of srv](c3){Cliente 3};
+          \draw[<->,aneliseVerde] (srv) -- node[midway,left,font=\tiny]{$w$} (c1);
+          \draw[<->,aneliseVerde] (srv) -- (c2);
+          \draw[<->,aneliseVerde] (srv) -- node[midway,right,font=\tiny]{$w$} (c3);
+        \end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \begin{block}{Algoritmo FedAvg (passos)}
+        \begin{enumerate}
+          \item o servidor envia o modelo inicial $w$;
+          \item cada cliente treina \textbf{localmente} com seus dados (sem enviá-los);
+          \item os clientes devolvem os \textbf{pesos} (ou gradientes);
+          \item o servidor agrega pela média ponderada: $w \leftarrow \sum_k \frac{n_k}{n} w_k$;
+          \item repete por várias rodadas.
+        \end{enumerate}
+      \end{block}
+      \pause
+      \begin{alertblock}{Privacidade e custo}
+        Os dados nunca saem do cliente (privacidade/GDPR); porém há custo de comunicação (modelos grandes), clientes heterogêneos e dados não-IID.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Split learning, edge AI e IA generativa}
+  \begin{block}{Split learning e inferência na borda}
+    \begin{itemize}
+      \item \textbf{Split learning}: a rede é dividida --- camadas iniciais no dispositivo, finais no servidor; só \emph{ativações intermediárias} trafegam (menos sensível que dados brutos).
+      \item \textbf{Edge AI}: inferência no nó de borda (MEC/gNB/UE) $\Rightarrow$ baixa latência; modelos compactados com \textbf{quantização} (FP32 $\to$ INT8), \emph{pruning} e \emph{distillation}.
+      \item Trade-off: \textbf{latência vs.\ acurácia} vs.\ privacidade.
+    \end{itemize}
+  \end{block}
+  \begin{block}{IA generativa em redes (2024--2026)}
+    \begin{itemize}
+      \item \textbf{GANs}: geram dados sintéticos de tráfego/canal $\Rightarrow$ aumentam datasets rotulados escassos e preservam privacidade.
+      \item \textbf{LLMs}: assistentes de operação --- diagnóstico de falhas, geração de configuração e tradução de políticas; tema ativo de pesquisa (IA \emph{native} para 6G).
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\section{Aplicações específicas em redes sem fio}
+
+\begin{frame}{Beamforming e posicionamento com ML}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Beamforming com ML}
+      \begin{itemize}
+        \item ML prevê o canal (CSI) ou diretamente o melhor feixe do \emph{codebook}.
+        \item CNN sobre CSI estima o feixe ótimo sem varrer todos $\Rightarrow$ reduz o \textbf{overhead de sondagem} em mmWave/6G.
+        \item Aplicações: 5G \emph{beam management}, ondas milimétricas.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Posicionamento com ML}
+      \begin{itemize}
+        \item \emph{Fingerprinting}: mapa de assinaturas de canal (CSI/RSRP) por localização.
+        \item Regressão/classificação (CNN, LSTM) sobre CSI estima a posição $\Rightarrow$ precisão sub-métrica em \emph{indoor}.
+        \item Vantagem sobre o GPS: funciona \emph{indoor} e em ambientes urbanos densos.
+      \end{itemize}
+      \begin{exampleblock}{Fio condutor}
+        Nos dois casos, o ML extrai informação de \textbf{características físicas do rádio} (CSI) que seriam difíceis de modelar analiticamente.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Escalonamento com RL e handover com DRL}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Scheduling com RL}
+      \begin{itemize}
+        \item \textbf{Estado}: CQI por usuário, tamanho das filas;
+        \item \textbf{Ação}: alocação de \emph{resource blocks} (RBs) aos usuários;
+        \item \textbf{Recompensa}: throughput e justiça combinados, ex.: índice de Jain
+          $$J = \frac{(\sum_i x_i)^2}{n\sum_i x_i^2};$$
+        \item Objetivo: equilibrar eficiência e justiça (proporcionalidade).
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Handover com DRL}
+      \begin{itemize}
+        \item \textbf{Estado}: SINR atual e das vizinhas, carga das células, velocidade;
+        \item \textbf{Ação}: célula-alvo (ou adiar/adiantar o \emph{handover});
+        \item \textbf{Recompensa}: QoE --- throughput, atraso e número de \emph{ping-pong};
+        \item DQN aprende a política melhor que disparos fixos (evento A3); re-treino quando o ambiente muda.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
 \section{Desafios}
 
 \begin{frame}{Desafios de ML em redes sem fio}
@@ -151,6 +637,38 @@
     \end{column}
   \end{columns}
   \note{Federated learning resolve privacidade e escala: o modelo é treinado localmente em cada gNB/UE e apenas os gradientes são agregados; correlacionar com a padronização O-RAN (rApp/xApp com ML).}
+\end{frame}
+
+\begin{frame}{Desafios de ML em redes: além dos dados}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Dados e confiança}
+      \begin{itemize}
+        \item rótulos escassos e caros (anotar tráfego/CSI);
+        \item \textbf{interpretabilidade (XAI)}: a operadora precisa justificar decisões (SHAP, LIME);
+        \item robustez a dados não-estacionários (mobilidade, carga).
+      \end{itemize}
+      \textbf{Custo computacional}
+      \begin{itemize}
+        \item latência de inferência em tempo real na borda;
+        \item energia do treinamento de modelos profundos (\emph{green AI}).
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Segurança adversarial}
+      \begin{itemize}
+        \item perturbações imperceptíveis enganam classificadores (evasão em IDS);
+        \item envenenamento de dados em \emph{federated learning};
+        \item \emph{model inversion} sobre modelos treinados.
+      \end{itemize}
+      \textbf{Padrões em formação}
+      \begin{itemize}
+        \item 3GPP Rel.\ 18/19 RM-NET e \emph{AI/ML for NG-RAN};
+        \item O-RAN AI/ML workflow e ITU-T ML5G (Y.3172);
+        \item interoperabilidade e conformidade ainda imaturas.
+      \end{itemize}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \begin{frame}{Exercício resolvido --- Bellman e atualização Q-learning}
@@ -216,6 +734,52 @@
       \pause
       \textbf{Gabarito:} (a)
   \end{enumerate}
+\end{frame}
+
+\begin{frame}{Autoavaliação (continuação)}
+  \begin{enumerate}
+    \item Classificar o tipo de tráfego (vídeo/voz/dados) a partir de estatísticas de fluxo é um exemplo de:
+      \begin{itemize}
+        \item (a) aprendizado supervisionado (classificação)
+        \item (b) aprendizado não-supervisionado
+        \item (c) aprendizado por reforço
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (a)
+
+    \item No DQN, a função da \emph{target network} é:
+      \begin{itemize}
+        \item (a) reduzir o tamanho da rede neural
+        \item (b) estabilizar o treinamento com um alvo que não muda a cada passo
+        \item (c) gerar dados sintéticos de treinamento
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (b)
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Exercício: tabela $Q$ com $\varepsilon$-greedy}
+  Dois estados $S_1,S_2$, duas ações $A_1,A_2$; $\gamma=0{,}9$, $\alpha=0{,}1$, $\varepsilon=0{,}5$ (decai), tabela zerada.
+  \begin{enumerate}\small
+    \item \textbf{Passo 1}: em $S_1$ escolhe $A_2$ (exploração) $\to$ recompensa $r=1$, novo estado $S_2$:
+      $$Q(S_1,A_2) \leftarrow 0 + 0{,}1\big[1 + 0{,}9\cdot\max(0,0) - 0\big] = 0{,}1.$$
+    \item \textbf{Passo 2}: em $S_2$ escolhe $A_1$ (exploração) $\to$ $r=0$, novo estado $S_1$:
+      $$Q(S_2,A_1) \leftarrow 0 + 0{,}1\big[0 + 0{,}9\cdot\max(0;\,0{,}1) - 0\big] = 0{,}009.$$
+    \item \textbf{Passo 3}: em $S_1$ escolhe $A_1$ (\emph{greedy}) $\to$ $r=5$, novo estado $S_2$:
+      $$Q(S_1,A_1) \leftarrow 0 + 0{,}1\big[5 + 0{,}9\cdot\max(0{,}009;\,0) - 0\big] \approx 0{,}50.$$
+  \end{enumerate}
+  \pause
+  \begin{block}{Tabela $Q$ resultante}
+    \centering
+    \begin{tabular}{lcc}
+      \toprule
+       & $A_1$ & $A_2$\\
+      \midrule
+      $S_1$ & $0{,}50$ & $0{,}10$\\
+      $S_2$ & $0{,}009$ & $0{,}00$\\
+      \bottomrule
+    \end{tabular}
+  \end{block}
 \end{frame}
 
 \begin{frame}{Laboratório sugerido}

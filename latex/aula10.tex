@@ -34,6 +34,110 @@
   \end{alertblock}
 \end{frame}
 
+\section{Plataformas e taxonomia}
+
+\begin{frame}{Plataformas não terrestres}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Satélites:}
+      \begin{itemize}
+        \item \textbf{GEO}: 35\,786~km, posição fixa sobre a Terra (broadcast, backhaul)
+        \item \textbf{MEO}: 7\,000--25\,000~km (GPS/Galileo, backhaul)
+        \item \textbf{LEO}: 500--1\,200~km (Starlink, OneWeb) --- baixa latência
+      \end{itemize}
+      \textbf{HAPS} (High-Altitude Platform Station):
+      \begin{itemize}
+        \item balões e aeronaves estratosféricas a $\sim$20~km
+        \item cobertura regional com latência muito baixa
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{UAV / drones:}
+      \begin{itemize}
+        \item atuação local (dezenas de km)
+        \item papel duplo: \emph{usuário} (payload) e \emph{infraestrutura} (relé / BS aérea)
+      \end{itemize}
+      \begin{block}{Espectro de altitudes}
+        UAV $<$ 0,5~km $\rightarrow$ HAPS $\approx$ 20~km $\rightarrow$ LEO 500--1\,200~km $\rightarrow$ MEO/GEO.\\
+        Quanto mais alto, maior a cobertura --- e maior o atraso.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Drones: asa fixa vs.\ multirrotor}
+  \begin{center}
+    \begin{tabular}{@{}lcc@{}}
+      \toprule
+      Característica & Multirrotor & Asa fixa\\
+      \midrule
+      Sustentação & hélices (empuxo) & asa (aerodinâmica) \\
+      Autonomia & 20--40~min típica & 1--10~h (cruzeiro) \\
+      Velocidade & 30--80~km/h & 80--150+~km/h \\
+      Decolagem/pouso & vertical (VTOL) & pista / catapulta / cabo \\
+      Carga útil (payload) & menor & maior \\
+      Hover / inspeção parada & \textbf{sim} & não \\
+      Custo & menor & maior \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  \pause
+  \begin{exampleblock}{Implicação para redes}
+    Multirrotor = nós quase estáticos em hover (inspeção, SAR); asa fixa = cobertura móvel de longa duração (vigilância, relé). A escolha define o orçamento de energia e o \emph{link budget}.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Categorias e regulação de drones}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Reguladores:}
+      \begin{itemize}
+        \item \textbf{ANATEL} (Brasil): homologação de equipamentos e espectro
+        \item \textbf{FAA Part 107} (EUA): operação de pequenos UAVs ($<$25~kg), piloto certificado
+        \item \textbf{EASA} (UE): categorias aberta / específica / certificada
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{VLOS vs.\ BVLOS}
+        \begin{itemize}
+          \item \textbf{VLOS} (visual line of sight): piloto vê o drone --- regra geral
+          \item \textbf{BVLOS} (beyond VLOS): voo fora do campo visual --- exige links de comando confiáveis e autorização
+        \end{itemize}
+      \end{block}
+      \begin{alertblock}{Para redes}
+        BVLOS é o cenário de \emph{teleoperação} e de entrega de longa distância; exige C2 robusto e redundância de enlace.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Arquitetura de comunicação de um drone}
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \begin{itemize}
+        \item \textbf{GCS} (Ground Control Station): piloto / autopiloto remoto
+        \item \textbf{Enlace C2} (command \& control): telemetria + comandos de voo --- baixa taxa, baixa latência, crítico
+        \item \textbf{Enlace de payload}: vídeo/imagem de alta taxa (downlink)
+        \item \textbf{Bandas}: 2,4~GHz e 5,8~GHz (ISM, comuns em controle); banda dedicada para C2 em sistemas profissionais
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize,
+            d/.style={draw,circle,minimum size=7mm,fill=aneliseAzul!15,inner sep=0.3mm},
+          ]
+          \node[d](drone) at (0,2.4){D};
+          \node[draw,rounded corners=1mm,fill=aneliseLaranja!25,inner sep=1.2mm,text width=1.5cm,align=center](gcs) at (0,0){GCS};
+          \node[draw,cloud,cloud puffs=10,aspect=2,fill=aneliseGris!15,inner sep=1mm,text width=1.4cm,align=center](cloud) at (3.6,1.6){Nuvem};
+          \draw[thick,aneliseVerde,-Stealth] (drone) -- (gcs) node[midway,right,font=\tiny]{C2};
+          \draw[thick,aneliseLaranja,-Stealth] (drone) -- (cloud) node[midway,below,font=\tiny]{payload (vídeo)};
+        \end{tikzpicture}
+        \\[1mm] {\scriptsize \textbf{Figura:} enlace C2 com a GCS e enlace de payload para a nuvem/usuário.}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
 \section{FANET}
 
 \begin{frame}{FANET --- Flying Ad-Hoc Network}
@@ -82,6 +186,153 @@
   \note{FANET é um caso particular de MANET com mobilidade muito maior e topologia 3D; reforçar que a alta velocidade (até 100 km/h) e o link budget variável tornam o handover e o roteamento mais desafiadores que em redes veiculares.}
 \end{frame}
 
+\begin{frame}{FANET vs.\ VANET vs.\ MANET}
+  \begin{center}
+    \begin{tabular}{@{}p{2.5cm}p{3.0cm}p{3.0cm}p{3.0cm}@{}}
+      \toprule
+      & MANET & VANET & FANET\\
+      \midrule
+      Mobilidade & baixa/média & alta & \textbf{muito alta (3D)} \\
+      Topologia & 2D & 2D (estradas) & \textbf{3D, dinâmica} \\
+      Densidade & alta & alta & \textbf{baixa/média} \\
+      Velocidade & $\lesssim$ 10~km/h & até 200~km/h & até 100--150~km/h \\
+      Energia & média (bateria) & alta (veículo) & \textbf{crítica (drone)} \\
+      Movimento & aleatório & \textbf{modelado por vias} & \textbf{trajetória 3D} \\
+      Aplicações & dados, sensores & segurança veicular & vigilância, entrega, relé \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  \begin{exampleblock}{Leitura}
+    A FANET herda o roteamento da MANET, mas a \textbf{mobilidade 3D e a energia limitada} forçam adaptações (enlaces instáveis, predição de posição).
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Roteamento em FANET}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Adaptações de proativos/reativos:}
+      \begin{itemize}
+        \item \textbf{AODV} (reativo): descobre rota sob demanda --- reativo demais à mobilidade
+        \item \textbf{OLSR} (proativo): tabelas sempre atualizadas --- alto overhead em FANET
+        \item melhorias: \emph{OLSR-MD} (mobilidade), AODV com predição
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Geográficos e oportunistas:}
+      \begin{itemize}
+        \item \textbf{GPSR}: forwarding guloso usando posição (GNSS) --- popular em FANET
+        \item \textbf{GRP} (\emph{geographic routing protocol})
+        \item \textbf{oportunistas}: aproveita qualquer nó como relay (melhor ``progresso'')
+      \end{itemize}
+      \begin{alertblock}{Desafios}
+        \begin{itemize}
+          \item enlaces quebram em segundos (alta velocidade relativa)
+          \item topologia 3D dificulta escolher ``vizinho mais próximo do destino''
+          \item reconexão frequente $\Rightarrow$ overhead de controle
+        \end{itemize}
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Swarm de drones: coordenação distribuída}
+  \begin{itemize}
+    \item \textbf{enxame}: muitos drones cooperando sem controle central obrigatório
+    \item \textbf{formação} (formation): manter geometria relativa (V, grade) trocando posição entre vizinhos
+    \item \textbf{comunicação interdrone}: FANET (ad hoc) ou cluster com líder
+  \end{itemize}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Vantagens}
+        \begin{itemize}
+          \item tolerância a falhas (perde-se um, o restante continua)
+          \item cobertura escalável (sensoriamento distribuído)
+          \item robustez sem ponto único de falha
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{alertblock}{Desafios}
+        \begin{itemize}
+          \item consistência do estado (formação) sob atraso de enlace
+          \item colisão entre drones (posicionamento preciso)
+          \item energia gasta na comunicação de coordenação
+        \end{itemize}
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Casos de uso I: entrega e agricultura de precisão}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Entrega (delivery):}
+      \begin{itemize}
+        \item entrega de pacotes e \emph{last-mile} (urbana/remota)
+        \item rotas otimizadas por energia e vento
+        \item integração com tráfego aéreo (UTM)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Agricultura de precisão:}
+      \begin{itemize}
+        \item câmeras \textbf{multiespectrais} (NDVI) para saúde da lavoura
+        \item aplicação localizada de insumos (pulverização pontual)
+        \item varredura de grandes áreas com asa fixa
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \begin{exampleblock}{Ligações com a aula}
+    Ambos exigem \textbf{link de payload robusto} (imagem) e C2 confiável; a agricultura beneficia-se de FANET para cobrir a área com poucos drones cooperando.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Casos de uso II: busca e resgate, vigilância, emergência}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Busca e resgate (SAR):}
+      \begin{itemize}
+        \item varredura de áreas extensas com câmera/termal
+        \item retransmissão de comunicação para vítimas
+      \end{itemize}
+      \textbf{Vigilância e segurança:}
+      \begin{itemize}
+        \item monitoramento de perímetro e de eventos
+        \item rastreamento de alvos móveis
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Telecomunicações de emergência:}
+      \begin{itemize}
+        \item drone atua como \textbf{BS/relé aérea} após desastres
+        \item restaura o enlace quando a rede terrestre cai
+        \item combina com \textbf{NTN} (LEO) para backhaul
+      \end{itemize}
+      \begin{alertblock}{Observação}
+        Em desastres, drones + satélite LEO formam uma rede de \emph{primeira resposta} sem depender de infraestrutura fixa.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Energia em FANET}
+  \begin{itemize}
+    \item \textbf{bateria}: autonomia típica \textbf{20--40~min} (multirrotor) --- recurso mais crítico
+    \item \textbf{painéis solares} em asa fixa: voo estendido (dias) para vigilância/estratégia
+  \end{itemize}
+  \begin{block}{Otimização energética no roteamento}
+    \begin{itemize}
+      \item escolher rotas que equilibrem o \textbf{consumo} entre nós (não só o caminho mais curto)
+      \item evitar relays com bateria fraca (evita ``buracos de energia'')
+      \item métricas: energia residual, potência de transmissão, distância
+      \item agendar \emph{hover} vs.\ \emph{voo} (propulsão gasta muito mais que rádio)
+    \end{itemize}
+  \end{block}
+  \begin{exampleblock}{Fato físico}
+    A propulsão consome muito mais que a comunicação; a \textbf{trajetória} é tão importante quanto o roteamento de pacotes.
+  \end{exampleblock}
+\end{frame}
+
 \section{NTN}
 
 \begin{frame}{Redes Não Terrestres (NTN) --- 3GPP}
@@ -107,6 +358,70 @@
       \end{itemize}
     \end{column}
   \end{columns}
+\end{frame}
+
+\begin{frame}{Arquitetura NTN do 3GPP}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Payload:}
+      \begin{itemize}
+        \item \textbf{Transparente} (\emph{bent pipe}): satélite só retransmite --- ``espelho no ar'', sem processamento de banda base
+        \item \textbf{Regenerativo}: processamento a bordo (gNB ou parte dele no satélite) --- habilita ISL e menor atraso de rede
+      \end{itemize}
+      \textbf{Enlaces:}
+      \begin{itemize}
+        \item \textbf{service link}: satélite $\leftrightarrow$ UE
+        \item \textbf{feeder link}: satélite $\leftrightarrow$ \textbf{NTN gateway} (terra)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize,
+            s/.style={draw,circle,minimum size=6mm,fill=aneliseAzul!15,inner sep=0.2mm},
+          ]
+          \node[s](sat) at (0,2.8){Sat};
+          \node[draw,rounded corners=1mm,fill=aneliseGris!20,inner sep=1mm,text width=1.3cm,align=center](ue) at (-1.8,0.6){UE};
+          \node[draw,rounded corners=1mm,fill=aneliseLaranja!25,inner sep=1mm,text width=1.3cm,align=center](gw) at (1.8,0.6){NTN GW};
+          \node[draw,rounded corners=1mm,fill=aneliseVerde!25,inner sep=1mm,text width=1.3cm,align=center](core) at (1.8,-0.7){5G Core};
+          \draw[thick,aneliseLaranja,-Stealth] (ue) -- (sat) node[midway,left,font=\tiny]{service link};
+          \draw[thick,aneliseVerde,-Stealth] (sat) -- (gw) node[midway,right,font=\tiny]{feeder link};
+          \draw[thick,aneliseGris,-Stealth] (gw) -- (core);
+        \end{tikzpicture}
+        \\[1mm] {\scriptsize \textbf{Figura:} UE $\rightarrow$ satélite (service) $\rightarrow$ gateway (feeder) $\rightarrow$ 5G Core; payload transparente ou regenerativo.}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Bandas NTN, órbitas e latências}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Bandas:}
+      \begin{itemize}
+        \item \textbf{S (2~GHz)}: smartphones (Rel-17), boa propagação
+        \item \textbf{L (1--2~GHz)}: IoT e serviços legados
+        \item \textbf{Ka (20/30~GHz)}: banda larga (Starlink, OneWeb), mas sensível à chuva
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{center}
+        \begin{tabular}{@{}lccc@{}}
+          \toprule
+          & Altitude & 1 via & RTT (1 via $\times 2$)\\
+          \midrule
+          GEO & 35\,786~km & $\approx$120~ms & $\approx$240--250~ms \\
+          MEO & 8\,000--25\,000~km & 27--83~ms & 54--166~ms \\
+          LEO & 500--1\,200~km & 2--4~ms & 4--8~ms \\
+          HAPS & $\approx$20~km & $\approx$0,07~ms & $\approx$0,1--0,5~ms \\
+          \bottomrule
+        \end{tabular}
+      \end{center}
+    \end{column}
+  \end{columns}
+  \pause
+  \begin{alertblock}{Leitura crítica}
+    A latência \emph{de propagação} é só uma parte: somam-se processamento a bordo, filas e backhaul. Ainda assim, LEO supera GEO por 1--2 ordens de grandeza.
+  \end{alertblock}
 \end{frame}
 
 \begin{frame}{Constelações LEO: Starlink, OneWeb, Kuiper}
@@ -184,6 +499,287 @@
   \begin{block}{Verificação}
     Satélites Starlink (540--570~km) têm período de $\approx 95$--$96$~min, coerente com o resultado.
   \end{block}
+\end{frame}
+
+\section{Física e enlaces}
+
+\begin{frame}{Propagação satelital: FSPL e atenuações}
+  \begin{block}{Perda no espaço livre}
+    \[
+      \text{FSPL} = 32{,}44 + 20\log_{10}\!\big(f[\text{MHz}]\big) + 20\log_{10}\!\big(d[\text{km}]\big)\ \text{dB}
+    \]
+    \begin{itemize}
+      \item GEO a 36\,000~km, Ka (26~GHz): $32{,}44 + 88{,}3 + 91{,}1 \approx \mathbf{211{,}8}$~dB
+      \item LEO a 550~km, Ka (26~GHz): $32{,}44 + 88{,}3 + 54{,}8 \approx \mathbf{175{,}5}$~dB
+    \end{itemize}
+  \end{block}
+  \pause
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Atenuação por chuva (Ka):}
+      \begin{itemize}
+        \item gotas absorvem/dispersam o sinal $\Rightarrow$ \emph{fade margin} necessária
+        \item em Ka pode ultrapassar dezenas de dB em chuvas fortes
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Outras perdas:}
+      \begin{itemize}
+        \item cintilação ionosférica/troposférica (flutuação rápida)
+        \item perdas por apontamento (\emph{pointing}) e despolarização
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Link budget NTN: cálculo prático}
+  \begin{block}{Equação}
+    \[
+      P_r = P_t + G_t - \text{PL} + G_r - L_{\text{chuva}} - L_{\text{apontamento}}
+    \]
+  \end{block}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Exemplo (downlink GEO, Ka):}
+      \begin{itemize}
+        \item $P_t = 40$~dBm (satélite)
+        \item $G_t = 35$~dBi (feixe)
+        \item $\text{PL} = 211$~dB (FSPL)
+        \item $G_r = 30$~dBi (terminal)
+        \item perdas (chuva + apontamento) $= 3$~dB
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Contas}
+        \begin{align*}
+          P_r &= 40 + 35 - 211 + 30 - 3\\
+              &= 75 - 211 + 27\\
+              &= \mathbf{-109\ \text{dBm}}
+        \end{align*}
+      \end{block}
+    \end{column}
+  \end{columns}
+  \begin{alertblock}{Interpretação}
+    $-109$~dBm está perto do limite de sensibilidade de muitos receptores; margens maiores (potência, ganho, banda) são necessárias para fechar o enlace sob chuva.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Efeito Doppler em LEO}
+  \begin{itemize}
+    \item satélite LEO se move a $\approx$7,6~km/s $\Rightarrow$ \textbf{variação rápida de frequência}
+    \item desvio máximo $\Delta f = f \cdot v/c$:
+      \begin{itemize}
+        \item banda S (2~GHz): $2\times10^9 \times \frac{7600}{3\times10^8} \approx 50$~kHz
+        \item banda Ka (26~GHz): até $\approx 660$~kHz
+      \end{itemize}
+    \item em \textbf{GEO} o desvio é desprezível (posição quase fixa)
+  \end{itemize}
+  \begin{block}{Compensação (3GPP TR 38.821)}
+    \begin{itemize}
+      \item \textbf{pré-compensação} de tempo e frequência: o satélite ajusta o enlace de subida com base na \emph{ephemeris}
+      \item o UE compensa o desvio conhecido (modelo) e estima o residual
+      \item a \textbf{variação de atraso} muda rapidamente $\Rightarrow$ timing advance dinâmico
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\section{Mobilidade e handover}
+
+\begin{frame}{Tipos de handover em NTN}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Handover de feixe (beam):}
+      \begin{itemize}
+        \item UE troca de feixe do mesmo satélite
+        \item mais frequente; rápido (intra-satélite)
+      \end{itemize}
+      \textbf{Handover de satélite:}
+      \begin{itemize}
+        \item UE passa de um satélite para outro (constelação LEO)
+        \item exige \emph{preparação} antes da perda do enlace
+      \end{itemize}
+      \textbf{Handover de gateway/feeder:}
+      \begin{itemize}
+        \item troca do gateway terrestre do satélite
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Células earth-fixed vs.\ earth-moving}
+        \begin{itemize}
+          \item \textbf{earth-moving}: o feixe ``arrasta'' a célula com o satélite (UE vê handover frequente) --- mais simples
+          \item \textbf{earth-fixed}: o satélite ajusta o feixe para manter a célula parada no solo (UE quase não vê handover) --- exige \emph{beam steering}
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Visibilidade e janelas de contato}
+  \begin{itemize}
+    \item LEO fica visível por \textbf{janelas curtas}: retomando o exercício, $\approx$12~min a 550~km (elevação $\geq 0^\circ$)
+    \item nem sempre há um gateway no alcance: \textbf{store-and-forward} armazena os dados a bordo e entrega quando o feeder link aparece
+    \item a janela de contato define o ``roteamento temporal'' da rede
+  \end{itemize}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Implicações para roteamento:}
+      \begin{itemize}
+        \item agendar transmissões para a janela de visibilidade
+        \item priorizar dados críticos (pouco tempo)
+        \item ISL permite encaminhar sem esperar o gateway
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Implicações para a camada de rede:}
+      \begin{itemize}
+        \item handover previsível (ephemeris conhecida) $\Rightarrow$ \emph{proativo}
+        \item buffers no satélite para store-and-forward
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Integração 5G/NTN: Rel-17 e Rel-18}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Rel-17 (NR-NTN, 2022):}
+      \begin{itemize}
+        \item primeira versão de \textbf{NR sobre NTN}
+        \item payload \textbf{transparente}, GEO e LEO
+        \item FR1 (bandas S/Ka), smartphones e terminais
+        \item pre-compensação de Doppler/atraso (efemérides)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Rel-18 (IoT-NTN / NR-NTN, 2024):}
+      \begin{itemize}
+        \item \textbf{IoT-NTN} (NB-IoT/eMTC por satélite) --- sensores, SOS
+        \item melhorias de mobilidade e 2-step RACH
+        \item \textbf{smartphones com NTN}: SOS via satélite (bandas S)
+      \end{itemize}
+      \begin{exampleblock}{Visão}
+        A meta é \emph{seamless}: o UE troca de terrestre para NTN sem reconexão, com o mesmo SIM/assinatura.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Sistemas LEO comerciais}
+
+\begin{frame}{Starlink e as constelações LEO}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Starlink (SpaceX):}
+      \begin{itemize}
+        \item geração 1 (V1/V1.5) e \textbf{geração 2} (V2, maior, banda E)
+        \item \textbf{laser ISL} entre satélites (dispensa gateway próximo)
+        \item terminal \textbf{phased array} (rastreio eletrônico do feixe)
+        \item latência típica 20--40~ms em boas condições
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{center}
+        \begin{tabular}{@{}lccc@{}}
+          \toprule
+          & Altitude & Banda & Estado (2026)\\
+          \midrule
+          Starlink & 340--570~km & Ku/Ka/E & operacional \\
+          OneWeb & $\approx$1\,200~km & Ku & operacional (Eutelsat) \\
+          Kuiper & $\approx$600~km (plan.) & Ka & implantação \\
+          Telesat Lightspeed & $\approx$1\,000~km & Ka & backhaul corporativo \\
+          \bottomrule
+        \end{tabular}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Impactos e controvérsias das mega-constelações}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Astronomia:}
+      \begin{itemize}
+        \item satélites brilhantes poluem imagens de telescópios
+        \item mitigação: revestimentos anti-reflexo, visors
+      \end{itemize}
+      \textbf{Lixo espacial:}
+      \begin{itemize}
+        \item milhares de satélites $\rightarrow$ risco de colisões (Kessler)
+        \item normas de \emph{deorbita} (reentrada controlada)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Regulação orbital:}
+      \begin{itemize}
+        \item disputa por \emph{slots} e coordenação da UIT
+        \item licenciamento e responsabilidade por país
+      \end{itemize}
+      \textbf{Saturação do espectro:}
+      \begin{itemize}
+        \item bandas Ka/Ku compartilhadas entre constelações e terrestres
+        \item interferência e limites de potência (UIT)
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \begin{alertblock}{Conflito de interesses}
+    Baixa latência mundial $\times$ céu poluído e espectro escasso: a engenharia de redes torna-se também um problema \emph{sociotécnico}.
+  \end{alertblock}
+\end{frame}
+
+\section{Futuro}
+
+\begin{frame}{6G NTN: a internet espacial}
+  \begin{itemize}
+    \item \textbf{ISL denso}: malha de lasers entre satélites $\rightarrow$ roteamento óptico no espaço
+    \item \textbf{integração total} com redes terrestres: uma única fatia (\emph{network slice}) para terra + ar + espaço
+    \item \textbf{internet espacial}: roteamento IP/órbita como uma ``WAN no céu''
+    \item \textbf{sensoriamento por satélite}: radar/SAR e sensores como serviços de rede
+    \item \textbf{computing na borda orbital} (\emph{edge in space}): processamento a bordo (regenerativo) para ML e redução de dados
+  \end{itemize}
+  \begin{exampleblock}{Convergência}
+    NTN deixa de ser ``satélite = repetidor'' e passa a ser \emph{parte da rede}, com roteamento, computação e serviços próprios --- a base para o 6G \emph{integrated NTN}.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Exercício: latência de um ``ping'' por satélite}
+  \textbf{Problema:} comparar o RTT de propagação (ida e volta) de uma aplicação interativa (ping) via GEO, MEO, LEO e HAPS.
+  \begin{center}
+    \begin{tabular}{@{}lccc@{}}
+      \toprule
+      & Distância (1 via) & $t=2d/c$ & Ordem de grandeza\\
+      \midrule
+      GEO & 36\,000~km & $\approx 240$~ms & centenas de ms \\
+      MEO & 20\,000~km (GPS) & $\approx 133$~ms & dezenas--centenas ms \\
+      LEO & 550~km & $\approx 3{,}7$~ms & ms \\
+      HAPS & 20~km & $\approx 0{,}13$~ms & submilissegundo \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  \pause
+  \begin{alertblock}{Conclusão}
+    Para \emph{jogos/voz interativa}, só LEO ou HAPS dão RTT de propagação aceitável; GEO serve para broadcast e backhaul, não para interação em tempo real.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Autoavaliação (continuação)}
+  \begin{enumerate}
+    \item Em um NTN com payload \emph{transparente} (bent pipe), o satélite:
+      \begin{itemize}
+        \item (a) processa e decodifica o sinal a bordo (gNB no espaço)
+        \item (b) apenas amplifica e retransmite o sinal (``espelho'')
+        \item (c) armazena os pacotes indefinidamente
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (b)
+    \item Células \emph{earth-fixed} em NTN significam:
+      \begin{itemize}
+        \item (a) a cobertura se move com o satélite sobre o solo
+        \item (b) o satélite ajusta o feixe para a célula permanecer fixa na Terra
+        \item (c) a célula só existe sobre os oceanos
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (b)
+  \end{enumerate}
 \end{frame}
 
 \begin{frame}{Resumo da aula}

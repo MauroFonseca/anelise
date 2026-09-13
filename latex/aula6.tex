@@ -56,6 +56,7 @@
     \end{column}
   \end{columns}
   \vspace{0.3cm}
+  \pause
   \begin{alertblock}{Problema}
     TCP/UDP/IP: ``serviço de melhor esforço'' --- \textbf{sem garantia sobre atraso e perda}.
   \end{alertblock}
@@ -93,6 +94,56 @@
   \end{columns}
 \end{frame}
 
+\begin{frame}{Requisitos das aplicações multimídia}
+  \begin{center}
+    \scriptsize
+    \begin{tabular}{@{}lcccc@{}}
+      \toprule
+      \textbf{Aplicação} & \textbf{Taxa} & \textbf{Latência} & \textbf{Jitter} & \textbf{Perda}\\
+      \midrule
+      VoIP & 8--64 kbps & $<$150 ms & $<$30 ms & $<$1\%\\
+      Streaming de vídeo & 1--10$+$ Mbps & startup $<$5 s & tolerado & $<$1\%\\
+      Videoconferência & 0,5--4$+$ Mbps & $<$150 ms & $<$30 ms & $<$1\%\\
+      Jogos online & 1--10$+$ Mbps & $<$50 ms & $<$20 ms & $<$1\%\\
+      Telemedicina / indústria & 1--10$+$ Mbps & $<$10 ms & $<$1 ms & $\approx$0\%\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  \begin{itemize}
+    \item valores \textbf{aproximados} e referenciais (ITU-T G.114 para voz; 3GPP/ETSI para 5G);
+    \item quanto mais rígida a exigência de atraso, maior a dificuldade do \emph{melhor esforço} em atender;
+    \item jogos e telemedicina exigem latências que o TCP/IP convencional não garante.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Tráfego elástico $\times$ inelástico}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Elástico}
+      \begin{itemize}
+        \item \textbf{adapta-se} ao congestionamento: reduz taxa e \textbf{retransmite} (TCP);
+        \item sensível a \textbf{throughput}, tolerante a atraso e perda;
+        \item exemplos: web, e-mail, transferência de arquivos.
+      \end{itemize}
+      \begin{exampleblock}{Consequência}
+        O melhor esforço é \textbf{suficiente}: o TCP recua naturalmente sob congestionamento.
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Inelástico}
+      \begin{itemize}
+        \item mídia contínua em tempo real (voz, vídeo, jogos);
+        \item requer \textbf{taxa mínima}; \textbf{não} recua: quadros atrasados perdem valor;
+        \item tipicamente sobre \textbf{UDP} (retransmissão não ajuda em tempo real);
+        \item perda pequena tolerável; \textbf{atraso} é o fator crítico.
+      \end{itemize}
+      \begin{alertblock}{Consequência}
+        O melhor esforço é \textbf{insuficiente}: precisam-se de classes de serviço e reserva de recursos.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
 \section{Classes de serviço e princípios}
 
 \begin{frame}{Proporcionar múltiplas classes de serviço}
@@ -106,6 +157,7 @@
     \item granularidade: serviço \textbf{diferencial entre classes}, não entre conexões individuais
     \item história: bits de \textbf{ToS} (IPv4) / \textbf{Flow Label} (IPv6)
   \end{itemize}
+  \pause
   \begin{center}
     \begin{tikzpicture}[font=\scriptsize]
       \node[draw,fill=aneliseAzul!13,rounded corners=2mm](h1){H1};
@@ -257,6 +309,73 @@
   \end{columns}
 \end{frame}
 
+\begin{frame}{FCFS $\times$ Round Robin $\times$ WFQ em detalhe}
+  \begin{columns}
+    \begin{column}{0.52\textwidth}
+      \textbf{FCFS (FIFO)}
+      \begin{itemize}
+        \item envia na ordem de chegada; \textbf{simples}, sem diferenciação;
+        \item um fluxo agressivo pode \textbf{monopolizar} o enlace.
+      \end{itemize}
+      \textbf{Round Robin}
+      \begin{itemize}
+        \item varre as filas, uma classe por ciclo;
+        \item justo em \emph{número de pacotes}, injusto em \emph{tamanho} (pacotes longos roubam tempo).
+      \end{itemize}
+      \textbf{WFQ (Weighted Fair Queueing)}
+      \begin{itemize}
+        \item cada classe recebe serviço \textbf{proporcional ao peso} $w_i$ (justo em bytes);
+        \item aproxima o \emph{Generalized Processor Sharing} (GPS); base do serviço garantido.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{center}
+        \resizebox{\columnwidth}{!}{%
+          \begin{tikzpicture}[font=\scriptsize,
+              f/.style={draw,rounded corners=1.5mm,minimum height=7mm,inner sep=1mm,text width=2.6cm,align=center},
+            ]
+            \node[f,fill=aneliseAzul!18](f1){Fluxo A (peso 1)};
+            \node[f,fill=aneliseVerde!18,below=2.5mm of f1](f2){Fluxo B (peso 2)};
+            \node[f,fill=aneliseLaranja!22,below=2.5mm of f2](f3){Fluxo C (peso 3)};
+            \node[draw,ellipse,fill=aneliseGris!15,right=1.2cm of f2,text width=1.8cm,align=center](esc){escalonador};
+            \node[draw,fill=aneliseVerde!20,rounded corners=1mm,right=1.1cm of esc](link){enlace};
+            \draw[->,thick,aneliseLaranja] (f1.east) -- (esc.west);
+            \draw[->,thick,aneliseLaranja] (f2.east) -- (esc.west);
+            \draw[->,thick,aneliseLaranja] (f3.east) -- (esc.west);
+            \draw[->,thick,aneliseVerde] (esc.east) -- (link.west);
+            \node[below=1mm of esc,font=\tiny]{próximo pacote};
+          \end{tikzpicture}
+        }\\[1mm]
+        {\scriptsize \textbf{Figura 5A:} WFQ: pesos determinam a fração de serviço de cada fluxo.}
+      \end{center}
+      {\scriptsize $\dfrac{R_i}{R}=\dfrac{w_i}{\sum_j w_j}$ --- a fatia de banda é proporcional ao peso.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Policing $\times$ shaping: balde de fichas}
+  \begin{itemize}
+    \item ambos julgam a \textbf{conformidade} com o token bucket (taxa $r$, balde $b$);
+    \item diferença: o que fazer com o pacote \textbf{fora do perfil}.
+  \end{itemize}
+  \begin{center}
+    \scriptsize
+    \begin{tabular}{@{}lcc@{}}
+      \toprule
+      \textbf{Critério} & \textbf{Policing} & \textbf{Shaping}\\
+      \midrule
+      Ação no excesso & \textbf{descarta} (ou marca) & \textbf{retém} em buffer\\
+      Atraso adicional & não adiciona & \textbf{adiciona} (limitado)\\
+      Perda & pode descartar & \textbf{não} descarta\\
+      Local típico & borda de \textbf{entrada} (ingress) & borda de \textbf{saída} (egress)\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  \begin{exampleblock}{Exemplo: vídeo a 2~Mbps}
+    Picos acima do perfil: o \emph{policing} descarta o excesso (perda); o \emph{shaping} segura o excesso numa fila e o libera depois (atraso, sem perda).
+  \end{exampleblock}
+\end{frame}
+
 \begin{frame}{Mecanismos de regulação (shaping)}
   \begin{block}{Objetivo}
     Limitar o tráfego para não exceder os parâmetros declarados.
@@ -270,6 +389,7 @@
     \item \textbf{taxa de pico}: ex.\ 6000~pkt/min média, 1500~pkt/min pico
     \item \textbf{tamanho do surto (máximo)}: n.º máximo de pacotes consecutivos
   \end{itemize}
+  \pause
   \begin{block}{Balde de fichas (token bucket)}
     \begin{itemize}
       \item limita tamanho de surto e taxa média
@@ -309,6 +429,7 @@
     \item distinção de serviço relativa: \textbf{Platinum, Gold, Silver}
     \item escalabilidade: \textbf{funções simples no núcleo}, funções complexas na borda
   \end{itemize}
+  \pause
   \begin{center}
     \begin{tikzpicture}[font=\scriptsize,
         c/.style={draw,rounded corners=2mm,fill=aneliseAzul!10,inner sep=1mm,text width=3cm,align=center},
@@ -420,6 +541,32 @@
   \note{Enfatizar que o RSVP é orientado ao receptor (receiver-initiated): cada receptor envia RESV e o estado é mantido por fluxo, o que limita a escalabilidade em redes grandes.}
 \end{frame}
 
+\begin{frame}{QoS em 5G: QoS flows e 5QI}
+  \small
+  \begin{itemize}
+    \item \textbf{PDU Session} (UE $\leftrightarrow$ UPF) transporta um ou mais \textbf{QoS flows};
+    \item cada QoS flow tem um \textbf{QFI} e um \textbf{5QI} (prioridade, \emph{packet delay budget}, taxa de erro) --- parâmetros do 3GPP (ex.: voz 5QI 1, streaming 5QI 6, V2X/uRLLC 5QI 82--84);
+    \item no rádio, o SDAP mapeia os \textbf{QoS flows} em \textbf{DRBs}; no transporte, o 5QI vira \textbf{DSCP}/802.1p (ponte com o Diffserv);
+    \item as lições de Intserv/Diffserv sobrevivem \textbf{modernizadas} no 5G.
+  \end{itemize}
+  \begin{center}
+    \begin{tikzpicture}[font=\scriptsize,
+        bx/.style={draw,rounded corners=2mm,fill=aneliseAzul!13,inner sep=1mm,text width=2.1cm,align=center,minimum height=1.5cm},
+      ]
+      \node[bx](app){App (UE)};
+      \node[bx,right=0.35cm of app](ue){UE};
+      \node[bx,right=0.35cm of ue](gnb){gNB};
+      \node[bx,right=0.35cm of gnb](upf){UPF};
+      \node[bx,right=0.35cm of upf](net){Internet};
+      \draw[->,thick,aneliseAzul] ([yshift=0.4cm]app.east) -- node[midway,above=1mm,font=\tiny]{eMBB} ([yshift=0.4cm]net.west);
+      \draw[->,thick,aneliseLaranja] (app.center) -- node[midway,above=1mm,font=\tiny]{uRLLC} (net.center);
+      \draw[->,thick,aneliseVerde] ([yshift=-0.4cm]app.east) -- node[midway,below=1mm,font=\tiny]{mMTC} ([yshift=-0.4cm]net.west);
+      \node[below=1mm of gnb,font=\tiny]{DRB (rádio)}; \node[above=1mm of upf,font=\tiny]{DSCP (transporte)};
+    \end{tikzpicture}\\[1mm]
+    {\scriptsize \textbf{Figura 8A:} QoS flows atravessam UE$\rightarrow$gNB$\rightarrow$UPF (DRB no rádio, DSCP no transporte).}
+  \end{center}
+\end{frame}
+
 \section{QoS em redes sem fio}
 
 \begin{frame}{QoS em redes sem fio}
@@ -428,6 +575,7 @@
     \item podem-se usar os modelos de QoS das redes cabeadas?
     \item duas frentes: \textbf{QoS routing} e \textbf{QoS em Wi-Fi}
   \end{itemize}
+  \pause
   \begin{block}{QoS Routing}
     \begin{itemize}
       \item o roteamento é componente essencial: informa à fonte a banda e a QoS disponível rumo ao destino
@@ -500,8 +648,33 @@
       {\scriptsize Acesso imediato se o meio idle $\geq$ AIFS[AC]$+$SlotTime.}
     \end{column}
   \end{columns}
+  \pause
   \begin{exampleblock}{Nota}
     IEEE 802.11e foi a base das garantias de QoS em Wi-Fi: sem ela, VoIP/vídeo sobre WLAN sofrem.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{QoS em Wi-Fi: WMM / EDCA em parâmetros}
+  \begin{center}
+    \scriptsize
+    \begin{tabular}{@{}lccccc@{}}
+      \toprule
+      \textbf{AC} & \textbf{802.1D} & \textbf{AIFSN} & \textbf{CWmin} & \textbf{CWmax} & \textbf{TXOP}\\
+      \midrule
+      AC\_BK (background) & 1 & 7 & 15 & 1023 & ---\\
+      AC\_BE (best-effort) & 0, 3 & 3 & 15 & 1023 & ---\\
+      AC\_VI (video) & 4, 5 & 2 & 7 & 15 & 3{,}008~ms\\
+      AC\_VO (voice) & 6, 7 & 2 & 3 & 7 & 1{,}504~ms\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  \begin{itemize}
+    \item \textbf{AIFSN e CW menores} $\Rightarrow$ acesso mais rápido ao meio (menos espera no backoff);
+    \item \textbf{TXOP} concede uma \textbf{rajada} de transmissão sem contenção para voz/vídeo;
+    \item prioridade resultante: \textbf{VO $>$ VI $>$ BE $>$ BK} --- voz e vídeo dominam sobre o tráfego comum.
+  \end{itemize}
+  \begin{exampleblock}{Na prática (WMM)}
+    Os parâmetros acima são os padrões do \emph{Wi-Fi Multimedia} (WMM), a versão certificada do EDCA em roteadores domésticos e empresariais.
   \end{exampleblock}
 \end{frame}
 
@@ -530,6 +703,7 @@
   \begin{block}{Parte A --- Atraso máximo de fila}
     Como $R\geq r$, a fila nunca excede $b$ bits: $D_{\max}=b/R=10^6/(1{,}5\times 10^6)=2/3\approx \mathbf{667}$~\textbf{ms}
   \end{block}
+  \pause
   \begin{block}{Parte B --- Capacidade do surto}
     \begin{itemize}
       \item pacotes no surto máximo: $N=b/(1500\times 8)=10^6/12\,000\approx 83$ pacotes
@@ -537,8 +711,28 @@
       \item verificação: $83\times 8=664$~ms $\approx D_{\max}$ \checkmark
     \end{itemize}
   \end{block}
+  \pause
   \begin{alertblock}{Interpretação}
     O atraso de fila é \textbf{limitado pelo surto} $b$, não pela taxa média: é a base das garantias do \emph{serviço garantido} do Intserv (RFC 2212).
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Caso de estudo: dimensionando QoS para vídeo}
+  \small
+  \begin{block}{1. Token bucket (fluxo a 2~Mbps, surto de 5~s)}
+    $b=r\times\text{surto}=2~\text{Mbps}\times 5~\text{s}=\mathbf{10~Mb}$ (rajada máxima de 1,25 MB).
+  \end{block}
+  \pause
+  \begin{block}{2. Atraso com WFQ e redução do surto}
+    Com $R=3$~Mbps: $D_{\max}=b/R=10/3\approx\mathbf{3{,}3~s}$; limitando o surto a $1$~s, $b=2~$Mb e $D_{\max}\approx\mathbf{0{,}67~s}$ --- \emph{trade-off} entre rajada e atraso.
+  \end{block}
+  \pause
+  \begin{block}{3. Justiça com pesos (WFQ)}
+    Dois fluxos num enlace de $4$~Mbps com pesos $w_1=1$ e $w_2=3$: $R_1=1$~Mbps e $R_2=3$~Mbps (fração proporcional ao peso).
+  \end{block}
+  \pause
+  \begin{alertblock}{Lições}
+    QoS $\neq$ ``mais banda'': modelar o tráfego (token bucket) e garantir serviço (WFQ) controlam o atraso dentro dos requisitos da aplicação.
   \end{alertblock}
 \end{frame}
 

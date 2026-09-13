@@ -68,6 +68,143 @@
   \end{columns}
 \end{frame}
 
+\section{Arquitetura IoT}
+
+\begin{frame}{Arquitetura IoT: modelo de referência em camadas}
+  \footnotesize
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \begin{block}{Quatro camadas funcionais}
+        \begin{itemize}
+          \item \textbf{Percepção}: sensores e atuadores, aquisição de dados
+          \item \textbf{Rede}: conectividade (Wi-Fi, LPWAN, celular, BLE) e roteamento
+          \item \textbf{Middleware}: processamento, armazenamento e abstração dos dispositivos
+          \item \textbf{Aplicação}: serviços ao usuário final (dashboards, alertas)
+        \end{itemize}
+      \end{block}
+      \pause
+      \begin{alertblock}{Por que separar em camadas?}
+        Cada camada evolui de forma independente e é reutilizada por aplicações distintas --- a mesma rede LPWAN atende agricultura, \emph{metering} e cidades inteligentes.
+      \end{alertblock}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize,
+            capa/.style={draw,rounded corners=2mm,minimum width=3.6cm,minimum height=0.6cm,align=center},
+          ]
+          \node[capa,fill=aneliseGris!18](per){\shortstack{Percepção\\sensores e atuadores}};
+          \node[capa,fill=aneliseLaranja!25,below=0.35cm of per](red){\shortstack{Rede\\conectividade e roteamento}};
+          \node[capa,fill=aneliseAzul!15,below=0.35cm of red](mid){\shortstack{Middleware\\processamento e dados}};
+          \node[capa,fill=aneliseVerde!20,below=0.35cm of mid](app){\shortstack{Aplicação\\serviços ao usuário}};
+          \draw[thick,aneliseAzul,-{Stealth}] (per.south) -- (red.north);
+          \draw[thick,aneliseAzul,-{Stealth}] (red.south) -- (mid.north);
+          \draw[thick,aneliseAzul,-{Stealth}] (mid.south) -- (app.north);
+        \end{tikzpicture}\\[1mm]
+        {\scriptsize \textbf{Figura:} modelo de referência IoT em camadas (abordagem ITU-T / IoT-A).}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{IoT: modelos de comunicação}
+  \footnotesize
+  \begin{columns}[t]
+    \begin{column}{0.5\textwidth}
+      \textbf{1. Device-to-Device (D2D)}\\[1mm]
+      Comunicação direta entre dispositivos (ex.: BLE, Zigbee, NFC).
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize,
+            nd/.style={draw,circle,fill=aneliseAzul!15,minimum size=4mm,inner sep=0.1mm}]
+          \node[nd](a){A};
+          \node[nd,right=1cm of a](b){B};
+          \draw[thick,aneliseLaranja,<->] (a) -- (b);
+        \end{tikzpicture}
+      \end{center}
+      \vspace{0.02cm}
+      \textbf{2. Device-to-Cloud (D2C)}\\[1mm]
+      Dispositivo $\rightarrow$ serviço na nuvem (ex.: Wi-Fi, 4G/5G).
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize,
+            nd/.style={draw,circle,fill=aneliseAzul!15,minimum size=4mm,inner sep=0.1mm},
+            nube/.style={draw,cloud,aspect=1.5,fill=aneliseGris!15,inner sep=0.8mm}]
+          \node[nd](d){D};
+          \node[nube,right=1cm of d](cl){Cloud};
+          \draw[thick,aneliseVerde,<->] (d) -- (cl);
+        \end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{3. Device-to-Gateway (D2G)}\\[1mm]
+      Sensores $\rightarrow$ gateway local $\rightarrow$ nuvem (ex.: LoRaWAN).
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize,
+            nd/.style={draw,circle,fill=aneliseAzul!15,minimum size=4mm,inner sep=0.1mm},
+            nube/.style={draw,cloud,aspect=1.5,fill=aneliseGris!15,inner sep=0.8mm},
+            gw/.style={draw,rounded corners=1mm,fill=aneliseLaranja!25,inner sep=0.8mm}]
+          \node[nd](s){S};
+          \node[gw,right=0.7cm of s](g){Gateway};
+          \node[nube,right=0.7cm of g](cl){Cloud};
+          \draw[thick,aneliseAzul,->] (s) -- (g);
+          \draw[thick,aneliseAzul,->] (g) -- (cl);
+        \end{tikzpicture}
+      \end{center}
+      \vspace{0.02cm}
+      \textbf{4. Back-end data sharing}\\[1mm]
+      Nuvens trocam dados via APIs (ex.: smart city $\times$ transporte).
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize,
+            nube/.style={draw,cloud,aspect=1.5,fill=aneliseGris!15,inner sep=0.8mm}]
+          \node[nube](ca){Nuvem A};
+          \node[nube,right=1cm of ca](cb){Nuvem B};
+          \draw[thick,aneliseLaranja,<->] (ca) -- (cb);
+        \end{tikzpicture}
+      \end{center}
+    \end{column}
+  \end{columns}
+  \pause
+  \begin{exampleblock}{LPWAN em perspectiva}
+    LoRaWAN, Sigfox e NB-IoT usam o modelo \textbf{device-to-gateway}; aplicações agregam dados via \emph{back-end data sharing}.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{IoT e IPv6: 6LoWPAN, RPL e CoAP}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Por que IPv6 para IoT?}
+        \begin{itemize}
+          \item Endereçamento direto e \emph{end-to-end} de cada sensor
+          \item Roteamento padrão, integração com a Internet
+          \item 6LoWPAN adapta IPv6 a redes \emph{lossy} de baixa potência (IEEE 802.15.4, \emph{mesh})
+        \end{itemize}
+      \end{block}
+      \begin{itemize}
+        \item \textbf{6LoWPAN} (RFC 6282): compressão de cabeçalhos IPv6/UDP + fragmentação (127~B vs.\ MTU 1280~B)
+        \item \textbf{RPL} (RFC 6550): roteamento para \emph{Low-power and Lossy Networks} (DODAG)
+        \item \textbf{CoAP} (RFC 7252): REST sobre UDP
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize,
+            p/.style={draw,rounded corners=1mm,minimum width=3.2cm,minimum height=0.55cm,align=center},
+          ]
+          \node[p,fill=aneliseVerde!20](coap){CoAP};
+          \node[p,fill=aneliseAzul!15,below=0.25cm of coap](udp){UDP};
+          \node[p,fill=aneliseAzul!15,below=0.25cm of udp](ip){IPv6};
+          \node[p,fill=aneliseLaranja!25,below=0.25cm of ip](lw){\shortstack{6LoWPAN\\(adaptação)}};
+          \node[p,fill=aneliseGris!20,below=0.25cm of lw](phy){\shortstack{IEEE 802.15.4\\(PHY/MAC)}};
+          \draw[thick,aneliseAzul,-{Stealth}] (coap.south) -- (udp.north);
+          \draw[thick,aneliseAzul,-{Stealth}] (udp.south) -- (ip.north);
+          \draw[thick,aneliseAzul,-{Stealth}] (ip.south) -- (lw.north);
+          \draw[thick,aneliseAzul,-{Stealth}] (lw.south) -- (phy.north);
+          \node[right=0.5cm of ip,font=\scriptsize\color{aneliseGris},align=left]{\shortstack{cabeçalho\\comprimido}};
+        \end{tikzpicture}\\[1mm]
+        {\scriptsize \textbf{Figura:} pilha de protocolos de redes de sensores com IPv6 (CoAP sobre 6LoWPAN).}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
 \section{LoRaWAN}
 
 \begin{frame}{LoRaWAN --- arquitetura e operação}
@@ -130,6 +267,112 @@
   \note{Enfatizar o trade-off SF: dobrar SF praticamente dobra o ToA; o ADR seleciona o menor SF que garante o link, poupando bateria e ar no canal.}
 \end{frame}
 
+\begin{frame}{LoRa: modulação CSS e os \emph{spreading factors}}
+  \small
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \begin{itemize}
+        \item \textbf{Chirp Spread Spectrum}: cada símbolo é um \emph{chirp} (varredura linear de frequência)
+        \item \textbf{SF7--SF12}: \emph{spreading factor} define os \emph{chips} por símbolo; $T_s = 2^{SF}/BW$
+        \item SFs distintos são \textbf{ortogonais}: vários fluxos coexistem no mesmo canal com pouca interferência mútua
+        \item \emph{Trade-off} fundamental: \textbf{SF maior} $\Rightarrow$ mais alcance, porém menos taxa e mais tempo no ar
+      \end{itemize}
+      \pause
+      \begin{alertblock}{Densidade de rede}
+        A ortogonalidade permite ao gateway demodular simultaneamente mensagens em SF7 e SF12 no mesmo canal, multiplicando a capacidade.
+      \end{alertblock}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{center}
+        {\scriptsize\bfseries Taxa bruta $\times$ SF a BW$=$125~kHz (CR 4/5)}\\[1mm]
+        \begin{tabular}{lcc}
+          \toprule
+          \textbf{SF} & \textbf{Taxa (kbps)} & \textbf{Sensib.\ (dBm)}\\
+          \midrule
+          SF7 & 5,4 & $-123$\\
+          SF8 & 3,1 & $-126$\\
+          SF9 & 1,8 & $-129$\\
+          SF10 & 0,98 & $-132$\\
+          SF11 & 0,44 & $-134$\\
+          SF12 & 0,29 & $-137$\\
+          \bottomrule
+        \end{tabular}\\[1mm]
+        {\scriptsize Fonte: LoRa Alliance (valores típicos).}
+      \end{center}
+      \vspace{0.1cm}
+      \begin{block}{Regra prática}
+        Dobrar o SF $\approx$ dobra o $T_s$ e o ToA; o ADR escolhe o menor SF que mantém o enlace.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{LoRaWAN: ativação OTAA (Join-Request / Join-Accept)}
+  \footnotesize
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \begin{block}{OTAA --- Over-the-Air Activation}
+        \begin{enumerate}
+          \item \textbf{Join-Request}: o end-device envia \texttt{JoinEUI}, \texttt{DevEUI}, \texttt{DevNonce} (MIC com \texttt{NwkKey})
+          \item \textbf{Join-Accept}: o servidor responde com \texttt{AppNonce}, \texttt{NetID}, \texttt{DevAddr} (cifrado com as chaves raiz)
+          \item \textbf{Derivação} das chaves de sessão:
+            \begin{itemize}
+              \item \texttt{NwkSKey} $=$ AES$_{128}$(\texttt{NwkKey},\, AppNonce$|$NetID$|$DevNonce)
+              \item \texttt{AppSKey} $=$ AES$_{128}$(\texttt{AppKey},\, AppNonce$|$NetID$|$DevNonce)
+            \end{itemize}
+        \end{enumerate}
+      \end{block}
+      \pause
+      \begin{alertblock}{ABP --- Activation by Personalization}
+        \texttt{NwkSKey}, \texttt{AppSKey} e \texttt{DevAddr} pré-gravados, sem \emph{join}. Mais simples, porém sem rotação de chaves e com risco de clonagem.
+      \end{alertblock}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize,
+            dev/.style={draw,rounded corners=1.5mm,fill=aneliseAzul!15,inner sep=1.2mm},
+            ns/.style={draw,rounded corners=1.5mm,fill=aneliseVerde!20,inner sep=1.2mm},
+          ]
+          \node[dev](d){End-device};
+          \node[ns,right=2.3cm of d](s){\shortstack{Network\\Server}};
+          \draw[thick,aneliseLaranja,-{Stealth}] (d) -- (s) node[midway,above]{Join-Request};
+          \draw[thick,aneliseVerde,-{Stealth}] (s) -- (d) node[midway,below]{Join-Accept};
+          \node[below=1.4cm of s,font=\scriptsize,align=center,text=aneliseGris]{\shortstack{\texttt{NwkSKey} e \texttt{AppSKey}\\(sessão ativa)}};
+        \end{tikzpicture}\\[1mm]
+        {\scriptsize \textbf{Figura:} fluxo OTAA. Após o aceite, o dispositivo deriva as chaves de sessão para cifrar e autenticar os dados.}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{LoRaWAN: o papel do Network Server}
+  \small
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \begin{itemize}
+        \item \textbf{Gateways multicanal}: rádios com vários demoduladores (ex.: SX1301) escutam todos os SFs e canais simultaneamente
+        \item \textbf{Deduplicação}: a mesma mensagem chega por vários gateways; o servidor guarda uma única cópia (RSSI/SINR do melhor link)
+        \item \textbf{Seleção do downlink}: o servidor escolhe o gateway de melhor sinal para responder (sem vínculo fixo dispositivo--gateway)
+        \item \textbf{Handover implícito}: ao se deslocar, a rede troca de gateway automaticamente, sem intervenção do nó
+        \item \textbf{Roaming}: servidores de operadoras distintas trocam contexto (LoRaWAN Backend Interfaces)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{block}{Camadas de um servidor de rede}
+        \begin{itemize}
+          \item \textbf{Join Server}: chaves raiz e ativação
+          \item \textbf{Network Server}: MAC, ADR, deduplicação e downlink
+          \item \textbf{Application Server}: dados e \texttt{AppSKey}
+        \end{itemize}
+      \end{block}
+      \pause
+      \begin{exampleblock}{Multioperador}
+        Em \emph{roaming}, o sensor é autenticado pelo seu \emph{home} network server; o servidor visitado só retransmite o tráfego.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
 \section{Sigfox}
 
 \begin{frame}{Sigfox --- UNB (Ultra-Narrow Band)}
@@ -151,6 +394,34 @@
           \item Sigfox: ultra-simples, unidirecional, operadora
         \end{itemize}
       \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Sigfox: arquitetura da rede}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Elementos}
+        \begin{itemize}
+          \item \textbf{Endpoints}: sensores transmitem em banda ISM (868/915~MHz) a $\approx$100~bps
+          \item \textbf{Base stations} (gateways): receptores ultra-sensíveis espalhados na área de cobertura
+          \item \textbf{SIGFOX Cloud}: processamento centralizado (modelo de operadora)
+        \end{itemize}
+      \end{block}
+      \begin{block}{Confiança na entrega}
+        Cada uplink é transmitido \textbf{3 vezes} em 3 frequências distintas e em instantes ligeiramente diferentes --- diversidade de frequência e de tempo, sem ACK.
+      \end{block}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+        \item \textbf{Downlink condicional}: só após um uplink, na janela aberta pelas retransmissões (1\textsuperscript{a} ou 2\textsuperscript{a})
+        \item \textbf{Geolocalização}: posicionamento sem GPS, usando TDoA/Doppler das estações base que recebem a mensagem
+        \item \textbf{Limites diários}: 140 uplinks/dia (payload 12~B) e 4 downlinks/dia (payload 8~B)
+      \end{itemize}
+      \pause
+      \begin{alertblock}{Custo do serviço}
+        Assinatura por dispositivo/ano; não há rede privada local (no LoRaWAN, o dono opera os gateways).
+      \end{alertblock}
     \end{column}
   \end{columns}
 \end{frame}
@@ -188,6 +459,125 @@
   \end{block}
 \end{frame}
 
+\begin{frame}{NB-IoT: modos de operação e categorias}
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \textbf{Três modos de implantação (espectro licenciado):}
+      \begin{itemize}
+        \item \textbf{In-band}: 1 PRB dentro da banda LTE (reuso do equipamento existente)
+        \item \textbf{Guard-band}: PRBs nas faixas de guarda entre blocos LTE
+        \item \textbf{Standalone}: espectro dedicado (ex.: \emph{refarming} de GSM, 200~kHz)
+      \end{itemize}
+      \pause
+      \begin{block}{O recurso é 1 PRB}
+        Cada portadora NB-IoT ocupa \textbf{1 resource block} ($\approx$180~kHz), o que dá alta penetração \emph{indoor} ($+20$~dB de margem sobre LTE) e coexistência com o tráfego LTE.
+      \end{block}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{block}{Categorias (UE)}
+        \begin{itemize}
+          \item \textbf{NB1} (Rel-13): DL até $\approx$135~kbps, UL $\approx$20~kbps, sem mobilidade
+          \item \textbf{NB2} (Rel-14): DL até $\approx$250~kbps; mais canais, TDD e melhor latência
+        \end{itemize}
+      \end{block}
+      \begin{alertblock}{Nota}
+        Valores de \emph{pico teórico} com repetição mínima; na prática a taxa depende da cobertura e das repetições (\emph{coverage enhancement}).
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{LTE-M (Cat-M1): a banda larga da LPWAN celular}
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \begin{itemize}
+        \item Largura de banda: \textbf{1,4~MHz} (6 PRBs) dentro da banda LTE
+        \item Taxa: até $\approx$1~Mbps (DL/UL) --- maior que a do NB-IoT
+        \item \textbf{Mobilidade}: suporta \emph{handover}, habilitando rastreadores e \emph{fleet tracking}
+        \item \textbf{Voz}: \emph{Voice over LTE} (VoLTE) para dispositivos com fala (wearables, alarmes)
+        \item \emph{Half-duplex} opcional para reduzir o custo do transceptor
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{block}{Comparando com NB-IoT}
+        \begin{itemize}
+          \item LTE-M: mais taxa, mobilidade e voz; maior consumo
+          \item NB-IoT: menor banda, maior alcance \emph{indoor} e custo menor
+        \end{itemize}
+      \end{block}
+      \pause
+      \begin{exampleblock}{Escolha de mercado}
+        \textbf{NB-IoT} $\rightarrow$ medidores, equipamentos estacionários, máxima cobertura \emph{indoor}. \textbf{LTE-M} $\rightarrow$ wearables, voz e dispositivos móveis.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Economia de energia: PSM e eDRX}
+  \small
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{PSM --- Power Saving Mode}
+        Após a última comunicação, o UE negocia um período em que \textbf{não escuta paginamento}, acordando só para transmitir ou fazer a TAU. Consumo cai para $\mu$A --- baterias de 10+ anos.
+      \end{block}
+      \begin{block}{eDRX --- extended DRX}
+        O UE escuta paginamento em \emph{janelas} separadas por intervalos estendidos: LTE-M até $\approx$40,96~s; NB-IoT até $\approx$2,9~h. Compromisso entre latência e consumo.
+      \end{block}
+      \pause
+      \begin{alertblock}{Trade-off}
+        \textbf{PSM}: downlink só quando o UE acorda. \textbf{eDRX}: downlink possível, com atraso de até o ciclo. Para aplicações \emph{report-only}, PSM é ideal.
+      \end{alertblock}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize,
+            ev/.style={draw,rounded corners=1mm,minimum width=3.4cm,minimum height=0.5cm,align=center},
+          ]
+          \node[ev,fill=aneliseVerde!25](a){TX de dados + escuta};
+          \node[ev,fill=aneliseGris!18,below=0.3cm of a](s1){PSM --- deep sleep ($\mu$A)};
+          \node[ev,fill=aneliseVerde!25,below=0.3cm of s1](b){TAU + escuta};
+          \node[ev,fill=aneliseGris!18,below=0.3cm of b](s2){PSM --- deep sleep ($\mu$A)};
+          \draw[thick,aneliseAzul,-{Stealth}] (a) -- (s1);
+          \draw[thick,aneliseAzul,-{Stealth}] (s1) -- (b);
+          \draw[thick,aneliseAzul,-{Stealth}] (b) -- (s2);
+          \node[right=0.15cm of a,font=\scriptsize,text=aneliseVerde,align=left]{\shortstack{downlink\\alcançável}};
+          \node[right=0.15cm of s1,font=\scriptsize,text=aneliseLaranja,align=left]{\shortstack{downlink\\$\times$}};
+          \node[right=0.15cm of b,font=\scriptsize,text=aneliseVerde,align=left]{\shortstack{downlink\\alcançável}};
+          \node[right=0.15cm of s2,font=\scriptsize,text=aneliseLaranja,align=left]{\shortstack{downlink\\$\times$}};
+        \end{tikzpicture}\\[1mm]
+        {\scriptsize \textbf{Figura:} ciclo PSM no tempo: o UE só é alcançável nas janelas de escuta após acordar.}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Comparação LPWAN}
+
+\begin{frame}{LPWAN: tabela comparativa}
+  \begin{center}
+    \scriptsize
+    \setlength{\tabcolsep}{3pt}
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{p{2.3cm}p{2.3cm}p{2.3cm}p{2.3cm}p{2.3cm}}
+      \toprule
+      & \textbf{LoRaWAN} & \textbf{Sigfox} & \textbf{NB-IoT} & \textbf{LTE-M}\\
+      \midrule
+      \textbf{Espectro} & ISM sub-GHz (não lic.) & ISM sub-GHz (não lic.) & Licenciado (LTE) & Licenciado (LTE)\\
+      \textbf{Largura} & 125--500~kHz & 100~Hz (UNB) & 180~kHz (1 PRB) & 1,4~MHz (6 PRB)\\
+      \textbf{Taxa} & 0,3--50~kbps & $\approx$100~bps & $\leq$250~kbps & $\leq$1~Mbps\\
+      \textbf{Alcance} & 2--15~km (rural $>$40) & 10--50~km & 1--10~km & 1--10~km\\
+      \textbf{Bidirecional} & Sim (A/B/C) & Downlink limitado & Sim & Sim\\
+      \textbf{Consumo} & Muito baixo & Muito baixo & Baixo-médio & Médio\\
+      \textbf{Custo módulo} & \$2--6 & \$2--5 & \$8--15 & \$10--20\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  \pause
+  \begin{exampleblock}{Como escolher}
+    ISM + custo mínimo $\rightarrow$ LoRaWAN/Sigfox; QoS, segurança e rede celular $\rightarrow$ NB-IoT/LTE-M; voz e mobilidade $\rightarrow$ LTE-M.
+  \end{exampleblock}
+\end{frame}
+
 \section{Protocolos de aplicação}
 
 \begin{frame}{Protocolos de aplicação para IoT}
@@ -221,6 +611,92 @@
     \end{column}
   \end{columns}
   \note{MQTT usa TCP com broker (publish/subscribe); CoAP é UDP/REST com multicast. LwM2M adiciona gerenciamento de ciclo de vida sobre esses protocolos.}
+\end{frame}
+
+\begin{frame}{MQTT: publish/subscribe via broker}
+  \begin{columns}
+    \begin{column}{0.52\textwidth}
+      \begin{itemize}
+        \item \textbf{Broker} central (ex.: Mosquitto, EMQX) desacopla produtores e consumidores
+        \item \textbf{Tópicos hierárquicos}: \texttt{casa/sala/temperatura}; \emph{wildcards} \texttt{+} (um nível) e \texttt{\#} (subárvore)
+        \item \textbf{QoS}: 0 (no máximo uma vez), 1 (pelo menos uma vez, ACK), 2 (exatamente uma vez, \emph{handshake} em 4 fases)
+        \item \textbf{Retained}: a última mensagem do tópico fica guardada para novos assinantes
+        \item \textbf{Will (LWT)}: o broker publica a ``última vontade'' se o cliente cair sem \texttt{DISCONNECT}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize,
+            nd/.style={draw,circle,fill=aneliseAzul!15,minimum size=5mm,inner sep=0.2mm},
+            br/.style={draw,rounded corners=2mm,fill=aneliseVerde!20,inner sep=1.5mm,align=center},
+          ]
+          \node[nd](s1){S};
+          \node[nd,below=0.9cm of s1](s2){S};
+          \node[br,right=1.7cm of s2](br){\shortstack{Broker\\(MQTT)}};
+          \node[nd,right=1.7cm of br,fill=aneliseLaranja!25](a1){A};
+          \node[nd,above=0.9cm of a1,fill=aneliseLaranja!25](a2){A};
+          \draw[thick,aneliseLaranja,-{Stealth}] (s1) -- (br);
+          \draw[thick,aneliseLaranja,-{Stealth}] (s2) -- (br);
+          \draw[thick,aneliseVerde,-{Stealth}] (br) -- (a2);
+          \draw[thick,aneliseVerde,-{Stealth}] (br) -- (a1);
+          \node[below=0.15cm of s1,font=\scriptsize]{sensores (publish)};
+          \node[below=0.15cm of a1,font=\scriptsize]{assinantes};
+        \end{tikzpicture}\\[1mm]
+        {\scriptsize \textbf{Figura:} sensores publicam em tópicos; o broker roteia para os assinantes interessados.}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{CoAP: REST sobre UDP para dispositivos restritos}
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \begin{itemize}
+        \item \textbf{Modelo REST} (RFC 7252): \texttt{GET}, \texttt{POST}, \texttt{PUT}, \texttt{DELETE} em recursos identificados por URI; porta 5683
+        \item \textbf{Confirmável (CON)}: retransmissão com temporizador exponencial e ACK; \textbf{não-confirmável (NON)}: sem ACK (telemetria)
+        \item \textbf{Observe} (RFC 7641): assinatura de recurso --- o servidor notifica mudanças (pub/sub sobre REST)
+        \item \textbf{Block-wise} (RFC 7959): transferência de payloads grandes em blocos (MTU 1280~B vs.\ 127~B do 802.15.4)
+        \item \textbf{Multicast} nativo para descoberta de recursos
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{block}{Segurança}
+        \begin{itemize}
+          \item \textbf{CoAPs}: DTLS sobre UDP (porta 5684), com PSK ou certificados
+          \item Contraste com MQTT, que usa TLS sobre TCP
+        \end{itemize}
+      \end{block}
+      \pause
+      \begin{exampleblock}{CoAP $\times$ HTTP}
+        CoAP é o ``HTTP das redes de sensores'': mesmo modelo de recursos, porém com cabeçalhos comprimidos e controle de congestionamento leve sobre UDP.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{MQTT $\times$ CoAP: escolha do protocolo de aplicação}
+  \begin{center}
+    \scriptsize
+    \setlength{\tabcolsep}{4pt}
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{p{3.2cm}p{4.6cm}p{4.6cm}}
+      \toprule
+      \textbf{Característica} & \textbf{MQTT (v5.0)} & \textbf{CoAP (RFC 7252)}\\
+      \midrule
+      Transporte & TCP (orientado a conexão) & UDP (datagrama)\\
+      Modelo & publish/subscribe (broker) & request/response (cliente-servidor)\\
+      Comunicação & muitos-para-muitos & um-para-um (com multicast)\\
+      Qualidade de serviço & QoS 0/1/2 & CON / NON (+ retransmissão)\\
+      Segurança & TLS (porta 8883) & DTLS (porta 5684)\\
+      Padronização & OASIS (2019) & IETF\\
+      Uso típico & dashboards, integrações & dispositivos restritos, multicast\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  \pause
+  \begin{alertblock}{Regra de bolso}
+    Broker e aplicações $\rightarrow$ MQTT. Restrições de memória/energia e multicast $\rightarrow$ CoAP. Gateways frequentemente traduzem CoAP$\rightarrow$MQTT.
+  \end{alertblock}
 \end{frame}
 
 \begin{frame}{Exercício resolvido: tempo no ar de um pacote LoRaWAN}
@@ -303,6 +779,216 @@
       \item Variar SF/BW e medir taxa de entrega, atraso e energia por pacote.
     \end{itemize}
   \end{block}
+\end{frame}
+
+\section{Casos de uso e desafios}
+
+\begin{frame}{Casos de uso LPWAN (1/2)}
+  \footnotesize
+  \begin{columns}[t]
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Agricultura de precisão}
+        \begin{itemize}
+          \item Sensores de umidade do solo, temperatura e NPK na lavoura
+          \item Uplinks espaçados (SF12, 1--5/dia) --- bateria dura safras inteiras
+          \item LoRaWAN em propriedades rurais sem cobertura celular
+        \end{itemize}
+      \end{block}
+      \begin{block}{Smart metering}
+        \begin{itemize}
+          \item Medidores de água, gás e energia em leitura remota
+          \item Alta densidade e cobertura \emph{indoor} (caves) --- NB-IoT \emph{in-band}
+          \item QoS e faturamento confiável (contadores regulados)
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{exampleblock}{Por que LPWAN nesses casos?}
+        \begin{itemize}
+          \item Poucos bytes por transmissão (dezenas de bytes)
+          \item Eventos raros (minutos a horas)
+          \item Bateria por 5--10 anos sem manutenção
+          \item Cobertura de centenas de km²
+        \end{itemize}
+      \end{exampleblock}
+      \pause
+      \begin{alertblock}{Atenção}
+        Contadores regulados exigem garantia de entrega e autenticação forte --- NB-IoT/LTE-M superam LoRaWAN nisso.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Casos de uso LPWAN (2/2)}
+  \small
+  \begin{columns}[t]
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Smart city}
+        \begin{itemize}
+          \item Iluminação pública, lixeiras e vagas de estacionamento
+          \item Sensores de alagamento e qualidade do ar
+          \item Modelo device-to-gateway cobrindo a cidade com poucos gateways
+        \end{itemize}
+      \end{block}
+      \begin{block}{Saúde}
+        \begin{itemize}
+          \item Rastreadores de medicação e sinais vitais não-contínuos
+          \item LTE-M para wearables com mobilidade e voz de emergência
+          \item Alertas em tempo quase real (eDRX curto)
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Indústria (IIoT)}
+        \begin{itemize}
+          \item Monitoramento de vibração, temperatura e energia de máquinas
+          \item Sensores em áreas de difícil acesso (cobertura \emph{indoor})
+          \item NB-IoT em ambientes com interferência eletromagnética
+        \end{itemize}
+      \end{block}
+      \pause
+      \begin{alertblock}{Latência crítica}
+        Controle em malha fechada (ex.: robôs, proteção de rede) exige ms --- fica fora da LPWAN e usa 5G URLLC.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Caso de estudo: smart agriculture}
+  \footnotesize
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \begin{enumerate}
+        \item \textbf{Sensores de solo} (umidade, condutividade) no talhão --- SF10/SF12, 1 uplink a cada 30~min
+        \item \textbf{Gateway LoRaWAN} solar encaminha para o servidor de rede
+        \item \textbf{Dashboard} na nuvem aplica regras: umidade abaixo do limiar $\Rightarrow$ alerta
+        \item \textbf{Irrigação}: comando de downlink (classe C ou B) liga a válvula por setor
+      \end{enumerate}
+      \pause
+      \begin{block}{Lições do caso}
+        \begin{itemize}
+          \item Economia de água medida (10--30\%)
+          \item Downlink raro $\rightarrow$ classe A com janela pós-uplink é suficiente
+          \item \emph{Back-end data sharing}: dados também compartilhados com a rede meteorológica
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize,
+            nd/.style={draw,circle,fill=aneliseVerde!25,minimum size=4mm,inner sep=0.1mm},
+            gw/.style={draw,rounded corners=1.5mm,fill=aneliseLaranja!25,inner sep=1mm,align=center},
+            nube/.style={draw,cloud,aspect=1.8,fill=aneliseGris!15,inner sep=0.8mm,align=center},
+          ]
+          \node[nd](s1){S};
+          \node[nd,below=0.6cm of s1](s2){S};
+          \node[nd,below=0.6cm of s2](s3){S};
+          \node[gw,right=1.2cm of s2](g){\shortstack{Gateway\\LoRa}};
+          \node[nube,right=1.5cm of g](c){\shortstack{Servidor\\de rede}};
+          \node[nube,below=1.1cm of c](dash){\shortstack{Dashboard\\+ regras}};
+          \node[draw,rounded corners=1mm,fill=aneliseAzul!15,below=1.1cm of g,minimum height=1.1cm,align=center](act){\shortstack{Irrigação\\válvula}};
+          \draw[thick,aneliseAzul,-{Stealth}] (s1) -- (g);
+          \draw[thick,aneliseAzul,-{Stealth}] (s2) -- (g);
+          \draw[thick,aneliseAzul,-{Stealth}] (s3) -- (g);
+          \draw[thick,aneliseAzul,-{Stealth}] (g) -- (c);
+          \draw[thick,aneliseVerde,-{Stealth}] (c) -- (dash);
+          \draw[thick,aneliseLaranja,-{Stealth}] (dash) to[out=180,in=0] (act);
+        \end{tikzpicture}\\[1mm]
+        {\scriptsize \textbf{Figura:} fluxo de dados do caso \emph{smart agriculture} (sensores $\rightarrow$ nuvem $\rightarrow$ irrigação).}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Desafios de implantação LPWAN}
+  \footnotesize
+  \begin{columns}[t]
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Energia}
+        \begin{itemize}
+          \item Meta de 5--10 anos com bateria
+          \item Downlink/ACKs custam caro $\rightarrow$ minimizá-los
+          \item ADR, classe A e \emph{duty-cycle} como alavancas
+        \end{itemize}
+      \end{block}
+      \begin{block}{Segurança}
+        \begin{itemize}
+          \item ISM aberto $\rightarrow$ \emph{jamming} e \emph{spoofing}
+          \item AES-128 (LoRaWAN); SIM/AKA (3GPP)
+          \item Provisionamento e rotação de chaves (OTAA)
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Escala e densidade}
+        \begin{itemize}
+          \item Milhões de nós $\rightarrow$ deduplicação e escalabilidade
+          \item Colisões no ISM (ALOHA-like) limitam a densidade
+          \item SFs ortogonais + canais múltiplos aumentam capacidade
+        \end{itemize}
+      \end{block}
+      \begin{block}{Interoperabilidade}
+        \begin{itemize}
+          \item LoRaWAN 1.0.4 vs.\ versões de fabricante
+          \item Roaming entre operadoras; \emph{lock-in} (Sigfox)
+          \item Padronização 3GPP (NB-IoT) garante interop.
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+  \pause
+  \begin{exampleblock}{Síntese}
+    Nenhuma tecnologia resolve tudo: o projeto IoT combina \textbf{modulação, rede, energia e protocolo de aplicação}.
+  \end{exampleblock}
+\end{frame}
+
+\section{Exercícios e quiz}
+
+\begin{frame}{Exercício resolvido: estimativa de vida de bateria}
+  \footnotesize
+  \textbf{Problema:} sensor LoRaWAN com bateria de \textbf{2400~mAh}. A cada transmissão consome \textbf{100~mA} por \textbf{0,918~s} (ToA do SF12) e envia a cada \textbf{15~min}; em repouso consome \textbf{10~$\mu$A}. Estime a duração da bateria.
+  \pause
+  \begin{block}{Hipóteses}
+    \begin{itemize}
+      \item Ciclo de trabalho: $t_{\text{tx}}/\Delta T = 0{,}918/900 \approx 0{,}10\%$
+      \item Desprezam-se conversão, envelhecimento, temperatura e auto-descarga
+      \item TX de 100~mA $=$ 100\,000~$\mu$A
+    \end{itemize}
+  \end{block}
+  \pause
+  \begin{block}{Cálculo da corrente média}
+    \[
+      I_{\text{média}} = 10 + \frac{0{,}918}{900}\cdot 100\,000 = 10 + 102 \approx \mathbf{112~\mu A}.
+    \]
+    \[
+      \text{Vida} = \frac{2400~\text{mAh}}{0{,}112~\text{mA}} \approx 21\,400~\text{h} \approx \mathbf{2{,}4~\text{anos}}.
+    \]
+  \end{block}
+  \pause
+  \begin{alertblock}{Discussão}
+    Intervalo de 5~min ou SF7 (ToA $\approx$ 29~ms) muda drasticamente o consumo. \emph{Exercício:} recalcular para SF7 e comparar com os 2,4 anos do SF12.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Autoavaliação (continuação)}
+  \begin{enumerate}
+    \item Na ativação \textbf{OTAA}, as chaves de sessão \texttt{NwkSKey} e \texttt{AppSKey} são:
+      \begin{itemize}
+        \item (a) gravadas de fábrica, sem participação do servidor
+        \item (b) derivadas das chaves raiz e dos \emph{nonces} trocados no Join-Request/Accept
+        \item (c) idênticas à \texttt{AppKey}
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (b)
+    \item Um medidor com necessidade de \textbf{cobertura indoor} profunda, que opera em \textbf{espectro licenciado} e envia poucos bytes por dia, será melhor atendido por:
+      \begin{itemize}
+        \item (a) Sigfox (UNB, ISM)
+        \item (b) LTE-M (1,4~MHz, com voz)
+        \item (c) NB-IoT (1 PRB, modo \emph{in-band})
+      \end{itemize}
+      \pause
+      \textbf{Gabarito:} (c)
+  \end{enumerate}
 \end{frame}
 
 \section{Bibliografia}

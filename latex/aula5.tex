@@ -121,6 +121,7 @@
     \end{column}
   \end{columns}
   \vspace{0.2cm}
+  \pause
   \begin{block}{Wi-Fi 7 (802.11be, 2024)}
     \begin{itemize}
       \item canais de \textbf{320~MHz}, QAM-4096, \emph{multi-link operation} (MLO)
@@ -129,6 +130,96 @@
     \end{itemize}
   \end{block}
   \note{Enfatizar que o MLO do Wi-Fi 7 usa simultaneamente as bandas de 2,4/5/6 GHz, reduzindo latência e aumentando confiabilidade; o Wi-Fi 6E foi o primeiro a habilitar a banda de 6 GHz.}
+\end{frame}
+
+\begin{frame}{Wi-Fi 6 (802.11ax): OFDMA e Resource Units (RU)}
+  \begin{itemize}
+    \item \textbf{OFDMA}: o canal é dividido em \textbf{subportadoras}; grupos de subportadoras formam \textbf{Resource Units} (RU);
+    \item canal de 20~MHz: 256 subportadoras (234 de dados) $\rightarrow$ RUs de \textbf{26, 52, 106 ou 242};
+    \item o \textbf{AP aloca} RUs a várias estações no mesmo slot (DL/UL) --- transmissão em paralelo, sem colisão;
+    \item trade-off: RU-26 $\Rightarrow$ mais usuários simultâneos, menos taxa; RU-242 $\Rightarrow$ mais taxa para 1 usuário.
+  \end{itemize}
+  \begin{center}
+    \begin{tikzpicture}[font=\scriptsize,
+        gr/.style={draw,thick,aneliseGris},
+      ]
+      \fill[aneliseAzul!22] (0,3.3) rectangle (9,3.7);
+      \draw[gr] (0,3.3) rectangle (9,3.7);
+      \node at (4.5,3.5){RU-242 (todo o canal)};
+      \fill[aneliseAzul!22] (0,2.45) rectangle (4.5,2.85);
+      \fill[aneliseVerde!22] (4.5,2.45) rectangle (9,2.85);
+      \draw[gr] (0,2.45) rectangle (4.5,2.85);
+      \draw[gr] (4.5,2.45) rectangle (9,2.85);
+      \node at (2.25,2.65){RU-106};
+      \node at (6.75,2.65){RU-106};
+      \fill[aneliseAzul!22] (0,1.6) rectangle (2.25,2.0);
+      \fill[aneliseVerde!22] (2.25,1.6) rectangle (4.5,2.0);
+      \fill[aneliseLaranja!22] (4.5,1.6) rectangle (6.75,2.0);
+      \fill[aneliseGris!25] (6.75,1.6) rectangle (9,2.0);
+      \draw[gr] (0,1.6) rectangle (2.25,2.0);
+      \draw[gr] (2.25,1.6) rectangle (4.5,2.0);
+      \draw[gr] (4.5,1.6) rectangle (6.75,2.0);
+      \draw[gr] (6.75,1.6) rectangle (9,2.0);
+      \node at (1.125,1.8){RU-52};
+      \node at (3.375,1.8){RU-52};
+      \node at (5.625,1.8){RU-52};
+      \node at (7.875,1.8){RU-52};
+      \foreach \i [evaluate=\i as \x using \i*1.0, evaluate=\i as \xc using (\i+0.5)*1.0] in {0,...,8}{
+        \fill[aneliseAzul!18] (\x,0.75) rectangle (\x+1.0,1.15);
+        \draw[gr] (\x,0.75) rectangle (\x+1.0,1.15);
+        \node at (\xc,0.95){\tiny 26};
+      }
+      \node[font=\tiny,anchor=west] at (9.25,3.5){1 usuário};
+      \node[font=\tiny,anchor=west] at (9.25,2.65){2 usuários};
+      \node[font=\tiny,anchor=west] at (9.25,1.8){4 usuários};
+      \node[font=\tiny,anchor=west] at (9.25,0.95){9 usuários};
+    \end{tikzpicture}\\[1mm]
+    {\scriptsize \textbf{Figura A:} Canal de 20~MHz dividido em RUs de 26/52/106/242 subportadoras.}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Wi-Fi 7 (802.11be): Multi-Link Operation (MLO)}
+  \small
+  \begin{columns}
+    \begin{column}{0.56\textwidth}
+      \begin{itemize}
+        \item a STA opera \textbf{simultaneamente} em \textbf{2,4/5/6~GHz}, com um \emph{link lógico} sobre vários enlaces físicos;
+        \item \textbf{Throughput}: agrega capacidade de várias bandas no mesmo instante;
+        \item \textbf{Latência}: o tráfego crítico usa o enlace mais rápido --- atrasos menores que no ax/ac;
+        \item \textbf{Confiabilidade}: se um enlace degrada, \emph{failover} automático para outro, sem reconexão;
+        \item modos de operação: \emph{STR} (transmitir/receber simultâneo) e \emph{NSTR}.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize]
+          \node[draw,fill=aneliseLaranja!25,rounded corners=2mm,inner sep=1.5mm](ap){AP Wi-Fi 7};
+          \node[draw,fill=aneliseAzul!15,rounded corners=2mm,inner sep=1.5mm,below=1.1cm of ap](sta){STA};
+          \draw[<->,very thick,aneliseLaranja] ([xshift=-1.1cm]ap.south) -- node[midway,left,font=\tiny]{2,4 GHz} ([xshift=-1.1cm]sta.north);
+          \draw[<->,very thick,aneliseVerde] ([xshift=0cm]ap.south) -- node[midway,left,font=\tiny]{5 GHz} ([xshift=0cm]sta.north);
+          \draw[<->,very thick,aneliseAzul] ([xshift=1.1cm]ap.south) -- node[midway,right,font=\tiny]{6 GHz} ([xshift=1.1cm]sta.north);
+        \end{tikzpicture}\\[1mm]
+        {\scriptsize \textbf{Figura B:} MLO: três enlaces simultâneos entre STA e AP.}
+      \end{center}
+      {\scriptsize Enlaces com taxas e latências distintas; o MLO escolhe e combina.}
+    \end{column}
+  \end{columns}
+  \begin{alertblock}{Na prática}
+    MLO reduz latência (jogos, AR/VR) e aumenta a vazão; o Wi-Fi 6E habilitou a banda de 6~GHz.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Wi-Fi 8 (802.11bn): o que esperar}
+  \begin{itemize}
+    \item \textbf{previsão de conclusão}: $\sim$2028 (IEEE 802.11bn, ainda em estudo);
+    \item \textbf{espectro}: amplia o uso de canais de \textbf{320~MHz} e do MLO multi-enlace (até 4 enlaces coordenados);
+    \item \textbf{modulação}: mantém o \textbf{4096-QAM} introduzido no Wi-Fi 7 e melhora a codificação e a eficiência espectral;
+    \item \textbf{latência}: metas de \textbf{baixa latência determinística} (XR, jogos em nuvem, automação industrial);
+    \item \textbf{coordenação}: aprimoramentos de OFDMA e \emph{multi-AP coordination} para ambientes densos.
+  \end{itemize}
+  \begin{exampleblock}{Cuidado com a leitura}
+    O Wi-Fi 7 \emph{já} tem QAM-4096 e canais de 320~MHz; a novidade do Wi-Fi 8 está na \textbf{latência} e na \textbf{coordenação}, não apenas na taxa bruta.
+  \end{exampleblock}
 \end{frame}
 
 \section{WPAN: Bluetooth e outras}
@@ -175,6 +266,103 @@
   \end{exampleblock}
 \end{frame}
 
+\begin{frame}{Bluetooth Low Energy (BLE) --- LE na prática}
+  \small
+  \begin{columns}
+    \begin{column}{0.52\textwidth}
+      \textbf{Arquitetura}
+      \begin{itemize}
+        \item 40 canais de 2~MHz em 2,4~GHz: 3 de \textbf{advertising} (37/38/39) + 37 de dados com \textbf{salto adaptativo};
+        \item papéis \emph{central}/\emph{peripheral} e \emph{advertiser}/\emph{scanner}; GAP (descoberta) e GATT (serviços);
+        \item conexão: \emph{connection events} a cada 7,5~ms--4~s, com \emph{slave latency}.
+      \end{itemize}
+      \textbf{Broadcasting (advertising)}
+      \begin{itemize}
+        \item pacotes pequenos, periódicos, \textbf{sem conexão} (beacons de proximidade, \emph{trackers}).
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{Consumo vs.\ BR/EDR}
+      \begin{itemize}
+        \item LE: pico $\sim$10--15~mA, média de \textbf{µA}; anos com pilha de botão;
+        \item BR/EDR: dezenas de mA ativos --- pior para sensores.
+      \end{itemize}
+      \textbf{Taxas LE}
+      \begin{itemize}
+        \item LE 1M (1~Mbps), LE 2M (2~Mbps) e \emph{Coded PHY} (500/125~kbps para alcance);
+        \item Bluetooth 5.x: \emph{LE Audio}, mesh e \emph{long range}.
+      \end{itemize}
+      \begin{alertblock}{Quando usar}
+        Leitura discreta e sensores de curto alcance --- não para streaming pesado.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Zigbee / Thread / Matter --- IEEE 802.15.4}
+  \begin{columns}
+    \begin{column}{0.54\textwidth}
+      \textbf{802.15.4} (2,4~GHz, DSSS, 250~kbps)
+      \begin{itemize}
+        \item \textbf{Zigbee}: malha com \emph{coordinator}, \emph{routers} e \emph{end-devices} (estes dormem);
+        \item \textbf{Thread}: IPv6 sobre 802.15.4 via \textbf{6LoWPAN} (RFC 4944/6282) + \emph{border router};
+        \item \textbf{Matter} (ex-CHIP): camada de \textbf{aplicação} comum, sobre Thread ou Wi-Fi --- interoperabilidade domótica;
+        \item coordenação: o coordinator inicia a rede; os routers participam do roteamento em malha.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize,
+            c/.style={draw,circle,fill=aneliseLaranja!35,inner sep=1mm,minimum size=6.5mm},
+            r/.style={draw,circle,fill=aneliseVerde!30,inner sep=1mm,minimum size=6mm},
+            e/.style={draw,circle,fill=aneliseAzul!18,inner sep=0.8mm,minimum size=5mm},
+          ]
+          \node[c](C){C};
+          \node[r,above left=1cm and 0.7cm of C](R1){R};
+          \node[r,above right=1cm and 0.7cm of C](R2){R};
+          \node[r,below=1cm of C](R3){R};
+          \node[e,left=0.9cm of R1](E1){E};
+          \node[e,right=0.9cm of R2](E2){E};
+          \node[e,left=0.9cm of R3](E3){E};
+          \draw[thick,aneliseLaranja] (C) -- (R1) -- (R2) -- (C);
+          \draw[thick,aneliseLaranja] (C) -- (R3);
+          \draw[thick,aneliseGris] (R1) -- (E1);
+          \draw[thick,aneliseGris] (R2) -- (E2);
+          \draw[thick,aneliseGris] (R3) -- (E3);
+          \node[below=3mm of E3,font=\tiny]{C coordinator, R router, E end-device};
+        \end{tikzpicture}\\[1mm]
+        {\scriptsize \textbf{Figura C:} Malha 802.15.4 com coordinator, routers e end-devices.}
+      \end{center}
+      {\scriptsize Malha $\Rightarrow$ rotas alternativas: se um router falha, a rede re-roteia sozinha.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{UWB --- IEEE 802.15.4z (posicionamento em cm)}
+  \begin{columns}
+    \begin{column}{0.52\textwidth}
+      \textbf{Física}
+      \begin{itemize}
+        \item pulsos de curta duração ($\sim$2~ns) e banda larga ($\ge$500~MHz), faixa de 6--9~GHz;
+        \item \textbf{tempo de voo} (ToF) com \emph{double-sided two-way ranging} $\Rightarrow$ precisão de \textbf{10--30~cm};
+        \item robusto a multipercurso (usa o primeiro caminho, não o RSSI).
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{Aplicações}
+      \begin{itemize}
+        \item \textbf{chaves digitais} (carro/casa): acesso passivo e anti-relé;
+        \item localização \emph{indoor} (logística, hospitais, estádios);
+        \item pagamento por aproximação seguro;
+        \item complementa o BLE: BLE descobre, UWB mede com precisão.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \begin{alertblock}{Por que UWB?}
+    Enquanto o RSSI do BLE erra metros, o tempo de voo do UWB acerta \textbf{centímetros} --- essencial para \emph{car key} e navegação indoor.
+  \end{alertblock}
+\end{frame}
+
 \section{LPWAN: LoRa e Sigfox}
 
 \begin{frame}{LPWAN para IoT: LoRa vs.\ Sigfox}
@@ -198,6 +386,7 @@
         \item alcance até 50~km (rural)
         \item rede proprietária (operador regional)
       \end{itemize}
+      \pause
       \begin{block}{Comparação prática}
         LoRaWAN: mais flexível, redes privadas, bidirecional.
         Sigfox: ultra-simples, muito baixo consumo, unidirecional.
@@ -205,6 +394,81 @@
     \end{column}
   \end{columns}
   \note{Relacionar SF e tempo no ar: SF maior = símbolos mais longos, maior sensibilidade e alcance, porém menor taxa e maior consumo — base para o exercício resolvido.}
+\end{frame}
+
+\begin{frame}{Arquitetura LoRaWAN: star-of-stars}
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \textbf{Elementos}
+      \begin{itemize}
+        \item \textbf{End devices}: sensores com rádio LoRa (CSS), acesso ALOHA puro;
+        \item \textbf{Gateways} (concentradores): rádio $\leftrightarrow$ IP (backhaul Ethernet/4G), ponte transparente;
+        \item \textbf{Network Server (NS)}: deduplicação, segurança (AES-128), \textbf{ADR} e agendamento de downlink;
+        \item \textbf{Application Server (AS)}: recebe e entrega os payloads à aplicação;
+        \item \textbf{Join Server (JS)}: ativação OTAA (chaves de sessão).
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{center}
+        \resizebox{\columnwidth}{!}{%
+          \begin{tikzpicture}[font=\scriptsize,
+              dev/.style={draw,circle,fill=aneliseAzul!18,inner sep=0.6mm,minimum size=5mm},
+              bx/.style={draw,rounded corners=2mm,fill=aneliseLaranja!25,inner sep=1mm,text width=1.9cm,align=center},
+            ]
+            \node[dev](d1){E1};
+            \node[dev,below=0.9cm of d1](d2){E2};
+            \node[dev,below=0.9cm of d2](d3){E3};
+            \node[bx,right=1.1cm of d2](gw){Gateway};
+            \node[bx,right=1.0cm of gw,yshift=0.75cm](ns){Network\\Server};
+            \node[bx,right=1.0cm of gw,yshift=-0.75cm](as){Application\\Server};
+            \node[bx,below=1.0cm of gw](js){Join Server};
+            \draw[thick,aneliseVerde] (d1) -- (gw);
+            \draw[thick,aneliseVerde] (d2) -- (gw);
+            \draw[thick,aneliseVerde] (d3) -- (gw);
+            \draw[thick,aneliseLaranja] (gw) -- (ns);
+            \draw[thick,aneliseLaranja] (gw) -- (as);
+            \draw[dashed,thick,aneliseGris] (gw) -- (js);
+            \node[below=0.2mm of d3,font=\tiny]{LoRa (CSS)};
+            \node[below=0.4cm of gw,font=\tiny]{IP (backhaul)};
+          \end{tikzpicture}
+        }\\[1mm]
+        {\scriptsize \textbf{Figura D:} star-of-stars: devices $\rightarrow$ gateway $\rightarrow$ servidores.}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{LoRaWAN: classes A/B/C e ADR}
+  \begin{center}
+    \scriptsize
+    \begin{tabular}{@{}lccc@{}}
+      \toprule
+      \textbf{Classe} & \textbf{Downlink} & \textbf{Consumo} & \textbf{Uso típico}\\
+      \midrule
+      A & 2 janelas após cada uplink (RX1/RX2) & mínimo & padrão, bateria longa\\
+      B & \emph{ping slots} agendados por beacon & baixo & downlink periódico\\
+      C & escuta contínua & alto & atuadores, downlink frequente\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  \vspace{0.2cm}
+  \textbf{ADR (Adaptive Data Rate)}
+  \begin{itemize}
+    \item o Network Server \textbf{ajusta SF, BW e potência} por dispositivo, a partir de SNR/RSSI;
+    \item SF alto (12) $\Rightarrow$ mais alcance, menos taxa; SF baixo (7) $\Rightarrow$ mais taxa, menos alcance;
+    \item recomendado para nós \textbf{fixos}; em nós móveis usa-se SF com margem (ADR desligado).
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Sigfox em profundidade}
+  \begin{itemize}
+    \item \textbf{UNB}: sinais de $\sim$100~Hz na banda ISM sub-GHz; uplink \textbf{100~bps} (downlink 600~bps);
+    \item limites: \textbf{140 uplink/dia} e \textbf{4 downlink/dia}, payload de até 12 (ul) / 8 (dl) bytes;
+    \item \textbf{downlink condicional}: resposta só após um uplink (2 janelas de recepção);
+    \item \textbf{geolocalização}: triangulação por \textbf{RSSI} entre base stations e \textbf{TDOA} --- sem GPS no dispositivo;
+    \item \textbf{modelo de operadora}: rede regional operada (B2B2C); o dispositivo assina um plano (``SIM'' de rádio), roaming por acordos;
+    \item alcance até \textbf{50~km} rural / 10~km urbano; boa penetração em subsolo (medidores).
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{NB-IoT e eMTC (celular LPWA)}
@@ -216,6 +480,7 @@
       \end{itemize}
     \item comparados com LoRa: maior confiabilidade, QoS garantida, porém maior consumo e custo de módulo
   \end{itemize}
+  \pause
   \begin{center}
     \begin{tikzpicture}[font=\scriptsize,
         c/.style={draw,rounded corners=2mm,fill=aneliseAzul!13,inner sep=1mm,text width=3.2cm,align=center},
@@ -229,6 +494,64 @@
     \end{tikzpicture}\\[1mm]
     {\scriptsize \textbf{Figura 3:} Comparação qualitativa LoRaWAN, NB-IoT e 5G mMTC quanto a alcance, consumo e custo.}
   \end{center}
+\end{frame}
+
+\begin{frame}{NB-IoT: modos de operação e categorias}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Modos de operação (Rel-13)}
+      \begin{itemize}
+        \item \emph{in-band}: dentro de 1 PRB de uma portadora LTE;
+        \item \emph{guard band}: nas faixas de guarda do LTE;
+        \item \emph{standalone}: reutiliza blocos de \textbf{200~kHz} do GSM.
+      \end{itemize}
+      \textbf{Categorias}
+      \begin{itemize}
+        \item \textbf{Cat-NB1} (Rel-13): $\sim$20~kbps de uplink;
+        \item \textbf{Cat-NB2} (Rel-14): até $\sim$250~kbps, posicionamento e multicast melhores.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Cobertura melhorada}
+      \begin{itemize}
+        \item ganho de $\sim$20~dB vs.\ GPRS/LTE --- subsolo e interior de edifícios;
+        \item via \textbf{repetições} (até 2048) + modulação robusta (BPSK/QPSK).
+      \end{itemize}
+      \textbf{Bateria de anos}
+      \begin{itemize}
+        \item \textbf{PSM} (Power Saving Mode): dorme, acorda apenas no TAU;
+        \item \textbf{eDRX}: ciclos de escuta longos (até $\sim$2,9~h), para sensores periódicos.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \begin{exampleblock}{vs.\ LoRa}
+    NB-IoT oferece \textbf{QoS e SIM} (3GPP) com melhor penetração indoor, mas usa espectro \textbf{licenciado} e módulo mais caro.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{LPWAN: tabela comparativa completa}
+  \begin{center}
+    \tiny
+    \begin{tabular}{@{}lccccc@{}}
+      \toprule
+      \textbf{Critério} & \textbf{LoRaWAN} & \textbf{Sigfox} & \textbf{NB-IoT} & \textbf{LTE-M}\\
+      \midrule
+      Modulação & CSS (chirp) & UNB (D-BPSK) & BPSK/QPSK & OFDMA/SC-FDMA\\
+      Largura de banda & 125--500 kHz & $\sim$100 Hz & 200 kHz & 1,4 MHz\\
+      Taxa de dados & 0,3--50 kbps & 100 bps (dl 600) & $\le$250 kbps & $\le$1 Mbps\\
+      Alcance (rural) & 2--15 km & $\le$50 km & 10--15 km & $\sim$10 km\\
+      Espectro & ISM (não licenc.) & ISM (não licenc.) & licenciado & licenciado\\
+      Bidirecional & Sim (A/B/C) & limitado (4 dl/dia) & Sim & Sim (voz)\\
+      Consumo & muito baixo & ultra-baixo & baixo--médio & médio\\
+      Custo de módulo & US\$1--5 & US\$1--5 & US\$2--10 & US\$2--10\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  \vspace{0.15cm}
+  \begin{itemize}
+    \item LoRaWAN e Sigfox: sem licença, custo/consumo mínimos, porém \textbf{melhor esforço};
+    \item NB-IoT e LTE-M: licenciados, com \textbf{QoS garantida} (3GPP), voz (LTE-M) e melhor penetração indoor.
+  \end{itemize}
 \end{frame}
 
 \section{5G e redes móveis}
@@ -253,9 +576,106 @@
       \end{itemize}
     \end{column}
   \end{columns}
+  \pause
   \begin{exampleblock}{Evolução}
     5G-Advanced (3GPP Rel.\ 18, 2024): IA/ML na rede, RedCap. O 6G já está em pesquisa (3GPP Rel.\ 21, por volta de 2030).
   \end{exampleblock}
+\end{frame}
+
+\begin{frame}{5G NR: numerology e estrutura de slot}
+  \begin{columns}
+    \begin{column}{0.52\textwidth}
+      \scriptsize
+      \begin{tabular}{@{}cccc@{}}
+        \toprule
+        $\mu$ & \textbf{SCS} & \textbf{Slot} & \textbf{Símbolo}\\
+        \midrule
+        0 & 15 kHz & 1 ms & 66,7 $\mu$s\\
+        1 & 30 kHz & 0,5 ms & 33,3 $\mu$s\\
+        2 & 60 kHz & 0,25 ms & 16,7 $\mu$s\\
+        3 & 120 kHz & 125 $\mu$s & 8,3 $\mu$s\\
+        4 & 240 kHz & 62,5 $\mu$s & 4,2 $\mu$s\\
+        \bottomrule
+      \end{tabular}
+      \begin{itemize}
+        \item SCS maior $\Rightarrow$ símbolos/slots mais curtos $\Rightarrow$ menor latência (mmWave, $\mu$=3/4);
+        \item frame de rádio = \textbf{10~ms} = 10 subframes de 1~ms;
+        \item slots por subframe $=2^{\mu}$: $\mu=0\Rightarrow 1$; $\mu=2\Rightarrow 4$.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{center}
+        \resizebox{\columnwidth}{!}{%
+          \begin{tikzpicture}[font=\scriptsize]
+            \draw[thick,aneliseGris] (0,2.6) rectangle (9,3.2);
+            \foreach \i in {0,...,9}{
+              \fill[aneliseAzul!15] (\i*0.9+0.02,2.63) rectangle (\i*0.9+0.88,3.17);
+              \draw (\i*0.9,2.6) -- (\i*0.9,3.2);
+            }
+            \node at (4.5,3.6){frame 10 ms = 10 subframes de 1 ms};
+            \draw[thick,aneliseGris] (0,0.6) rectangle (9,1.2);
+            \foreach \i in {0,...,3}{
+              \fill[aneliseLaranja!22] (\i*2.25+0.02,0.63) rectangle (\i*2.25+2.23,1.17);
+              \draw (\i*2.25,0.6) -- (\i*2.25,1.2);
+            }
+            \node at (4.5,1.6){subframe ($\mu$=2): 4 slots de 0,25 ms};
+          \end{tikzpicture}
+        }\\[1mm]
+        {\scriptsize \textbf{Figura E:} Estrutura de frame/slot do 5G NR.}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Network slicing: fatias fim-a-fim}
+  \begin{itemize}
+    \item uma \textbf{fatia (slice)} é uma rede lógica completa: \textbf{RAN $\rightarrow$ transporte $\rightarrow$ núcleo}, com recursos e QoS próprios;
+    \item identificada por \textbf{NSSAI} / \textbf{S-NSSAI} (SST+SD) na sinalização; a UE pede a fatia na PDU session;
+    \item \textbf{isolamento}: reserva de recursos + virtualização (NFV/SDN) $\Rightarrow$ uma fatia não degrada a outra;
+    \item analogia: rodovias com faixas dedicadas --- mesma infraestrutura, prioridades por serviço.
+  \end{itemize}
+  \begin{center}
+    \begin{tikzpicture}[font=\scriptsize,
+        fis/.style={draw,rounded corners=2mm,fill=aneliseGris!12,inner sep=1mm,text width=2.6cm,align=center},
+        fat/.style={draw,rounded corners=2mm,fill opacity=0.3,text opacity=1,inner sep=0.6mm,text width=9.2cm,align=center},
+      ]
+      \node[fis](ran){RAN (gNB)};
+      \node[fis,right=0.5cm of ran](trans){Transporte};
+      \node[fis,right=0.5cm of trans](core){Núcleo (UPF)};
+      \node[fat,fill=aneliseAzul!40,above=0.9cm of trans](embb){eMBB --- Enhanced Mobile Broadband};
+      \node[fat,fill=aneliseLaranja!40,above=2mm of embb](urllc){uRLLC --- latência $\sim$1~ms (indústria)};
+      \node[fat,fill=aneliseVerde!40,above=2mm of urllc](mmtc){mMTC --- IoT massivo (1M dispositivos/km$^2$)};
+      \draw[dashed,thick,aneliseGris] (embb.south) -- (trans.north);
+      \draw[dashed,thick,aneliseGris] (urllc.south) -- (trans.north);
+      \draw[dashed,thick,aneliseGris] (mmtc.south) -- (trans.north);
+    \end{tikzpicture}\\[1mm]
+    {\scriptsize \textbf{Figura F:} Três fatias sobre a mesma infraestrutura física.}
+  \end{center}
+\end{frame}
+
+\begin{frame}{MEC: Multi-access Edge Computing}
+  \begin{itemize}
+    \item \textbf{host MEC} na borda da RAN (junto à gNB ou no ponto de agregação) --- serviços perto do usuário, sem atravessar backhaul e núcleo;
+    \item \textbf{benefícios}: menor latência, menos tráfego no backhaul e \textbf{contexto} do rádio/localização do UE (padrão ETSI MEC);
+    \item \textbf{casos de uso}: RA/VR, automação industrial, V2X, análise de vídeo, jogos em nuvem.
+  \end{itemize}
+  \begin{center}
+    \begin{tikzpicture}[font=\scriptsize,
+        bx/.style={draw,rounded corners=2mm,fill=aneliseAzul!13,inner sep=1mm,text width=1.8cm,align=center},
+      ]
+      \node[bx](ue){UE};
+      \node[bx,right=0.4cm of ue](gnb){gNB};
+      \node[bx,right=0.4cm of gnb](mec){Host MEC\\(apps)};
+      \node[bx,right=0.4cm of mec](upf){UPF};
+      \node[bx,right=0.4cm of upf](net){Internet};
+      \draw[->,very thick,aneliseLaranja] (ue) -- node[midway,above=1mm,font=\tiny]{rádio} (gnb);
+      \draw[->,very thick,aneliseVerde] (gnb) -- node[midway,above=1mm,font=\tiny]{borda} (mec);
+      \draw[->,thick,aneliseGris] (mec) -- (upf);
+      \draw[->,thick,aneliseGris] (upf) -- (net);
+      \node[below=2mm of mec,font=\tiny]{latência $\sim$1--10 ms (vs.\ dezenas de ms no núcleo)};
+    \end{tikzpicture}\\[1mm]
+    {\scriptsize \textbf{Figura G:} MEC co-localizado na borda da RAN.}
+  \end{center}
 \end{frame}
 
 \section{Redes ad hoc, DTN, drones e veículos}
@@ -329,6 +749,56 @@
   \note{Contrastar latência: GEO ~125 ms vs.\ LEO 20--40 ms; destacar que a retransmissão entre satélites via ISL a laser permite cobertura global com poucos gateways.}
 \end{frame}
 
+\begin{frame}{Starlink: arquitetura em detalhe}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Terminal do usuário}
+      \begin{itemize}
+        \item antena \textbf{phased array} (matriz em fase): rastreia o satélite eletronicamente, sem motor;
+        \item \emph{handover de feixe} e \emph{handover de satélite}: a cada poucos minutos o terminal troca de satélite.
+      \end{itemize}
+      \textbf{Constelação}
+      \begin{itemize}
+        \item $\sim$550~km (LEO); \textbf{laser ISL} entre satélites;
+        \item \emph{ground stations} (gateways) com fibra, ligadas a PoPs de Internet.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Limitações (honestas)}
+      \begin{itemize}
+        \item \textbf{chuva/neve} atenuam as bandas Ka/Ku (dezenas de dB em tempestades);
+        \item interferência na \textbf{astronomia}: brilho e rastros nos telescópios;
+        \item \textbf{lixo espacial} e risco de colisão em LEO;
+        \item latência variável e custo/energia do terminal ainda altos.
+      \end{itemize}
+      \begin{exampleblock}{Atenuação de chuva}
+        Em Ka (20--30~GHz), chuva forte pode degradar o SNR em dezenas de dB --- efeito inexistente no Wi-Fi de 2,4/5~GHz.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{DTN: atraso, interrupção e o Bundle Protocol}
+  \begin{itemize}
+    \item \textbf{problema}: enlaces de \textbf{alto atraso} ou \textbf{intermitentes} (espaço, áreas rurais, desastres) --- TCP/IP assume conexão contínua e RTT curto, e falha;
+    \item \textbf{Bundle Protocol} (RFC 5050): camada sobre TCP/UDP (\emph{bundle layer}), \textbf{store-and-forward} e \emph{custody transfer} (a responsabilidade da entrega é repassada entre nós);
+    \item \textbf{aplicações}: Internet interplanetária (IPN), comunidades remotas, sensores e resgate em desastres.
+  \end{itemize}
+  \begin{center}
+    \begin{tikzpicture}[font=\scriptsize,
+        n/.style={draw,rounded corners=2mm,fill=aneliseAzul!15,inner sep=1mm,text width=2cm,align=center},
+      ]
+      \node[n](A){Nó A (origem)};
+      \node[n,right=2.6cm of A](B){Nó B (armazena)};
+      \node[n,right=2.6cm of B](C){Nó C (destino)};
+      \draw[->,thick,aneliseLaranja] (A) -- node[midway,above=1mm,font=\tiny]{enlace intermitente} (B);
+      \draw[->,thick,aneliseGris,dashed] (B) -- node[midway,above=1mm,font=\tiny]{entrega posterior} (C);
+      \node[draw,fill=aneliseGris!12,rounded corners=2mm,below=8mm of B,text width=4.4cm,align=center,font=\tiny]{B guarda o bundle (store-and-forward) e o reencaminha quando o enlace está disponível};
+    \end{tikzpicture}\\[1mm]
+    {\scriptsize \textbf{Figura H:} DTN: salto interrompido com store-and-forward.}
+  \end{center}
+\end{frame}
+
 \section{SDN, rádio cognitivo e pesquisa}
 
 \begin{frame}{Rádio cognitivo e SDN}
@@ -355,6 +825,40 @@
   \end{columns}
 \end{frame}
 
+\begin{frame}{Rádio cognitivo: ciclo sense--decide--act}
+  \small
+  \begin{columns}
+    \begin{column}{0.56\textwidth}
+      \textbf{Ciclo cognitivo (Mitola)}
+      \begin{itemize}
+        \item \textbf{Sense}: detectar faixas ociosas do espectro;
+        \item \textbf{Decide}: escolher canal, potência e parâmetros;
+        \item \textbf{Act}: transmitir \textbf{oportunisticamente}, sem interferir no usuário licenciado;
+        \item \emph{learn}: aprender com o histórico de ocupação.
+      \end{itemize}
+      \textbf{TV White Spaces / IEEE 802.22}
+      \begin{itemize}
+        \item faixas de TV (54--862~MHz) ociosas; WRAN de até $\sim$100~km;
+        \item proteção do \emph{broadcast}: \textbf{geolocation database} + sensoriamento;
+        \item desafios: \emph{hidden node}, falso alarme vs.\ detecção perdida, coordenação entre nós.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize]
+          \node[draw,ellipse,fill=aneliseAzul!18,inner sep=1mm,text width=2.4cm,align=center](S){SENSE --- sensoriar espectro};
+          \node[draw,ellipse,fill=aneliseLaranja!22,inner sep=1mm,text width=2.4cm,align=center,below=0.4cm of S](D){DECIDE --- escolher canal};
+          \node[draw,ellipse,fill=aneliseVerde!20,inner sep=1mm,text width=2.4cm,align=center,below=0.4cm of D](A){ACT --- transmitir};
+          \draw[->,very thick,aneliseLaranja] (S) -- (D);
+          \draw[->,very thick,aneliseLaranja] (D) -- (A);
+          \draw[->,thick,aneliseGris,dashed] ([xshift=1.6cm]A.east) -- node[right,midway,font=\tiny]{aprender} ([xshift=1.6cm]S.east);
+        \end{tikzpicture}\\[1mm]
+        {\scriptsize \textbf{Figura I:} Ciclo cognitivo sense--decide--act.}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
 \begin{frame}{Projetos de pesquisa em redes sem fio}
   \textbf{Áreas principais}: otimização de recursos e protocolos de roteamento.
   \begin{enumerate}
@@ -377,13 +881,16 @@
   \begin{block}{Passo 1 --- Símbolo e preâmbulo}
     $T_{sym}=2^{SF}/BW=4096/125\,000=32{,}768$~ms; \quad $T_{preamble}=12{,}25\cdot T_{sym}\approx 401{,}4$~ms
   \end{block}
+  \pause
   \begin{block}{Passo 2 --- Símbolos de payload}
     $n_{payload}=8+\big\lceil(8PL-4SF+28+16\,CRC-20H)/(4(SF-2DE))\big\rceil\cdot(CR+4)$\\
     $\phantom{n_{payload}}=8+\lceil 156/48\rceil\cdot 8=8+4\cdot 8=40$ símbolos
   \end{block}
+  \pause
   \begin{block}{Passo 3 --- Tempo no ar}
     $T_{payload}=40\cdot 32{,}768\approx 1310{,}7$~ms \quad $\Rightarrow$ \quad $T_{total}=T_{preamble}+T_{payload}\approx \mathbf{1{,}71}$~\textbf{s}
   \end{block}
+  \pause
   \begin{alertblock}{Interpretação}
     Com \emph{duty cycle} de 1\% (EU868), entre duas transmissões deve haver $\geq 100\times 1{,}71\approx 171$~s ($\approx 2{,}9$~min).
   \end{alertblock}
@@ -398,6 +905,7 @@
       \item a $10$~km: $PL=32{,}44+20\log_{10}(868)+20\log_{10}(10)=32{,}44+58{,}77+20\approx 111$~dB
     \end{itemize}
   \end{block}
+  \pause
   \begin{exampleblock}{Resultado}
     Margem de $151-111\approx 40$~dB a $10$~km: o link é viável mesmo com perdas por obstáculos/multipercurso; na prática, o alcance LoRaWAN fica entre 2--15~km (rural até $\sim$50~km no Sigfox).
   \end{exampleblock}
@@ -409,6 +917,7 @@
     \item \textbf{LPWAN}: LoRaWAN (CSS, \emph{star-of-stars}, \emph{duty cycle}) e Sigfox (UNB) para IoT de baixo custo e consumo; NB-IoT/LTE-M como alternativa celular com QoS;
     \item \textbf{5G NR}: casos eMBB, uRLLC e mMTC viabilizados por \emph{beamforming} massivo, \emph{network slicing} e MEC;
     \item \textbf{Satélites LEO (Starlink)}: latência 20--40~ms, enlaces a laser ISL e integração NTN (3GPP Rel.\ 17+);
+    \pause
     \item \textbf{Arquiteturas emergentes}: DTN (Bundle Protocol), FANET/VANET, SDR e SDN como objetos de pesquisa ativa.
   \end{itemize}
 \end{frame}
@@ -451,6 +960,7 @@
       \item variar SF (7$\rightarrow$12) e medir tempo no ar e consumo; comparar com o exercício resolvido.
     \end{itemize}
   \end{block}
+  \pause
   \begin{block}{Opção 2 --- Simulação LPWAN no ns-3}
     \begin{itemize}
       \item usar o módulo LoRaWAN do ns-3 (ou o LoraWanSim) com gateways e end-devices;

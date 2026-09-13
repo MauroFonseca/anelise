@@ -64,6 +64,123 @@
   \end{alertblock}
 \end{frame}
 
+\section{Espectro e numerologia}
+
+\begin{frame}{Bandas 5G: FR1 (sub-6~GHz) e FR2 (mmWave)}
+  \begin{center}
+    \scriptsize
+    \begin{tabular}{@{}p{1.5cm}p{3.3cm}p{7.4cm}@{}}
+      \toprule
+      \textbf{Faixa} & \textbf{Frequência} & \textbf{Bandas NR típicas (3GPP TS 38.101)}\\
+      \midrule
+      FR1 & 410~MHz--7,125~GHz & n41 (2,5~GHz), n77 (3,3--4,2~GHz), \textbf{n78} (3,3--3,8~GHz)\\
+      FR2-1 & 24,25--52,6~GHz & \textbf{n257} (26,5--29,5~GHz), \textbf{n258} (24,25--27,5~GHz), \textbf{n260} (37--40~GHz), \textbf{n261} (27,5--28,35~GHz)\\
+      FR2-2 & 52,6--71~GHz & n262 (47,2--48,2~GHz), n263 (57--71~GHz), bandas de 60~GHz (Rel-17)\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{FR1 --- cobertura}
+        \begin{itemize}
+          \item propagação próxima do 4G, boa difração
+          \item largura de banda por portadora até 100~MHz
+          \item \emph{mid-band} (3,5~GHz) é o ``cavalo de batalha''
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{alertblock}{FR2 --- capacidade}
+        \begin{itemize}
+          \item largura de banda de 400~MHz a 2~GHz
+          \item alta atenuação (O$_2$, chuva, bloqueio)
+          \item \emph{beamforming} obrigatório; curto alcance
+        \end{itemize}
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+  \note{n78 (3,5 GHz) é a principal banda FR1 de implantação; FR2 usa n257/n258/n260/n261. FR2-2 (60 GHz) chega no Rel-17.}
+\end{frame}
+
+\begin{frame}{Numerologia OFDM e duração do slot}
+  \begin{columns}
+    \begin{column}{0.46\textwidth}
+      \begin{center}
+        \scriptsize
+        \begin{tabular}{@{}cccc@{}}
+          \toprule
+          $\mu$ & SCS & Slots/subframe & Duração do slot\\
+          \midrule
+          0 & 15~kHz & 1 & 1~ms\\
+          1 & 30~kHz & 2 & 0,5~ms\\
+          2 & 60~kHz & 4 & 0,25~ms\\
+          3 & 120~kHz & 8 & 125~$\mu$s\\
+          4 & 240~kHz & 16 & 62,5~$\mu$s\\
+          \bottomrule
+        \end{tabular}
+      \end{center}
+      \[
+        T_{\text{slot}} = \frac{1~\text{ms}}{2^{\mu}}, \qquad
+        \text{SCS} = 15\cdot 2^{\mu}~\text{kHz}
+      \]
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\tiny,>=Stealth]
+          \draw[fill=aneliseAzul!15,draw=aneliseAzul] (0,1.6) rectangle (10,2.2);
+          \foreach \i in {1,...,9} \draw[aneliseAzul] (\i,1.6)--(\i,2.2);
+          \node[right,font=\scriptsize] at (10.1,1.9) {radio frame = 10~ms};
+          \draw[fill=aneliseVerde!18,draw=aneliseVerde] (0,0.7) rectangle (1,1.2);
+          \node[right,font=\scriptsize] at (1.1,0.95) {1 subframe = 1~ms};
+          \draw[fill=aneliseLaranja!20,draw=aneliseLaranja] (0,0.1) rectangle (0.5,0.5);
+          \draw[fill=aneliseLaranja!20,draw=aneliseLaranja] (0.5,0.1) rectangle (1,0.5);
+          \node[right,font=\scriptsize] at (1.1,0.3) {2$^\mu$ slots/subframe ($\mu=1$: 0,5~ms)};
+        \end{tikzpicture}
+      \end{center}
+    \end{column}
+  \end{columns}
+  \begin{block}{Por que flexibilizar?}
+    15~kHz para \textbf{cobertura} (eMBB rural, mMTC); 60--120~kHz para \textbf{latência baixa} (URLLC) e menor \emph{overhead} relativo de CP (4,7~$\mu$s a 15~kHz).
+  \end{block}
+  \note{O prefixo cíclico (CP) normal é de 4,7 $\mu$s a 15 kHz e escala inversamente com a SCS.}
+\end{frame}
+
+\begin{frame}{Duplexação e formatos de slot}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{FDD (paired spectrum)}
+        \begin{itemize}
+          \item UL e DL em frequências separadas
+          \item \emph{full-duplex} por banda
+          \item bom para cobertura e latência simétrica
+          \item espectro ``casado'' mais caro
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{alertblock}{TDD (unpaired spectrum)}
+        \begin{itemize}
+          \item mesma banda, separação no \textbf{tempo}
+          \item 3GPP TS 38.213: \emph{slot formats} D (downlink), U (uplink) e S (flexível)
+          \item \emph{reciprocidade de canal} favorece mMIMO
+          \item exige sincronização e \emph{guard periods}
+        \end{itemize}
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+  \begin{center}
+    \begin{tikzpicture}[font=\tiny]
+      \foreach \i/\t in {0/D,1/D,2/D,3/S,4/U,5/U,6/D,7/D,8/D,9/S} {
+        \draw[fill=aneliseAzul!18,draw=aneliseAzul] (\i,0) rectangle ++(0.9,0.6);
+        \node at (\i+0.45,0.3) {\t};
+      }
+      \node[right,font=\scriptsize] at (9.1,0.3) {TDD: padrão D/U/S (10~ms)};
+    \end{tikzpicture}\\[1mm]
+    {\scriptsize \textbf{Figura 4:} configuração TDD com slots de downlink (D), uplink (U) e flexível (S).}
+  \end{center}
+  \note{Em TDD, o padrão D/U/S é semi-estático (SIB1) e pode ser adaptado dinamicamente por DCI.}
+\end{frame}
+
 \section{Arquitetura 5G}
 
 \begin{frame}{Arquitetura 5G: SA vs.\ NSA}
@@ -134,6 +251,125 @@
   \note{O NRF é o ``catálogo'' de serviços: cada NF se registra e descobre as demais via APIs RESTful; isso desacopla as funções e viabiliza o slicing.}
 \end{frame}
 
+\section{Arquitetura avançada}
+
+\begin{frame}{Dual connectivity: EN-DC, NR-DC e NE-DC}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+        \item UE mantém \textbf{duas conexões} simultâneas: nó mestre (MN) e nó secundário (SN)
+        \item agregação de portadoras entre tecnologias/nós
+        \item \textbf{EN-DC} (Option 3): MN = eNB (LTE), SN = gNB (NR) --- base do NSA
+        \item \textbf{NR-DC}: MN e SN são gNB (SA)
+        \item \textbf{NE-DC}: MN = gNB (NR), SN = eNB (LTE)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\scriptsize]
+          \node[draw,rounded corners,fill=aneliseAzul!15,minimum width=1.2cm](ue){UE};
+          \node[draw,rounded corners,fill=aneliseLaranja!20,right=2.2cm of ue](mn){MN (eNB/gNB)};
+          \node[draw,rounded corners,fill=aneliseVerde!18,above=0.9cm of mn](sn){SN (gNB)};
+          \draw[<->,thick,aneliseAzul] (ue) -- (mn);
+          \draw[<->,thick,aneliseVerde] (ue) -- (sn);
+          \draw[<->,thick,aneliseGris] (mn) -- (sn);
+          \node[font=\tiny,below=0.15cm of mn]{X2/Xn};
+        \end{tikzpicture}\\[1mm]
+        {\scriptsize \textbf{Figura 5:} dual connectivity: o UE agrega o nó mestre e o secundário.}
+      \end{center}
+    \end{column}
+  \end{columns}
+  \begin{block}{Benefícios}
+    Pico de taxa (agregação), ancoragem de mobilidade no MN e implantação incremental do NR sobre o LTE (NSA).
+  \end{block}
+\end{frame}
+
+\begin{frame}{PDU sessions, QoS flows e DRBs}
+  \begin{itemize}
+    \item \textbf{PDU Session}: associação UE $\leftrightarrow$ rede de dados (DN), com IP (ou Ethernet/não-IP); ancorada no UPF
+    \item cada PDU session contém um ou mais \textbf{QoS Flows} (identificados pelo \textbf{QFI})
+    \item \textbf{5QI}: índice de QoS (tipo de recurso GBR/non-GBR, prioridade, \emph{packet delay budget}, taxa de erro)
+    \item QoS Flow $\rightarrow$ \textbf{DRB} (Data Radio Bearer) no rádio, com mapeamento pelo gNB
+  \end{itemize}
+  \begin{center}
+    \begin{tikzpicture}[font=\tiny,>=Stealth]
+      \node[draw,rounded corners,fill=aneliseAzul!15,minimum width=1.1cm](ue){UE};
+      \node[draw,rounded corners,fill=aneliseLaranja!20,right=2.0cm of ue,minimum width=1.3cm](gnb){gNB};
+      \node[draw,rounded corners,fill=aneliseVerde!18,right=2.0cm of gnb,minimum width=1.3cm](upf){UPF};
+      \node[draw,rounded corners,fill=aneliseGris!18,right=1.4cm of upf](dn){DN};
+      \draw[thick,aneliseLaranja] ($(ue.east)+(0,0.5)$) -- ($(gnb.west)+(0,0.5)$) -- ($(upf.west)+(0,0.5)$) -- ($(dn.west)+(0,0.5)$);
+      \draw[thick,aneliseVerde] ($(ue.east)+(0,0)$) -- ($(gnb.west)+(0,0)$) -- ($(upf.west)+(0,0)$) -- ($(dn.west)+(0,0)$);
+      \draw[thick,aneliseAzul] ($(ue.east)+(0,-0.5)$) -- ($(gnb.west)+(0,-0.5)$) -- ($(upf.west)+(0,-0.5)$) -- ($(dn.west)+(0,-0.5)$);
+      \node[above,font=\tiny,text=aneliseLaranja] at ($(gnb.west)!0.5!(upf.west)+(0,0.5)$){5QI 1 (GBR, voz)};
+      \node[font=\tiny,text=aneliseVerde] at ($(gnb.west)!0.5!(upf.west)+(0,0)$){5QI 9 (non-GBR, eMBB)};
+      \node[below,font=\tiny,text=aneliseAzul] at ($(gnb.west)!0.5!(upf.west)+(0,-0.5)$){5QI 82 (URLLC)};
+      \node[below,font=\tiny] at ($(ue.east)!0.5!(gnb.west)+(0,-0.9)$){DRBs};
+      \node[below,font=\tiny] at ($(gnb.east)!0.5!(upf.west)+(0,-0.9)$){N3/GTP-U};
+    \end{tikzpicture}\\[1mm]
+    {\scriptsize \textbf{Figura 6:} uma PDU session transporta três QoS flows (voz GBR, eMBB e URLLC) sobre DRBs distintos.}
+  \end{center}
+  \note{N3 = interface gNB--UPF (GTP-U); N4 = SMF--UPF; N6 = UPF--DN. O mapeamento QoS flow $\to$ DRB é decidido pelo gNB.}
+\end{frame}
+
+\begin{frame}{Mobilidade e handover no 5G}
+  \begin{columns}
+    \begin{column}{0.52\textwidth}
+      \begin{itemize}
+        \item \textbf{Intra-gNB}: troca de feixe/célula sem mudar o nó
+        \item \textbf{Xn-based} (inter-gNB): sinalização direta gNB--gNB (interface Xn); \emph{path switch} no UPF
+        \item \textbf{N2-based} (inter-AMF): quando não há Xn; sinalização via núcleo (AMF)
+        \item \textbf{CP/UP split}: controle no RAN/AMF, dados no UPF; a sessão PDU pode ser realocada
+        \item \textbf{DAPS} (Rel-16): \emph{dual active protocol stack} para interrupção $\approx 0$~ms
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\tiny,>=Stealth]
+          \node[draw,rounded corners,fill=aneliseAzul!15](src){gNB fonte};
+          \node[draw,rounded corners,fill=aneliseVerde!18,right=1.4cm of src](tgt){gNB alvo};
+          \node[draw,rounded corners,fill=aneliseLaranja!20] at ($(src)!0.5!(tgt)+(0,-1.4)$)(amf){AMF/UPF};
+          \draw[<->,thick,aneliseGris] (src) -- node[above,font=\tiny]{Xn} (tgt);
+          \draw[<->,thick] (src) -- (amf);
+          \draw[<->,thick] (tgt) -- (amf);
+          \node[font=\tiny,right=0.1cm of amf]{N2/N3};
+        \end{tikzpicture}\\[1mm]
+        {\scriptsize \textbf{Figura 7:} handover Xn (direto) e N2 (via núcleo).}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{MEC: arquitetura e casos de uso}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+        \item \textbf{ETSI MEC}: \emph{host} MEC na borda, orquestrador e \emph{MEC apps}
+        \item \textbf{Local breakout}: UPF local (ULCL) desvia o tráfego para a borda
+        \item latência típica $<$ 10~ms; economia de \emph{backhaul}
+      \end{itemize}
+      \begin{block}{Casos de uso}
+        AR/VR, V2X, \emph{cloud gaming}, análise de vídeo, automação industrial, \emph{caching} de conteúdo.
+      \end{block}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\tiny,>=Stealth]
+          \node[draw,rounded corners,fill=aneliseAzul!15](ue){UE};
+          \node[draw,rounded corners,fill=aneliseLaranja!20,right=1.4cm of ue](gnb){gNB};
+          \node[draw,rounded corners,fill=aneliseVerde!18,above=0.9cm of gnb](mec){MEC host};
+          \node[draw,rounded corners,fill=aneliseGris!18,right=1.6cm of gnb](upf){UPF};
+          \node[draw,cloud,cloud puffs=9,aspect=2,fill=aneliseGris!12,right=1.2cm of upf,font=\tiny](cl){nuvem};
+          \draw[<->,thick] (ue) -- (gnb);
+          \draw[<->,thick,aneliseVerde] (gnb) -- (mec);
+          \draw[<->,thick] (gnb) -- (upf);
+          \draw[<->,thick] (upf) -- (cl);
+        \end{tikzpicture}\\[1mm]
+        {\scriptsize \textbf{Figura 8:} MEC na borda da RAN, com \emph{local breakout} no UPF.}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
 \section{Tecnologias-chave}
 
 \begin{frame}{Tecnologias-chave do 5G NR}
@@ -196,6 +432,118 @@
   \end{block}
 \end{frame}
 
+\section{mMIMO e beamforming}
+
+\begin{frame}{Massive MIMO: princípios e ganhos}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+        \item dezenas a centenas de elementos de antena no gNB (64T64R, 128T128R, 256+)
+        \item \textbf{MU-MIMO}: vários UEs no mesmo recurso tempo-frequência via \emph{precoding}
+        \item \textbf{ganho de array}: $G = 10\log_{10}(N)$
+        \item \emph{channel hardening} e \emph{favorable propagation}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Exemplos de ganho de array}
+        \begin{center}
+          \begin{tabular}{@{}cc@{}}
+            \toprule
+            $N$ antenas & $10\log_{10}N$\\
+            \midrule
+            16 & 12,0~dB\\
+            64 & 18,1~dB\\
+            256 & 24,1~dB\\
+            1024 & 30,1~dB\\
+            \bottomrule
+          \end{tabular}
+        \end{center}
+      \end{block}
+      \begin{exampleblock}{Cálculo}
+        $N=64$: $10\log_{10}(64)=10\times 1{,}806=18{,}06~\text{dB}\approx \mathbf{18~dB}$.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+  \note{Os 18 dB do exemplo compensam parte da atenuação adicional em mmWave; esse ganho é uma das razões do mMIMO em FR2.}
+\end{frame}
+
+\begin{frame}{Beamforming: analógico, digital e híbrido}
+  \begin{center}
+    \begin{tikzpicture}[font=\tiny,>=Stealth]
+      \foreach \y in {0,0.22,...,1.54} \draw[fill=aneliseAzul!40,draw=aneliseAzul] (0,\y) rectangle ++(0.14,0.14);
+      \node[below,font=\scriptsize] at (0.6,-0.2){Analógico};
+      \draw[aneliseLaranja,thick] (0.2,0.85) -- (2.0,1.5);
+      \draw[aneliseLaranja,thick] (0.2,0.85) -- (2.0,0.85);
+      \draw[aneliseLaranja,thick] (0.2,0.85) -- (2.0,0.2);
+      \node[right,font=\tiny] at (2.1,0.85){1 cadeia RF};
+      \begin{scope}[xshift=4.5cm]
+        \foreach \y in {0,0.22,...,1.54} \draw[fill=aneliseVerde!40,draw=aneliseVerde] (0,\y) rectangle ++(0.14,0.14);
+        \node[below,font=\scriptsize] at (0.6,-0.2){Digital};
+        \draw[aneliseVerde,thick] (0.2,1.0) -- (2.0,1.6);
+        \draw[aneliseVerde,thick] (0.2,1.0) -- (2.0,1.2);
+        \draw[aneliseVerde,thick] (0.2,1.0) -- (2.0,0.6);
+        \draw[aneliseVerde,thick] (0.2,1.0) -- (2.0,0.3);
+        \node[right,font=\tiny] at (2.1,1.0){1 RF/antena};
+      \end{scope}
+      \begin{scope}[xshift=9.0cm]
+        \foreach \x in {0,0.22,...,0.66} \foreach \y in {0,0.22,...,1.54} \draw[fill=aneliseLaranja!40,draw=aneliseLaranja] (\x,\y) rectangle ++(0.14,0.14);
+        \node[below,font=\scriptsize] at (0.6,-0.2){Híbrido};
+        \draw[aneliseLaranja,thick] (0.2,1.0) -- (2.0,1.5);
+        \draw[aneliseLaranja,thick] (0.2,1.0) -- (2.0,0.5);
+        \node[right,font=\tiny] at (2.1,1.0){sub-arrays};
+      \end{scope}
+    \end{tikzpicture}\\[1mm]
+    {\scriptsize \textbf{Figura 9:} comparativo de arquiteturas de \emph{beamforming} em mmWave.}
+  \end{center}
+  \begin{columns}
+    \begin{column}{0.33\textwidth}
+      \begin{block}{Analógico}
+        Um feixe por vez, deslocadores de fase; barato e comum em FR2.
+      \end{block}
+    \end{column}
+    \begin{column}{0.33\textwidth}
+      \begin{block}{Digital}
+        Feixes múltiplos e flexíveis; alto custo/consumo (1 RF por antena).
+      \end{block}
+    \end{column}
+    \begin{column}{0.33\textwidth}
+      \begin{block}{Híbrido}
+        Compromisso: poucas cadeias RF com sub-arrays; padrão prático do 5G mmWave.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Beam management}
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \begin{itemize}
+        \item \textbf{SSB} (\emph{Synchronization Signal Block}): varredura de feixes de sincronização (\emph{beam sweeping})
+        \item \textbf{CSI-RS}: medição de canal para seleção/refinamento de feixe
+        \item procedimentos P1/P2/P3: seleção de feixe do gNB e do UE
+        \item \textbf{Beam failure recovery (BFR)}: detecção de falha e recuperação via RACH
+        \item reporte (\emph{beam reporting}) por L1/L2
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\tiny,>=Stealth]
+          \node[draw,rounded corners,fill=aneliseAzul!15](gnb){gNB};
+          \draw[aneliseLaranja,thick] (gnb.east) -- ++(0.6,0.9);
+          \draw[aneliseLaranja,thick] (gnb.east) -- ++(0.8,0.3);
+          \draw[aneliseLaranja,thick] (gnb.east) -- ++(0.8,-0.3);
+          \draw[aneliseLaranja,thick] (gnb.east) -- ++(0.6,-0.9);
+          \node[draw,rounded corners,fill=aneliseVerde!18,right=2.2cm of gnb,yshift=0.3cm](ue){UE};
+          \draw[<->,thick,aneliseGris] (gnb.east) -- (ue.west);
+          \node[font=\tiny,below=0.1cm of gnb]{beam sweeping};
+        \end{tikzpicture}\\[1mm]
+        {\scriptsize \textbf{Figura 10:} varredura de feixes (SSB) e alinhamento com o UE.}
+      \end{center}
+    \end{column}
+  \end{columns}
+  \note{SSB = PSS + SSS + PBCH; até 64 feixes de SSB em FR2. O BFR usa o acesso aleatório para recuperar o feixe.}
+\end{frame}
+
 \section{5G e sem fio}
 
 \begin{frame}{5G NR e Wi-Fi: convergência}
@@ -209,6 +557,94 @@
         \item 5G NR: mobilidade, \emph{slicing}, QoS fim-a-fim, cobertura externa
       \end{itemize}
   \end{itemize}
+\end{frame}
+
+\section{Espectro não licenciado e IoT}
+
+\begin{frame}{NR-U e LAA: 5G em espectro não licenciado}
+  \begin{itemize}
+    \item \textbf{LAA} (LTE Licensed-Assisted Access): LTE em 5~GHz assistido por portadora licenciada
+    \item \textbf{NR-U} (Rel-16): NR em 5~GHz e 6~GHz, modos \emph{standalone} e assistido
+    \item \textbf{LBT} (\emph{Listen Before Talk}): obrigatório por regulação (ETSI/FCC) para coexistência justa
+    \item coexistência com Wi-Fi 6/6E/7 na mesma banda; largura de canal de 20 a 80/100~MHz
+  \end{itemize}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Vantagens}
+        Mais espectro disponível, \emph{offload} de tráfego e \emph{carrier aggregation}.
+      \end{block}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{alertblock}{Desafios}
+        LBT introduz latência variável; sem garantias rígidas de QoS; interferência com WLAN.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+  \note{A banda de 6 GHz (5925--7125 MHz) é chave para o NR-U e para o Wi-Fi 6E/7.}
+\end{frame}
+
+\begin{frame}{RedCap: IoT de média capacidade (Rel-17)}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+        \item \emph{Reduced Capability} NR: simplifica o modem para reduzir custo e consumo
+        \item 1 ou 2 receptores; largura de banda reduzida (20~MHz em FR1)
+        \item \emph{half-duplex} FDD; menor pico e menor complexidade
+        \item preenche a lacuna entre eMBB e mMTC
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Casos de uso}
+        \emph{Wearables}, sensores industriais, câmeras de vídeo e \emph{smart grid}.
+      \end{block}
+      \begin{exampleblock}{Números (Rel-17)}
+        Pico de $\approx$ 100~Mbps DL / 50~Mbps UL; latência de dezenas de ms.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+  \note{O RedCap é especificado no 3GPP TS 38.306 (Rel-17).}
+\end{frame}
+
+\begin{frame}{Integração NTN (Rel-17/18)}
+  \begin{itemize}
+    \item \textbf{NTN --- Non-Terrestrial Networks}: satélites LEO/GEO, HAPS e \emph{drones}
+    \item Rel-17: primeiras especificações de \emph{NR NTN} e \emph{IoT NTN} (3GPP TR 38.811)
+    \item Rel-18: \emph{enhancements} --- cobertura, mobilidade e \emph{timing advance} para LEO
+    \item desafios: atraso de propagação longo, \emph{Doppler} alto e células em movimento
+  \end{itemize}
+  \begin{exampleblock}{Cobertura 3D}
+    NTN estende o 5G a áreas remotas, marítimas e aéreas; é a base da futura rede 3D do 6G.
+  \end{exampleblock}
+  \note{Detalhes de NTN serão aprofundados na Aula 10.}
+\end{frame}
+
+\section{5G-Advanced}
+
+\begin{frame}{5G-Advanced (Rel-18/19): rumo ao 6G}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Rel-18 (2024)}
+        \begin{itemize}
+          \item \textbf{IA/ML na RAN}: feedback de CSI, \emph{beam management} e posicionamento
+          \item \textbf{eficiência energética} de rede (\emph{network energy savings})
+          \item \textbf{MBS}: multicast/broadcast de serviços
+          \item RedCap e NR-U evoluídos; NTN aprimorado
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{alertblock}{Rel-19 e além}
+        \begin{itemize}
+          \item IA/ML nativo e \emph{air interface} com \emph{sensing}
+          \item \emph{Ambient IoT} e posicionamento de alta precisão
+          \item convergência com computação de borda e nuvem
+        \end{itemize}
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+  \begin{center}
+    {\scriptsize Rel-18 é o primeiro lançamento rotulado \textbf{5G-Advanced}; o Rel-21 (2028) iniciará o IMT-2030 (6G).}
+  \end{center}
 \end{frame}
 
 \section{Rumo ao 6G}
@@ -245,6 +681,132 @@
     3GPP Rel.\ 21 (2028) definirá os requisitos; ITU-R WP5D prepara o IMT-2030.
   \end{exampleblock}
   \note{Em 6G, o destaque é a convergência comunicação--sensoriamento (ISAC) e a integração com LEO/drones; o IMT-2030 será definido no 3GPP Rel.\ 21.}
+\end{frame}
+
+\begin{frame}{6G: RIS --- superfícies refletoras inteligentes}
+  \begin{columns}
+    \begin{column}{0.52\textwidth}
+      \begin{itemize}
+        \item \textbf{RIS} (\emph{Reconfigurable Intelligent Surface}): arranjo de elementos refletores passivos com fase controlável
+        \item cria um \textbf{caminho virtual de LOS} ao contornar obstáculos
+        \item não amplifica o sinal: apenas o redireciona (baixo consumo)
+        \item aplicações: cobertura em mmWave/THz, \emph{dead zones}, eficiência energética
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\tiny,>=Stealth]
+          \node[draw,rounded corners,fill=aneliseAzul!15](bs){gNB};
+          \node[fill=aneliseGris!40,minimum width=0.22cm,minimum height=2.0cm] at (3,0.5){};
+          \node[font=\tiny,below] at (3,0.0){obstáculo};
+          \node[draw,fill=aneliseLaranja!30,minimum width=0.2cm,minimum height=1.4cm] at (5.2,1.8){};
+          \node[font=\tiny,above] at (5.2,2.5){RIS};
+          \node[draw,rounded corners,fill=aneliseVerde!18] at (6.8,0.2)(ue){UE};
+          \draw[-Stealth,thick,aneliseAzul] (bs.east) -- (5.2,2.4);
+          \draw[-Stealth,thick,aneliseVerde] (5.2,1.2) -- (ue.north);
+          \draw[dashed,aneliseGris] (bs.east) -- (3,0.3);
+        \end{tikzpicture}\\[1mm]
+        {\scriptsize \textbf{Figura 11:} a RIS reflete o feixe do gNB ao redor do obstáculo até o UE.}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{6G: ISAC e a convergência comunicação--sensoriamento}
+  \begin{itemize}
+    \item \textbf{ISAC} (\emph{Integrated Sensing and Communication}): o mesmo sinal serve para comunicar e ``enxergar'' o ambiente
+    \item o gNB funciona como radar: estima distância, velocidade e ângulo de alvos
+    \item casos de uso: localização de alta precisão, mapeamento do ambiente, detecção de obstáculos, gestos e V2X
+    \item \emph{trade-off}: dividir recursos entre taxa de comunicação e resolução de sensoriamento
+  \end{itemize}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Habilitadores}
+        Bandas altas (mmWave/THz), grandes arrays (mMIMO) e IA para processamento do eco.
+      \end{block}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{alertblock}{Visão IMT-2030}
+        Sensoriamento integrado é um dos novos casos de uso do 6G no \emph{framework} ITU-R M.2160.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Implantação}
+
+\begin{frame}{Densificação: macro células e small cells (HetNet)}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+        \item \textbf{macro cells}: cobertura ampla (km), alta potência, mobilidade
+        \item \textbf{small cells} (micro/pico/femto): baixa potência, curto alcance, alta densidade
+        \item \textbf{HetNet}: camadas sobrepostas para aumentar capacidade e \emph{area spectral efficiency}
+        \item \emph{backhaul} das small cells: fibra, mmWave ou PLC
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[font=\tiny]
+          \draw[fill=aneliseAzul!10,draw=aneliseAzul] (0,0) circle (2.2);
+          \node[font=\scriptsize,text=aneliseAzul] at (0,1.9){macro};
+          \foreach \x/\y in {-1.1/0.5, 1.0/-0.8, 0.2/1.0} {
+            \draw[fill=aneliseLaranja!25,draw=aneliseLaranja] (\x,\y) circle (0.55);
+          }
+          \foreach \x/\y in {-1.1/0.5, 1.0/-0.8, 0.2/1.0} {
+            \node[circle,fill=aneliseLaranja,inner sep=1pt] at (\x,\y){};
+          }
+          \node[font=\tiny,text=aneliseLaranja] at (-1.1,1.35){small};
+        \end{tikzpicture}\\[1mm]
+        {\scriptsize \textbf{Figura 12:} HetNet: macro célula com small cells sobrepostas.}
+      \end{center}
+    \end{column}
+  \end{columns}
+  \note{A densificação é o principal vetor de capacidade do 5G; a interferência entre camadas exige coordenação (eICIC/ABS).}
+\end{frame}
+
+\begin{frame}{Desafios de implantação}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{\emph{Backhaul}}
+        Conectar milhares de small cells; fibra nem sempre viável; alternativas em mmWave e malha.
+      \end{block}
+      \begin{block}{Energia}
+        RAN consome a maior parte da energia da rede; modos de \emph{sleep} e fontes renováveis.
+      \end{block}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{alertblock}{Espectro}
+        Licenciamento caro; \emph{mid-band} disputada; uso compartilhado (CBRS, 6~GHz).
+      \end{alertblock}
+      \begin{alertblock}{Cobertura indoor}
+        mmWave não penetra bem; \emph{small cells} indoor, DAS e Wi-Fi como complemento.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+  \begin{center}
+    {\scriptsize CAPEX/OPEX, aquisição de sites e regulação também condicionam o ritmo de implantação.}
+  \end{center}
+\end{frame}
+
+\begin{frame}{5G NR vs.\ Wi-Fi 7: quando usar cada um}
+  \begin{center}
+    \scriptsize
+    \begin{tabular}{@{}p{2.6cm}p{5.0cm}p{5.0cm}@{}}
+      \toprule
+      \textbf{Critério} & \textbf{5G NR} & \textbf{Wi-Fi 7 (IEEE 802.11be)}\\
+      \midrule
+      Mobilidade & \emph{handover} entre células, alta velocidade & limitada ao ESS; sem \emph{handover} celular\\
+      QoS fim-a-fim & 5QI, \emph{QoS flows}, garantias e URLLC & EDCA/WMM, melhor esforço com prioridades\\
+      \emph{Slicing} & sim, isolamento de recursos & não nativo (SSID/VLAN)\\
+      Cobertura & macro (km) e indoor & dezenas de metros, ambiente controlado\\
+      Espectro & licenciado (+ não licenciado NR-U) & não licenciado (2,4/5/6~GHz)\\
+      Custo & CAPEX/OPEX altos; \emph{chipsets} caros & baixo; amplo ecossistema\\
+      Casos de uso & eMBB/URLLC/mMTC, V2X, indústria & WLAN densa, casa, escritório, \emph{offload}\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  \note{Wi-Fi 7 traz MLO, canais de 320 MHz e 4096-QAM; o 5G se destaca em mobilidade, QoS e slicing.}
 \end{frame}
 
 \begin{frame}{Exercício resolvido: latência fim-a-fim em URLLC}
