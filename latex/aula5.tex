@@ -174,7 +174,7 @@
       \node[font=\tiny,anchor=west] at (9.25,1.8){4 usuários};
       \node[font=\tiny,anchor=west] at (9.25,0.95){9 usuários};
     \end{tikzpicture}\\[1mm]
-    {\scriptsize \textbf{Figura A:} Canal de 20~MHz dividido em RUs de 26/52/106/242 subportadoras.}
+    {\scriptsize \textbf{Figura 2:} Canal de 20~MHz dividido em RUs de 26/52/106/242 subportadoras.}
   \end{center}
 \end{frame}
 
@@ -199,7 +199,7 @@
           \draw[<->,very thick,aneliseVerde] ([xshift=0cm]ap.south) -- node[midway,left,font=\tiny]{5 GHz} ([xshift=0cm]sta.north);
           \draw[<->,very thick,aneliseAzul] ([xshift=1.1cm]ap.south) -- node[midway,right,font=\tiny]{6 GHz} ([xshift=1.1cm]sta.north);
         \end{tikzpicture}\\[1mm]
-        {\scriptsize \textbf{Figura B:} MLO: três enlaces simultâneos entre STA e AP.}
+        {\scriptsize \textbf{Figura 3:} MLO: três enlaces simultâneos entre STA e AP.}
       \end{center}
       {\scriptsize Enlaces com taxas e latências distintas; o MLO escolhe e combina.}
     \end{column}
@@ -256,7 +256,7 @@
           \draw[dashed,thick,aneliseGris] (M) -- (p1);
           \node[draw,fill=aneliseGris!12,rounded corners=2mm,below=5mm of p1,text width=3.4cm,align=center](leg){M mestre, S escravo,\\P estacionado (inativo)};
         \end{tikzpicture}\\[1mm]
-        {\scriptsize \textbf{Figura 2:} Piconet Bluetooth (mestre, escravos, parado).}
+        {\scriptsize \textbf{Figura 4:} Piconet Bluetooth (mestre, escravos, parado).}
       \end{center}
       {\scriptsize Banda 2,4--2,5~GHz; até 721~kbps (BT 1.x); a evolução 802.15.1 até 3~Mbps.}
     \end{column}
@@ -331,7 +331,7 @@
           \draw[thick,aneliseGris] (R3) -- (E3);
           \node[below=3mm of E3,font=\tiny]{C coordinator, R router, E end-device};
         \end{tikzpicture}\\[1mm]
-        {\scriptsize \textbf{Figura C:} Malha 802.15.4 com coordinator, routers e end-devices.}
+        {\scriptsize \textbf{Figura 5:} Malha 802.15.4 com coordinator, routers e end-devices.}
       \end{center}
       {\scriptsize Malha $\Rightarrow$ rotas alternativas: se um router falha, a rede re-roteia sozinha.}
     \end{column}
@@ -432,7 +432,7 @@
             \node[below=0.4cm of gw,font=\tiny]{IP (backhaul)};
           \end{tikzpicture}
         }\\[1mm]
-        {\scriptsize \textbf{Figura D:} star-of-stars: devices $\rightarrow$ gateway $\rightarrow$ servidores.}
+        {\scriptsize \textbf{Figura 6:} star-of-stars: devices $\rightarrow$ gateway $\rightarrow$ servidores.}
       \end{center}
     \end{column}
   \end{columns}
@@ -492,7 +492,7 @@
       \draw[<->,thick,aneliseGris] (b.east) -- (c1.west);
       \node[below=2mm of b,font=\tiny]{alcance, consumo, custo};
     \end{tikzpicture}\\[1mm]
-    {\scriptsize \textbf{Figura 3:} Comparação qualitativa LoRaWAN, NB-IoT e 5G mMTC quanto a alcance, consumo e custo.}
+    {\scriptsize \textbf{Figura 7:} Comparação qualitativa LoRaWAN, NB-IoT e 5G mMTC quanto a alcance, consumo e custo.}
   \end{center}
 \end{frame}
 
@@ -621,7 +621,7 @@
             \node at (4.5,1.6){subframe ($\mu$=2): 4 slots de 0,25 ms};
           \end{tikzpicture}
         }\\[1mm]
-        {\scriptsize \textbf{Figura E:} Estrutura de frame/slot do 5G NR.}
+        {\scriptsize \textbf{Figura 8:} Estrutura de frame/slot do 5G NR.}
       \end{center}
     \end{column}
   \end{columns}
@@ -649,7 +649,7 @@
       \draw[dashed,thick,aneliseGris] (urllc.south) -- (trans.north);
       \draw[dashed,thick,aneliseGris] (mmtc.south) -- (trans.north);
     \end{tikzpicture}\\[1mm]
-    {\scriptsize \textbf{Figura F:} Três fatias sobre a mesma infraestrutura física.}
+    {\scriptsize \textbf{Figura 9:} Três fatias sobre a mesma infraestrutura física.}
   \end{center}
 \end{frame}
 
@@ -674,7 +674,7 @@
       \draw[->,thick,aneliseGris] (upf) -- (net);
       \node[below=2mm of mec,font=\tiny]{latência $\sim$1--10 ms (vs.\ dezenas de ms no núcleo)};
     \end{tikzpicture}\\[1mm]
-    {\scriptsize \textbf{Figura G:} MEC co-localizado na borda da RAN.}
+    {\scriptsize \textbf{Figura 10:} MEC co-localizado na borda da RAN.}
   \end{center}
 \end{frame}
 
@@ -742,7 +742,7 @@
           \draw[thick,aneliseVerde] (s3) -- (g);
           \node[right=1mm of s2,font=\tiny]{enlaces a laser ISL};
         \end{tikzpicture}\\[1mm]
-        {\scriptsize \textbf{Figura 4:} Constelação LEO com enlaces a laser ISL entre satélites e gateway terrestre.}
+        {\scriptsize \textbf{Figura 11:} Constelação LEO com enlaces a laser ISL entre satélites e gateway terrestre.}
       \end{center}
     \end{column}
   \end{columns}
@@ -795,7 +795,7 @@
       \draw[->,thick,aneliseGris,dashed] (B) -- node[midway,above=1mm,font=\tiny]{entrega posterior} (C);
       \node[draw,fill=aneliseGris!12,rounded corners=2mm,below=8mm of B,text width=4.4cm,align=center,font=\tiny]{B guarda o bundle (store-and-forward) e o reencaminha quando o enlace está disponível};
     \end{tikzpicture}\\[1mm]
-    {\scriptsize \textbf{Figura H:} DTN: salto interrompido com store-and-forward.}
+    {\scriptsize \textbf{Figura 12:} DTN: salto interrompido com store-and-forward.}
   \end{center}
 \end{frame}
 
@@ -853,7 +853,7 @@
           \draw[->,very thick,aneliseLaranja] (D) -- (A);
           \draw[->,thick,aneliseGris,dashed] ([xshift=1.6cm]A.east) -- node[right,midway,font=\tiny]{aprender} ([xshift=1.6cm]S.east);
         \end{tikzpicture}\\[1mm]
-        {\scriptsize \textbf{Figura I:} Ciclo cognitivo sense--decide--act.}
+        {\scriptsize \textbf{Figura 13:} Ciclo cognitivo sense--decide--act.}
       \end{center}
     \end{column}
   \end{columns}

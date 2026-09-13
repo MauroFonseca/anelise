@@ -176,7 +176,7 @@
       }
       \node[right,font=\scriptsize] at (9.1,0.3) {TDD: padrão D/U/S (10~ms)};
     \end{tikzpicture}\\[1mm]
-    {\scriptsize \textbf{Figura 4:} configuração TDD com slots de downlink (D), uplink (U) e flexível (S).}
+    {\scriptsize \textbf{Figura 1:} configuração TDD com slots de downlink (D), uplink (U) e flexível (S).}
   \end{center}
   \note{Em TDD, o padrão D/U/S é semi-estático (SIB1) e pode ser adaptado dinamicamente por DCI.}
 \end{frame}
@@ -213,7 +213,7 @@
           \node[below=1mm of cn,font=\tiny,text width=3.2cm,align=center]{SA: controle e dados sobre 5G};
           \node[draw,fill=aneliseGris!15,rounded corners=1.5mm,below=1.6cm of gnb](leg){Arquitetura 5G SA simples};
         \end{tikzpicture}\\[1mm]
-        {\scriptsize \textbf{Figura 1:} arquitetura 5G SA: UE conectado ao gNB (5G NR), que se liga ao núcleo 5GC baseado em SBA.}
+        {\scriptsize \textbf{Figura 2:} arquitetura 5G SA: UE conectado ao gNB (5G NR), que se liga ao núcleo 5GC baseado em SBA.}
       \end{center}
     \end{column}
   \end{columns}
@@ -246,7 +246,7 @@
       \draw[thick,aneliseGris] (pcf) -- (upf);
       \node[draw,fill=aneliseVerde!12,rounded corners=2mm,below=4mm of pcf](bus){\texttt{bus de serviço}};
     \end{tikzpicture}\\[1mm]
-    {\scriptsize \textbf{Figura 2:} funções de rede do 5GC (AMF, SMF, UPF, NRF, AUSF, PCF) interconectadas pelo \emph{bus} de serviço SBA.}
+    {\scriptsize \textbf{Figura 3:} funções de rede do 5GC (AMF, SMF, UPF, NRF, AUSF, PCF) interconectadas pelo \emph{bus} de serviço SBA.}
   \end{center}
   \note{O NRF é o ``catálogo'' de serviços: cada NF se registra e descobre as demais via APIs RESTful; isso desacopla as funções e viabiliza o slicing.}
 \end{frame}
@@ -275,7 +275,7 @@
           \draw[<->,thick,aneliseGris] (mn) -- (sn);
           \node[font=\tiny,below=0.15cm of mn]{X2/Xn};
         \end{tikzpicture}\\[1mm]
-        {\scriptsize \textbf{Figura 5:} dual connectivity: o UE agrega o nó mestre e o secundário.}
+        {\scriptsize \textbf{Figura 4:} dual connectivity: o UE agrega o nó mestre e o secundário.}
       \end{center}
     \end{column}
   \end{columns}
@@ -306,7 +306,7 @@
       \node[below,font=\tiny] at ($(ue.east)!0.5!(gnb.west)+(0,-0.9)$){DRBs};
       \node[below,font=\tiny] at ($(gnb.east)!0.5!(upf.west)+(0,-0.9)$){N3/GTP-U};
     \end{tikzpicture}\\[1mm]
-    {\scriptsize \textbf{Figura 6:} uma PDU session transporta três QoS flows (voz GBR, eMBB e URLLC) sobre DRBs distintos.}
+    {\scriptsize \textbf{Figura 5:} uma PDU session transporta três QoS flows (voz GBR, eMBB e URLLC) sobre DRBs distintos.}
   \end{center}
   \note{N3 = interface gNB--UPF (GTP-U); N4 = SMF--UPF; N6 = UPF--DN. O mapeamento QoS flow $\to$ DRB é decidido pelo gNB.}
 \end{frame}
@@ -333,7 +333,7 @@
           \draw[<->,thick] (tgt) -- (amf);
           \node[font=\tiny,right=0.1cm of amf]{N2/N3};
         \end{tikzpicture}\\[1mm]
-        {\scriptsize \textbf{Figura 7:} handover Xn (direto) e N2 (via núcleo).}
+        {\scriptsize \textbf{Figura 6:} handover Xn (direto) e N2 (via núcleo).}
       \end{center}
     \end{column}
   \end{columns}
@@ -364,7 +364,7 @@
           \draw[<->,thick] (gnb) -- (upf);
           \draw[<->,thick] (upf) -- (cl);
         \end{tikzpicture}\\[1mm]
-        {\scriptsize \textbf{Figura 8:} MEC na borda da RAN, com \emph{local breakout} no UPF.}
+        {\scriptsize \textbf{Figura 7:} MEC na borda da RAN, com \emph{local breakout} no UPF.}
       \end{center}
     \end{column}
   \end{columns}
@@ -420,7 +420,7 @@
       \draw[thick,aneliseLaranja] (embb.east) -- (urllc.west);
       \draw[thick,aneliseGris] (urllc.east) -- (mmtc.west);
     \end{tikzpicture}\\[1mm]
-    {\scriptsize \textbf{Figura 3:} os três casos de uso do 5G definidos pelo IMT-2020: eMBB, URLLC e mMTC.}
+    {\scriptsize \textbf{Figura 8:} os três casos de uso do 5G definidos pelo IMT-2020: eMBB, URLLC e mMTC.}
   \end{center}
   \begin{block}{5G-Advanced (3GPP Rel.\ 18, 2024)}
     \begin{itemize}

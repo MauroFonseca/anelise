@@ -346,7 +346,7 @@
             \node[below=1mm of esc,font=\tiny]{próximo pacote};
           \end{tikzpicture}
         }\\[1mm]
-        {\scriptsize \textbf{Figura 5A:} WFQ: pesos determinam a fração de serviço de cada fluxo.}
+        {\scriptsize \textbf{Figura 6:} WFQ: pesos determinam a fração de serviço de cada fluxo.}
       \end{center}
       {\scriptsize $\dfrac{R_i}{R}=\dfrac{w_i}{\sum_j w_j}$ --- a fatia de banda é proporcional ao peso.}
     \end{column}
@@ -412,7 +412,7 @@
       \node[draw,fill=aneliseGris!12,rounded corners=2mm,below=6mm of tb](gar){Garantia de QoS};
       \draw[dashed,->] (tb.south) -- (gar.north);
     \end{tikzpicture}\\[1mm]
-    {\scriptsize \textbf{Figura 6:} Token bucket + WFQ garante atraso máximo $D_{\max}=b/R$.}
+    {\scriptsize \textbf{Figura 7:} Token bucket + WFQ garante atraso máximo $D_{\max}=b/R$.}
   \end{center}
   \begin{itemize}
     \item o balde de fichas e WFQ combinam-se para fornecer \textbf{limite superior garantido no atraso}
@@ -440,7 +440,7 @@
       \draw[->,thick,aneliseLaranja] (borda) -- node[midway,above=1mm,font=\tiny]{preferência a pacotes no perfil} (nucleo1);
       \draw[->,thick,aneliseLaranja] (nucleo1) -- (nucleo2);
     \end{tikzpicture}\\[1mm]
-    {\scriptsize \textbf{Figura 7:} Diferenciação e marcação na borda; tratamento por classe no núcleo.}
+    {\scriptsize \textbf{Figura 8:} Diferenciação e marcação na borda; tratamento por classe no núcleo.}
   \end{center}
   \begin{itemize}
     \item 6 bits de \textbf{DSCP} (Differentiated Services Code Point) no campo ToS/Traffic Class
@@ -563,7 +563,7 @@
       \draw[->,thick,aneliseVerde] ([yshift=-0.4cm]app.east) -- node[midway,below=1mm,font=\tiny]{mMTC} ([yshift=-0.4cm]net.west);
       \node[below=1mm of gnb,font=\tiny]{DRB (rádio)}; \node[above=1mm of upf,font=\tiny]{DSCP (transporte)};
     \end{tikzpicture}\\[1mm]
-    {\scriptsize \textbf{Figura 8A:} QoS flows atravessam UE$\rightarrow$gNB$\rightarrow$UPF (DRB no rádio, DSCP no transporte).}
+    {\scriptsize \textbf{Figura 9:} QoS flows atravessam UE$\rightarrow$gNB$\rightarrow$UPF (DRB no rádio, DSCP no transporte).}
   \end{center}
 \end{frame}
 
@@ -643,7 +643,7 @@
           \node[draw,fill=aneliseLaranja!20,rounded corners=2mm,right=4mm of ac0,text width=2.6cm,align=center](vh){Virtual Collision Handler};
           \draw[->,thick,aneliseVerde] (ac0.east) to[bend left=10] (vh.west);
         \end{tikzpicture}\\[1mm]
-        {\scriptsize \textbf{Figura 8:} Quatro Access Categories do EDCA com gerenciador de colisão virtual.}
+        {\scriptsize \textbf{Figura 10:} Quatro Access Categories do EDCA com gerenciador de colisão virtual.}
       \end{center}
       {\scriptsize Acesso imediato se o meio idle $\geq$ AIFS[AC]$+$SlotTime.}
     \end{column}

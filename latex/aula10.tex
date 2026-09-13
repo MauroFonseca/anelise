@@ -132,7 +132,7 @@
           \draw[thick,aneliseVerde,-Stealth] (drone) -- (gcs) node[midway,right,font=\tiny]{C2};
           \draw[thick,aneliseLaranja,-Stealth] (drone) -- (cloud) node[midway,below,font=\tiny]{payload (vídeo)};
         \end{tikzpicture}
-        \\[1mm] {\scriptsize \textbf{Figura:} enlace C2 com a GCS e enlace de payload para a nuvem/usuário.}
+        \\[1mm] {\scriptsize \textbf{Figura 1:} enlace C2 com a GCS e enlace de payload para a nuvem/usuário.}
       \end{center}
     \end{column}
   \end{columns}
@@ -181,7 +181,7 @@
       \draw[thick,aneliseLaranja] (d2) -- (d4) -- (d5);
       \draw[dashed,thick,aneliseGris] (d3) to[bend left=20] (d4);
     \end{tikzpicture}
-    \\[1mm] {\scriptsize \textbf{Figura 1:} topologia FANET em 3D com enlaces drone a drone e topologia em mudança constante.}
+    \\[1mm] {\scriptsize \textbf{Figura 2:} topologia FANET em 3D com enlaces drone a drone e topologia em mudança constante.}
   \end{center}
   \note{FANET é um caso particular de MANET com mobilidade muito maior e topologia 3D; reforçar que a alta velocidade (até 100 km/h) e o link budget variável tornam o handover e o roteamento mais desafiadores que em redes veiculares.}
 \end{frame}
@@ -387,7 +387,7 @@
           \draw[thick,aneliseVerde,-Stealth] (sat) -- (gw) node[midway,right,font=\tiny]{feeder link};
           \draw[thick,aneliseGris,-Stealth] (gw) -- (core);
         \end{tikzpicture}
-        \\[1mm] {\scriptsize \textbf{Figura:} UE $\rightarrow$ satélite (service) $\rightarrow$ gateway (feeder) $\rightarrow$ 5G Core; payload transparente ou regenerativo.}
+        \\[1mm] {\scriptsize \textbf{Figura 3:} UE $\rightarrow$ satélite (service) $\rightarrow$ gateway (feeder) $\rightarrow$ 5G Core; payload transparente ou regenerativo.}
       \end{center}
     \end{column}
   \end{columns}
@@ -444,7 +444,7 @@
       \draw[thick,aneliseVerde] (terra) -- (s1) -- (s2) -- (s3) -- (gw);
       \node[right=1mm of s2,font=\tiny]{enlace laser ISL};
     \end{tikzpicture}
-    \\[1mm] {\scriptsize \textbf{Figura 2:} enlace satelital LEO com ISL (Inter-Satellite Link) laser entre terminais terrestres.}
+    \\[1mm] {\scriptsize \textbf{Figura 4:} enlace satelital LEO com ISL (Inter-Satellite Link) laser entre terminais terrestres.}
   \end{center}
   \note{Starlink já ultrapassou 7000 satélites e usa ISL a laser para reduzir a dependência de gateways terrestres; comparar latência LEO (20--40 ms) com GEO (mais de 250 ms).}
 \end{frame}
